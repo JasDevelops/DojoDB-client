@@ -43,8 +43,6 @@
 
 5. The app will be available at http://localhost:1234.
 
-6. To build for production:
-`npm run build`
 
 ## <a name="howToUse"></a>How to Use
 
