@@ -1,4 +1,5 @@
-import { createRoot } from 'react-dom/client';
+import { createRoot } from "react-dom/client";
+import { MainView } from "./components/main-view/main-view";
 
 // Bundle `./index.scss`
 import './index.scss';
@@ -6,9 +7,7 @@ import './index.scss';
 // Main component
 const DojoDBApplication = () => {
     return (
-    <div className="dojo-db">
-        <div>Kickstart your day...</div>
-    </div>
+        < MainView />
     );
 };
 
