@@ -1,5 +1,70 @@
-$color: steelblue;
+$blue: steelblue; 
+$black: #1a1a1a;
+$white: #fff;
+$red:#bf4239;
+$darkerRed: #b03a31;
+$lighterRed: #db483d;
+$font: sans-serif;
+$spaceNormal: 10px;
+$spaceSmall: 5px;
+$titleSize: 32px;
 
-.dojo-db {
-    color: $color;
+body {
+    font-family: $font;
+}
+.title,
+.movieCard {
+    font-size: $titleSize;
+    text-transform: uppercase;
+}
+/* MOVIE CARD */
+.movieCard {
+    margin-bottom: 15px;
+    border: 2px solid transparent;
+    line-height: $titleSize;
+    padding: $spaceSmall
+
+}
+.movieCard:hover,
+.movieCard:focus {
+    border-color: $black
+}
+.movieCard:active {
+    border-color: transparent;
+    color: $red
+}
+/* MOVIE VIEW */
+.movieView {
+    max-width: 90%;
+    margin: 0 auto;
+    text-align: center;
+    border: 2px solid $black;
+    padding: $spaceNormal;
+}
+.movieView img {
+    max-width: 500px;
+    height: auto;
+}
+.movieView div {
+    margin-bottom: $spaceNormal;
+}
+.movieView span:first-child {
+    font-weight: bold;
+    text-transform: none;
+}
+
+/* Button */
+button {
+    color: $white;
+    background: $red;
+    border-radius: 20px;
+    border: none;
+    padding: $spaceNormal 25px;
+    text-transform: uppercase;
+}
+button:hover, button:focus {
+    background:$lighterRed;
+}
+button:active {
+    background: $darkerRed
 }
