@@ -3,10 +3,6 @@ import { MainView } from "./components/main-view/main-view";
 
 import './index.scss';
 
-const cors = require('cors');
-app.use(cors());
-
-
 // Main component
 const DojoDBApplication = () => {
     return (
