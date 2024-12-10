@@ -1,6 +1,6 @@
 node_modules
 .cache
 .parcel-cache
-src/dist/index.0d6fcb10.js
+src/dist/index.*.js
 dist/.DS_Store
-src/dist/index.0d6fcb10.js.map
+src/dist/index.*.js.map
