@@ -1,8 +1,11 @@
 import { createRoot } from "react-dom/client";
 import { MainView } from "./components/main-view/main-view";
 
-// Bundle `./index.scss`
 import './index.scss';
+
+const cors = require('cors');
+app.use(cors());
+
 
 // Main component
 const DojoDBApplication = () => {
