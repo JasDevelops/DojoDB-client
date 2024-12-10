@@ -4,3 +4,4 @@ node_modules
 src/dist/index.*.js
 dist/.DS_Store
 src/dist/index.*.js.map
+*.map
