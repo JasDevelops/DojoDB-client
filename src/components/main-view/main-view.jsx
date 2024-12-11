@@ -35,11 +35,17 @@ export const MainView = () => {
     }, []
     );
     
+    const handleMovieClick = (newSelectedMovie) => {
+        setSelectedMovie(newSelectedMovie); // Update the selected movie when a similar movie is clicked
+    };
+
     if (selectedMovie) {
     return (
         <MovieView 
         movie={selectedMovie} 
+        allMovies={movies} 
         onBackClick={() => setSelectedMovie(null)} 
+        onMovieClick={handleMovieClick}
         />
     );
     }
@@ -54,8 +60,8 @@ export const MainView = () => {
         <MovieCard
             key={movie.id}
             movie={movie}
-            onMovieClick={(newSelectedMovie) => {
-                setSelectedMovie(newSelectedMovie);
+            onMovieClick={() => {
+                setSelectedMovie(movie); // When a movie card is clicked, set it as the selected movie
             }}
         />
         ))}

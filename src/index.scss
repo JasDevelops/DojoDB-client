@@ -68,3 +68,42 @@ button:hover, button:focus {
 button:active {
     background: $darkerRed
 }
+
+/* Similar Movies */
+.similarMovies {
+    display: flex;
+    flex-wrap: wrap;
+    gap: $spaceNormal;
+    justify-content: space-between;
+    text-align:center;
+
+}
+.similarMovies p {    
+    margin: 0 auto;
+}
+.similarMovieCard {
+    flex: 30%;
+    box-sizing: border-box;
+    text-align:center;
+    overflow: hidden; 
+    position: relative;
+}
+.imageBox {
+    width: 100%;
+    height: 200px; 
+    overflow: hidden;
+}
+.similarMovieCard img{
+    width: 100%;
+    height: 100%;
+    object-fit: cover; 
+    object-position: center;
+}
+.similarMovies .movieDetails {
+    min-height: 50px
+}
+@media (max-width:650px){
+    .similarMovieCard {
+        flex: 100%;
+    }
+}
