@@ -1,13 +1,25 @@
 import { useState, useEffect } from "react";
 import { MovieCard } from "../movie-card/movie-card";
 import { MovieView } from "../movie-view/movie-view";
+import { LoginView } from "../login-view/login-view";
+import { SignupView } from "../signup-view/signup-view"; 
 
 export const MainView = () => {
+    const storedUser = JSON.parse(localStorage.getItem("user"));
+    const storedToken = localStorage.getItem("token");
+
     const [movies, setMovies] = useState([]);
     const [selectedMovie, setSelectedMovie] = useState(null);
+    const [user, setUser] = useState(storedUser ? storedUser : null);
+    const [token, setToken] = useState(storedToken ? storedToken : null);
 
-    useEffect (() => {
-        fetch("https://dojo-db-e5c2cf5a1b56.herokuapp.com/movies")
+    useEffect(() => { // Fetch movies if token is available
+        if (!token) return; // Don't fetch if there is no token
+        fetch("https://dojo-db-e5c2cf5a1b56.herokuapp.com/movies", {
+          headers: {
+            Authorization: `Bearer ${token}`, // Send token for authentication
+          },
+        })
         .then ((response) => response.json())
         .then ((data) => {
             const moviesFromApi = data.map((movie) => ({
@@ -30,16 +42,39 @@ export const MainView = () => {
                     deathYear: movie.director.deathYear,
                 }
             }));
-            setMovies(moviesFromApi);
-        });
-    }, []
-    );
+            setMovies(moviesFromApi); 
+        })
+        .catch((error) => alert("Error fetching movies: " + error));
+    }, [token]); // Only fetch when token changes
     
     const handleMovieClick = (newSelectedMovie) => {
         setSelectedMovie(newSelectedMovie); // Update the selected movie when a similar movie is clicked
     };
 
-    if (selectedMovie) {
+    const handleLogin = (user, token) => { // Login
+        setUser (user);
+        setToken (token);
+        localStorage.setItem("use", JSON.stringify(user));
+        localStorage.setItem("token", token);
+    };
+
+    const handleLogout = () => { // Logout (reset)
+        setUser (null);
+        setToken (null);
+        localStorage.cleat ();
+    };
+
+    if (!user) { // Show LoginView  and SignupView if no user is logged in
+        return (
+            <>
+                < LoginView on onLoggedIn={ handleLogin } /> 
+                or
+                < SignupView/>
+            </>
+        );
+    }
+
+    if (selectedMovie) { // Show MovieView, if a movie is selected
     return (
         <MovieView 
         movie={selectedMovie} 
@@ -50,11 +85,11 @@ export const MainView = () => {
     );
     }
 
-    if (movies.length === 0) {
+    if (movies.length === 0) { // If no movies a re available
     return <div>The list is empty!</div>;
     }
 
-    return (
+    return ( // Default view:showing all movie cards
         <div>
         {movies.map((movie) => (
         <MovieCard
