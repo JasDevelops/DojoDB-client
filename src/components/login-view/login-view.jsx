@@ -3,6 +3,7 @@ import React, { useState } from "react";
 export const LoginView = ({ onLoggedIn }) => {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
+    const [errorMessage, setErrorMessage] = useState(""); 
 
     const handleSubmit = (event) => {
         event.preventDefault();
@@ -16,6 +17,7 @@ export const LoginView = ({ onLoggedIn }) => {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(data),
+            credentials: "include",
         })
         .then((response) => response.json())
         .then((data) => {
@@ -32,10 +34,11 @@ export const LoginView = ({ onLoggedIn }) => {
 };
 
     return (
-        <div className="LoginView_submit">
+        <div className="loginView_form">
+        <h4>Login</h4>
         <form onSubmit={handleSubmit}>
             <label>
-                username:
+                <span>username:</span>
                 <input
                     type="text"
                     value={username}
@@ -44,7 +47,7 @@ export const LoginView = ({ onLoggedIn }) => {
                 />
             </label>
             <label>
-                Password:
+            <span>password:</span>
                 <input
                     type="password"
                     value={password}
@@ -52,7 +55,7 @@ export const LoginView = ({ onLoggedIn }) => {
                     required
                 />
             </label>
-            {errorMessage && <p>{errorMessage}</p>} 
+            {errorMessage && <p className="error">{errorMessage}</p>} 
             <button type="submit">Submit</button>
         </form>
         </div>

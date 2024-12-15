@@ -1,13 +1,17 @@
 $blue: steelblue; 
 $black: #1a1a1a;
+$gray: #999;
 $white: #fff;
-$red:#bf4239;
+$red:#ae3b33;
 $darkerRed: #b03a31;
 $lighterRed: #db483d;
 $font: sans-serif;
 $spaceNormal: 10px;
 $spaceSmall: 5px;
+$spaceBig: 20px;
 $titleSize: 32px;
+$border: 2px solid $black;
+
 
 body {
     font-family: $font;
@@ -38,7 +42,7 @@ body {
     max-width: 90%;
     margin: 0 auto;
     text-align: center;
-    border: 2px solid $black;
+    border: $border;
     padding: $spaceNormal;
 }
 .movieView img {
@@ -61,9 +65,10 @@ button {
     border: none;
     padding: $spaceNormal 25px;
     text-transform: uppercase;
+    transition: all 0.5s ease;
 }
 button:hover, button:focus {
-    background:$lighterRed;
+    border-radius: 2px;
 }
 button:active {
     background: $darkerRed
@@ -101,6 +106,54 @@ button:active {
 }
 .similarMovies .movieDetails {
     min-height: 50px
+}
+
+/* FORMS */
+.mainView_form p{
+    text-align: center
+}
+.signupView_form,
+.loginView_form {
+    border: $border;
+    padding: $spaceNormal;
+    flex-direction: column;
+    align-items: center; 
+    width: 100%; 
+    max-width: 600px; 
+    margin: 0 auto; 
+}
+h4 {
+    text-transform: uppercase;
+    width: 100%;
+    text-align: center
+}
+form {
+    width: 150px;
+    flex-direction:column;
+    display: flex;
+    width: 100%; 
+
+}
+label {
+    margin: $spaceNormal;
+    display: flex;
+    flex-direction:column
+}
+label:last-child {
+    margin-bottom: $spaceBig
+}
+form span {
+    display:block;
+    font-size: small;
+    color: $gray;
+}
+form input {
+    width: 100%;
+    padding: $spaceSmall;
+}
+form button {
+    display: block;
+    margin: $spaceBig auto
 }
 @media (max-width:650px){
     .similarMovieCard {

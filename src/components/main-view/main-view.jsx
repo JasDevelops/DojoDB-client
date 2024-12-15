@@ -66,11 +66,11 @@ export const MainView = () => {
 
     if (!user) { // Show LoginView  and SignupView if no user is logged in
         return (
-            <>
+            <div className="mainView_form">
                 < LoginView on onLoggedIn={ handleLogin } /> 
-                or
+                <p>or</p>
                 < SignupView/>
-            </>
+            </div>
         );
     }
 

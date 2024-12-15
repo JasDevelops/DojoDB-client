@@ -16,7 +16,7 @@ export const SignupView = ({ onSignedUp }) => {
             birthday: birthday,
         };
 
-        fetch("https://dojo-db-e5c2cf5a1b56.herokuapp.com/signup", {
+        fetch("https://dojo-db-e5c2cf5a1b56.herokuapp.com/users", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -35,9 +35,11 @@ export const SignupView = ({ onSignedUp }) => {
         };
 
     return (
+        <div className="signupView_form">
+        <h4>SignUp</h4>
         <form onSubmit={handleSubmit}>
             <label>
-                Username:
+            <span>username:</span>
                 <input
                     type="text"
                     value={username}
@@ -47,7 +49,7 @@ export const SignupView = ({ onSignedUp }) => {
                 />
             </label>
             <label>
-                Password:
+            <span>password:</span>
                 <input
                     type="password"
                     value={password}
@@ -56,7 +58,7 @@ export const SignupView = ({ onSignedUp }) => {
                 />
             </label>
             <label>
-                Email:
+            <span>email:</span>
                 <input
                     type="email"
                     value={email}
@@ -65,7 +67,7 @@ export const SignupView = ({ onSignedUp }) => {
                 />
             </label>
             <label>
-                Birthday:
+            <span>birthday:</span>
                 <input
                     type="date"
                     value={birthday}
@@ -75,5 +77,6 @@ export const SignupView = ({ onSignedUp }) => {
             </label>
             <button type="submit">Submit</button>
         </form>
+        </div>
     );
 };
