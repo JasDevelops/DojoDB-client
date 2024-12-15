@@ -3,7 +3,7 @@ import React, { useState } from "react";
 export const LoginView = ({ onLoggedIn }) => {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
-    const [errorMessage, setErrorMessage] = useState(""); 
+    const [errorMessage, setErrorMessage] = useState("");
 
     const handleSubmit = (event) => {
         event.preventDefault();
@@ -17,7 +17,7 @@ export const LoginView = ({ onLoggedIn }) => {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(data),
-            credentials: "include",
+            credentials: "include",  
         })
         .then((response) => {
             if (!response.ok) {
@@ -26,43 +26,45 @@ export const LoginView = ({ onLoggedIn }) => {
             return response.json();
         })
         .then((data) => {
-            if (data.user) {
+            if (data.user && data.token) {
                 localStorage.setItem("token", data.token);
-                onLoggedIn(data.user, data.token); // Pass user and token to MainView
+                localStorage.setItem("user", JSON.stringify(data.user));  // Store user data
+                onLoggedIn(data.user, data.token); // Callback to MainView to update the user state
             } else {
                 setErrorMessage("Invalid username or password.");
             }
         })
-        .catch(() => {
+        .catch((error) => {
             setErrorMessage("Something went wrong. Please try again.");
+            console.error("Error during login:", error);
         });
-};
+    };
 
     return (
         <div className="loginView_form">
-        <h4>Login</h4>
-        <form onSubmit={handleSubmit}>
-            <label>
-                <span>username:</span>
-                <input
-                    type="text"
-                    value={username}
-                    onChange={(e) => setUsername(e.target.value)}
-                    required
-                />
-            </label>
-            <label>
-            <span>password:</span>
-                <input
-                    type="password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    required
-                />
-            </label>
-            {errorMessage && <p className="error">{errorMessage}</p>} 
-            <button type="submit">Submit</button>
-        </form>
+            <h4>Login</h4>
+            <form onSubmit={handleSubmit}>
+                <label>
+                    <span>Username:</span>
+                    <input
+                        type="text"
+                        value={username}
+                        onChange={(e) => setUsername(e.target.value)}
+                        required
+                    />
+                </label>
+                <label>
+                    <span>Password:</span>
+                    <input
+                        type="password"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        required
+                    />
+                </label>
+                {errorMessage && <p className="error">{errorMessage}</p>}
+                <button type="submit">Submit</button>
+            </form>
         </div>
     );
 };
