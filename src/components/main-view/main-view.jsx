@@ -54,14 +54,14 @@ export const MainView = () => {
     const handleLogin = (user, token) => { // Login
         setUser (user);
         setToken (token);
-        localStorage.setItem("use", JSON.stringify(user));
+        localStorage.setItem("user", JSON.stringify(user));
         localStorage.setItem("token", token);
     };
 
     const handleLogout = () => { // Logout (reset)
         setUser (null);
         setToken (null);
-        localStorage.cleat ();
+        localStorage.clear ();
     };
 
     if (!user) { // Show LoginView  and SignupView if no user is logged in
