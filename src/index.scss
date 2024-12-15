@@ -61,19 +61,34 @@ body {
 button {
     color: $white;
     background: $red;
+    border: $border;
+    border-color:$white;
     border-radius: 20px;
-    border: none;
     padding: $spaceNormal 25px;
     text-transform: uppercase;
     transition: all 0.5s ease;
+    font-weight: bold;
 }
 button:hover, button:focus {
     border-radius: 2px;
+    background-color: $white;
+    border-color:$red;
+    color: $red;
+
 }
 button:active {
-    background: $darkerRed
+    color: $black;
+    border-color: $black;
 }
-
+.movieCards_main {
+    position: relative;
+    padding-top: 50px;
+}
+.movieCards_main .btn {
+    position: absolute;
+    top: $spaceSmall;
+    right: $spaceSmall;
+}
 /* Similar Movies */
 .similarMovies {
     display: flex;
