@@ -62,6 +62,8 @@ export const MainView = () => {
         setUser(null);
         setToken(null);
         localStorage.clear();
+        localStorage.removeItem("user");  
+        localStorage.removeItem("token");
     };
 
     if (!user) { // Show LoginView  and SignupView if no user is logged in
@@ -90,7 +92,10 @@ export const MainView = () => {
     }
 
     return ( // Default view:showing all movie cards
-        <div>
+        <div className="movieCards_main">
+            <div className="btn">
+                <button onClick={handleLogout}>Logout</button>
+            </div>
             {movies.map((movie) => (
                 <MovieCard
                     key={movie.id}
