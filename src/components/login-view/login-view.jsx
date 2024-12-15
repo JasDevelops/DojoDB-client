@@ -19,7 +19,12 @@ export const LoginView = ({ onLoggedIn }) => {
             body: JSON.stringify(data),
             credentials: "include",
         })
-        .then((response) => response.json())
+        .then((response) => {
+            if (!response.ok) {
+                throw new Error("Network response was not ok");
+            }
+            return response.json();
+        })
         .then((data) => {
             if (data.user) {
                 localStorage.setItem("token", data.token);
