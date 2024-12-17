@@ -1,4 +1,6 @@
 import PropTypes from "prop-types";
+import "./movie-view.scss";
+
 import { MovieCard } from "../movie-card/movie-card";
 
 export const MovieView = ({ movie, allMovies, onBackClick, onMovieClick }) => {
@@ -34,7 +36,7 @@ export const MovieView = ({ movie, allMovies, onBackClick, onMovieClick }) => {
                 <span>Image Attribution: </span>
                 <span>{movie.image.imageAttribution}</span>
             </div>
-        <button onClick={onBackClick}>Back</button>
+        <button onClick={onBackClick} className="back-button">Back</button>
         
         {/* Similar movies */}
         <hr />

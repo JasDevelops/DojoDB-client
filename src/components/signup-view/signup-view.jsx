@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import "./signup-view.scss";
 
 export const SignupView = ({ onSignedUp }) => {
     const [username, setUsername] = useState("");
