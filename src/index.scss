@@ -1,2 +1,91 @@
+@import "~bootstrap/scss/functions";
+@import "~bootstrap/scss/variables";
+@import "~bootstrap/scss/mixins";
+
+$primary: #a20404;
+$mutedPrimary: #731010;
+$gray: #999;
+$white: #fefefe;
+$white50: rgba(254, 254, 254, .5);
+$black: #1f1f1f;
+$black70: rgba(1, 1, 1, .7);
+$black50: rgba(1, 1, 1, .5);
+
+$smallText: 12px;
+$headingFont: "Passero One", sans-serif;
+$textFont: "Urbanist", sans-serif;
+$fontWeightBold: 900;
+$fontWeightMedium: 600;
+
+$borderBlk: 2px solid $black;
+$borderRed: 2px solid $primary;
+$borderRadius: 5px;
+$borderRadiusRdn: 50px;
+
+$smallSpace: 5px;
+$mediumSpace: 15px;
+$bigSpace: 25px;
+
 @import "~bootstrap/scss/bootstrap.scss";
 
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: $textFont;
+    background: rgb(117, 18, 18);
+    background: -moz-linear-gradient(151deg, rgba(117, 18, 18, 1) 0%, rgba(66, 15, 15, 1) 22%, rgba(26, 26, 26, 1) 100%);
+    background: -webkit-linear-gradient(151deg, rgba(117, 18, 18, 1) 0%, rgba(66, 15, 15, 1) 22%, rgba(26, 26, 26, 1) 100%);
+    background: linear-gradient(151deg, rgba(117, 18, 18, 1) 0%, rgba(66, 15, 15, 1) 22%, rgba(26, 26, 26, 1) 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#751212", endColorstr="#1a1a1a", GradientType=1);
+    color: $white;
+}
+
+.bg {
+    background-color: $black50;
+    border-radius: $borderRadius;
+}
+
+h1,
+h2,
+h3,
+h4 {
+    font-family: $headingFont;
+    text-align: center;
+    letter-spacing: 1px;
+}
+
+/* Button */
+.btn-primary {
+    background-color: $primary;
+}
+.btn {
+    border-radius: $borderRadiusRdn;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 8px $bigSpace;
+    margin: 0 auto;
+    display: block;
+    margin-top: $bigSpace;
+    border: $borderRed;
+    transition: 0.3s ease;
+}
+.btn:hover,
+.btn:focus {
+    background-color: transparent;
+    color:$primary;
+    border: $borderRed;
+    border-radius: $borderRadius;
+}
+.btn:active,
+:not(.btn-check) + .btn:active {
+    background-color: transparent;
+    color:$primary;
+    border: $borderRed;
+    border-radius: $borderRadius;
+    opacity: 0.6
+}

@@ -1,5 +1,10 @@
 import { useState, useEffect } from "react";
-import "./main-view.scss";
+
+import "./main-view.scss"; 
+
+import Row from "react-bootstrap/Row";
+import Col from "react-bootstrap/Col";
+import Button from "react-bootstrap/Button";
 
 import { MovieCard } from "../movie-card/movie-card";
 import { MovieView } from "../movie-view/movie-view";
@@ -14,6 +19,7 @@ export const MainView = () => {
     const [selectedMovie, setSelectedMovie] = useState(null);
     const [user, setUser] = useState(storedUser ? storedUser : null);
     const [token, setToken] = useState(storedToken ? storedToken : null);
+    const [showLogin, setShowLogin] = useState(true); // Show LoginView or SignupView
 
     useEffect(() => { // Fetch movies if token is available
         if (!token) return; // Don't fetch if there is no token
@@ -33,8 +39,8 @@ export const MainView = () => {
                         description: movie.genre.description
                     },
                     image: {
-                        imageUrl: movie.image.imageUrl,
-                        imageAttribution: movie.image.imageAttribution
+                        imageUrl: movie.image?.imageUrl,
+                        imageAttribution: movie.image?.imageAttribution
                     },
                     featured: true,
                     director: {
@@ -64,50 +70,74 @@ export const MainView = () => {
         setUser(null);
         setToken(null);
         localStorage.clear();
-        localStorage.removeItem("user");  
+        localStorage.removeItem("user");
         localStorage.removeItem("token");
     };
 
-    if (!user) { // Show LoginView  and SignupView if no user is logged in
+    if (!user) {
         return (
-            <div className="mainView_form">
-                < LoginView on onLoggedIn={handleLogin} />
-                <p>or</p>
-                < SignupView />
-            </div>
+            <Row className="mainView_form w-100 min-vh-100">
+                <Col className="w-100">
+                    <div className="slider-toggle-container" onClick={() => setShowLogin(!showLogin)}>
+                        <div className={`slider-circle ${showLogin ? "login" : "signup"}`} />
+                        <span className={`slider-text-left ${showLogin ? "active" : ""}`}>Log in</span>
+                        <span className={`slider-text-right ${!showLogin ? "active" : ""}`}>Sign up</span>
+                    </div>
+                </Col>
+
+                <Col className="d-flex justify-content-center align-items-center flex-grow-1 w-100 col-11 col-md-10 col-lg-8">
+                    {showLogin ? <LoginView onLoggedIn={handleLogin} /> : <SignupView />}
+                </Col>
+            </Row>
         );
     }
 
     if (selectedMovie) { // Show MovieView, if a movie is selected
         return (
-            <MovieView
-                movie={selectedMovie}
-                allMovies={movies}
-                onBackClick={() => setSelectedMovie(null)}
-                onMovieClick={handleMovieClick}
-            />
+            <Row className="movieView_main">
+                <MovieView
+                    movie={selectedMovie}
+                    allMovies={movies}
+                    onBackClick={() => setSelectedMovie(null)}
+                    onMovieClick={handleMovieClick}
+                />
+            </Row>
         );
     }
 
     if (movies.length === 0) { // If no movies a re available
-        return <div>The list is empty!</div>;
+        return (
+            <Row className="mainView_empty">
+                <div>The list is empty!</div>;
+            </Row>
+        );
     }
 
     return ( // Default view:showing all movie cards
-        <div className="movieCards_main">
-            <div className="btn">
-                <button onClick={handleLogout}>Logout</button>
-            </div>
+        <Row className="movieCards_main">
+            <Col className="logout" md={12}>
+                <Button
+                    variant="danger"
+                    onClick={handleLogout}>
+                    Logout
+                </Button>
+            </Col>
+            
             {movies.map((movie) => (
+                <Col 
+                key={movie.id}
+                md={3}
+                >
                 <MovieCard
-                    key={movie.id}
                     movie={movie}
                     onMovieClick={() => {
                         setSelectedMovie(movie); // When a movie card is clicked, set it as the selected movie
                     }}
                 />
+                </Col>
             ))}
-        </div>
+            
+        </Row>
     );
 };
 export default MainView;

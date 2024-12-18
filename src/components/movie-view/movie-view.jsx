@@ -1,5 +1,5 @@
 import PropTypes from "prop-types";
-import "./movie-view.scss";
+import Col from "react-bootstrap/Col";
 
 import { MovieCard } from "../movie-card/movie-card";
 
@@ -10,7 +10,7 @@ export const MovieView = ({ movie, allMovies, onBackClick, onMovieClick }) => {
     .filter ((m) => m.genre.name === movie.genre.name && m.id !==movie.id)
     .slice(0, 3);
     return (
-        <div className="movieView">
+        <Col className="movieView">
             
             {/* Current movie details */}
             <div>
@@ -36,7 +36,7 @@ export const MovieView = ({ movie, allMovies, onBackClick, onMovieClick }) => {
                 <span>Image Attribution: </span>
                 <span>{movie.image.imageAttribution}</span>
             </div>
-        <button onClick={onBackClick} className="back-button">Back</button>
+        <button onClick={onBackClick} className="back-btn">Back</button>
         
         {/* Similar movies */}
         <hr />
@@ -61,7 +61,7 @@ export const MovieView = ({ movie, allMovies, onBackClick, onMovieClick }) => {
             <p>No similar movies found - sorry!</p>
         )}
         </div>
-    </div>
+    </Col>
     );
 }; 
 MovieView.propTypes = {
