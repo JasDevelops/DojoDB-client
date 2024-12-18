@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 
-import "./main-view.scss"; 
+import "./main-view.scss";
 
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
@@ -85,7 +85,7 @@ export const MainView = () => {
                     </div>
                 </Col>
 
-                <Col className="d-flex justify-content-center align-items-center flex-grow-1 w-100 col-11 col-md-10 col-lg-8">
+                <Col className="d-flex justify-content-center align-items-start flex-grow-1 w-100 col-11 col-md-10 col-lg-8">
                     {showLogin ? <LoginView onLoggedIn={handleLogin} /> : <SignupView />}
                 </Col>
             </Row>
@@ -114,30 +114,25 @@ export const MainView = () => {
     }
 
     return ( // Default view:showing all movie cards
-        <Row className="movieCards_main">
-            <Col className="logout" md={12}>
-                <Button
-                    variant="danger"
-                    onClick={handleLogout}>
-                    Logout
-                </Button>
-            </Col>
-            
-            {movies.map((movie) => (
-                <Col 
-                key={movie.id}
-                md={3}
-                >
-                <MovieCard
-                    movie={movie}
-                    onMovieClick={() => {
-                        setSelectedMovie(movie); // When a movie card is clicked, set it as the selected movie
-                    }}
-                />
+        <div className="movieCards_main">
+            <Row className="d-flex justify-content-end align-items-start">
+                <Col className="auto logout-col">
+                    <Button className="logout-btn" variant="primary" onClick={handleLogout}>Logout</Button>
                 </Col>
-            ))}
-            
-        </Row>
+            </Row>
+
+            <Row className="w-100 gx-4 gy-4">
+                {movies.map((movie) => (
+                    <Col key={movie.id} xs={12} sm={6} md={4} lg={3}>
+                        <MovieCard
+                            movie={movie}
+                            onMovieClick={() => setSelectedMovie(movie)}
+                        />
+                    </Col>
+                ))}
+            </Row>
+        </div>
+
     );
 };
 export default MainView;

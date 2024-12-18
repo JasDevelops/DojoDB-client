@@ -51,34 +51,34 @@ export const LoginView = ({ onLoggedIn }) => {
             <h4>Welcome back!</h4>
             <Form onSubmit={handleSubmit}>
                 <Form.Group controlId="username">
-                    <FloatingLabel
+                <FloatingLabel
                         controlId="floatingTextarea"
                         label="Username"
                         className="mb-3"
                     >
-                        <Form.Control
-                            type="text"
-                            value={username}
-                            onChange={(e) => setUsername(e.target.value)}
-                            required
-                            placeholder="Enter your username"
-                        />
+                <Form.Control
+                        type="text"
+                        value={username}
+                        onChange={(e) => setUsername(e.target.value)}
+                        required
+                        placeholder="Enter your username"
+                    />
                     </FloatingLabel>
                 </Form.Group>
 
                 <Form.Group controlId="password">
-                    <FloatingLabel
+                <FloatingLabel
                         controlId="floatingTextarea"
                         label="Password"
                         className="mb-3"
                     >
-                        <Form.Control
-                            type="password"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                            required
-                            placeholder="Enter your password"
-                        />
+                    <Form.Control
+                        type="password"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        required
+                        placeholder="Enter your password"
+                    />
                     </FloatingLabel>
                 </Form.Group>
                 {errorMessage && <Alert variant="danger">{errorMessage}</Alert>}

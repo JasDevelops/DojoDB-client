@@ -1,4 +1,4 @@
-@import "../../index.scss"; 
+@import "../../index.scss";
 
 /* Form */
 .form-floating>.form-control:not(:placeholder-shown)~label:after {
@@ -20,9 +20,9 @@
     cursor: pointer;
     display: flex;
     align-items: center;
-    transition: background-color 0.3s ease;
-    margin: $bigSpace auto;
-    box-shadow: 0 4px 10px $black50;
+    transition: background-color $transition;
+    margin: $smallSpace auto;
+    box-shadow: $boxShadow;
 
 }
 
@@ -30,10 +30,10 @@
     position: absolute;
     width: 60px;
     height: 30px;
-    background-color:$black70;
+    background-color: $black70;
     border-radius: $borderRadiusRdn;
-    transition: transform 0.3s ease;
-    box-shadow: 0 4px 10px $black50;
+    transition: transform $transition;
+    box-shadow: $boxShadow;
 
 }
 

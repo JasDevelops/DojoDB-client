@@ -8,6 +8,7 @@ $gray: #999;
 $white: #fefefe;
 $white50: rgba(254, 254, 254, .5);
 $black: #1f1f1f;
+$black90: rgba(1, 1, 1, .9);
 $black70: rgba(1, 1, 1, .7);
 $black50: rgba(1, 1, 1, .5);
 
@@ -22,9 +23,16 @@ $borderRed: 2px solid $primary;
 $borderRadius: 5px;
 $borderRadiusRdn: 50px;
 
+$boxShadow: 0 4px 10px $black50;
+$boxShadowCard: 0 10px 40px 5px $black70;
+$boxShadowCardMore: 0 10px 40px 0 $black90;
+$boxShadowCardLess: 0 10px 40px -5px $black70;
+
 $smallSpace: 5px;
 $mediumSpace: 15px;
 $bigSpace: 25px;
+
+$transition: 0.3s ease;
 
 @import "~bootstrap/scss/bootstrap.scss";
 
@@ -36,55 +44,67 @@ $bigSpace: 25px;
 
 body {
     font-family: $textFont;
-    background: rgb(117, 18, 18);
-    background: -moz-linear-gradient(151deg, rgba(117, 18, 18, 1) 0%, rgba(66, 15, 15, 1) 22%, rgba(26, 26, 26, 1) 100%);
-    background: -webkit-linear-gradient(151deg, rgba(117, 18, 18, 1) 0%, rgba(66, 15, 15, 1) 22%, rgba(26, 26, 26, 1) 100%);
+    background: $black90;
     background: linear-gradient(151deg, rgba(117, 18, 18, 1) 0%, rgba(66, 15, 15, 1) 22%, rgba(26, 26, 26, 1) 100%);
-    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#751212", endColorstr="#1a1a1a", GradientType=1);
     color: $white;
 }
 
 .bg {
-    background-color: $black50;
+    background-color: $black70;
     border-radius: $borderRadius;
+}
+
+p {
+    color: $gray;
 }
 
 h1,
 h2,
 h3,
-h4 {
+h4,
+h5 {
     font-family: $headingFont;
     text-align: center;
     letter-spacing: 1px;
+    color: $white
 }
 
 /* Button */
-.btn-primary {
-    background-color: $primary;
-}
+
 .btn {
-    border-radius: $borderRadiusRdn;
     font-weight: bold;
+    padding: 8px $bigSpace;
     text-transform: uppercase;
     letter-spacing: 1px;
-    padding: 8px $bigSpace;
-    margin: 0 auto;
-    display: block;
-    margin-top: $bigSpace;
-    border: $borderRed;
-    transition: 0.3s ease;
+    transition: $transition;
+    border-radius: $borderRadiusRdn;
+
 }
+
+.btn-primary {
+    background-color: $primary;
+    margin: $bigSpace auto;
+    display: block;
+    border: $borderRed;
+
+}
+
 .btn:hover,
 .btn:focus {
     background-color: transparent;
-    color:$primary;
+    color: $primary;
     border: $borderRed;
     border-radius: $borderRadius;
 }
+
 .btn:active,
-:not(.btn-check) + .btn:active {
+:not(.btn-check)+.btn:active,
+.btn-check:checked+.btn,
+:not(.btn-check)+.btn:active,
+.btn:first-child:active,
+.btn.show {
     background-color: transparent;
-    color:$primary;
+    color: $primary;
     border: $borderRed;
     border-radius: $borderRadius;
     opacity: 0.6
