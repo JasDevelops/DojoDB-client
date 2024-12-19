@@ -1,177 +1,171 @@
-$blue: steelblue; 
-$black: #1a1a1a;
-$gray: #999;
-$white: #fff;
-$red:#ae3b33;
-$darkerRed: #b03a31;
-$lighterRed: #db483d;
-$font: sans-serif;
-$spaceNormal: 10px;
-$spaceSmall: 5px;
-$spaceBig: 20px;
-$titleSize: 32px;
-$border: 2px solid $black;
+@import "~bootstrap/scss/functions";
+@import "~bootstrap/scss/variables";
+@import "~bootstrap/scss/mixins";
 
+$primary: #a20404;
+$mutedPrimary: #731010;
+$gray: #999;
+$white: #fefefe;
+$white50: rgba(254, 254, 254, .5);
+$black: #1f1f1f;
+$black90: rgba(1, 1, 1, .9);
+$black70: rgba(1, 1, 1, .7);
+$black50: rgba(1, 1, 1, .5);
+
+$smallText: 12px;
+$headingFont: "Passero One", sans-serif;
+$textFont: "Rubik", sans-serif;
+
+$borderBlk: 2px solid $black;
+$borderRed: 2px solid $primary;
+$borderRadius: 5px;
+$borderRadiusRdn: 50px;
+
+$boxShadow: 0 4px 10px $black50;
+$boxShadowCard: 0 10px 40px 5px $black70;
+$boxShadowCardMore: 0 10px 40px 0 $black90;
+$boxShadowCardLess: 0 10px 40px -5px $black70;
+
+$smallSpace: 5px;
+$mediumSpace: 15px;
+$bigSpace: 25px;
+
+$transition: 0.3s ease;
+
+@import "~bootstrap/scss/bootstrap.scss";
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
 
 body {
-    font-family: $font;
+    font-family: $textFont;
+    background: $black90;
+    background: linear-gradient(151deg, rgba(117, 18, 18, 1) 0%, rgba(66, 15, 15, 1) 22%, rgba(26, 26, 26, 1) 100%);
+    background-position: center;
+    background-attachment: fixed;
+    color: $white;
 }
-.title,
-.movieCard {
-    font-size: $titleSize;
-    text-transform: uppercase;
-}
-/* MOVIE CARD */
-.movieCard {
-    margin-bottom: 15px;
-    border: 2px solid transparent;
-    line-height: $titleSize;
-    padding: $spaceSmall
 
+.bg{
+    background-color: $black70;
+    border-radius: $borderRadius;
+    box-shadow: $boxShadowCard;
 }
-.movieCard:hover,
-.movieCard:focus {
-    border-color: $black
+p {
+    font-size: 16px;
+    line-height:150%;
 }
-.movieCard:active {
-    border-color: transparent;
-    color: $red
+p,
+.figure-caption {
+    color: $gray;
 }
-/* MOVIE VIEW */
-.movieView {
-    max-width: 90%;
-    margin: 0 auto;
+.card-text {
+    font-size:14px
+}
+.card-title {
+    min-height:60px;
+}
+.font-weight-bold {
+    font-weight:700
+}
+h1,
+h2,
+h3,
+h4,
+h5 {
+    font-family: $headingFont;
     text-align: center;
-    border: $border;
-    padding: $spaceNormal;
-}
-.movieView img {
-    max-width: 500px;
-    height: auto;
-}
-.movieView div {
-    margin-bottom: $spaceNormal;
-}
-.movieView span:first-child {
-    font-weight: bold;
-    text-transform: none;
+    letter-spacing: 1px;
+    color: $white
 }
 
 /* Button */
-button {
-    color: $white;
-    background: $red;
-    border: $border;
-    border-color:$white;
-    border-radius: 20px;
-    padding: $spaceNormal 25px;
-    text-transform: uppercase;
-    transition: all 0.5s ease;
+
+.btn {
     font-weight: bold;
-}
-button:hover, button:focus {
-    border-radius: 2px;
-    background-color: $white;
-    border-color:$red;
-    color: $red;
+    padding: 8px $bigSpace;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: $transition;
+    border-radius: $borderRadiusRdn;
 
 }
-button:active {
-    color: $black;
-    border-color: $black;
-}
-.movieCards_main {
-    position: relative;
-    padding-top: 50px;
-}
-.movieCards_main .btn {
-    position: absolute;
-    top: $spaceSmall;
-    right: $spaceSmall;
-}
-/* Similar Movies */
-.similarMovies {
-    display: flex;
-    flex-wrap: wrap;
-    gap: $spaceNormal;
-    justify-content: space-between;
-    text-align:center;
+
+.btn-primary {
+    background-color: $primary;
+    margin: $bigSpace auto;
+    display: block;
+    border: $borderRed;
 
 }
-.similarMovies p {    
-    margin: 0 auto;
+
+.btn:hover,
+.btn:focus {
+    background-color: transparent;
+    color: $primary;
+    border: $borderRed;
+    border-radius: $borderRadius;
 }
-.similarMovieCard {
-    flex: 30%;
-    box-sizing: border-box;
-    text-align:center;
-    overflow: hidden; 
+
+.btn:active,
+:not(.btn-check)+.btn:active,
+.btn-check:checked+.btn,
+:not(.btn-check)+.btn:active,
+.btn:first-child:active,
+.btn.show {
+    background-color: transparent;
+    color: $primary;
+    border: $borderRed;
+    border-radius: $borderRadius;
+    opacity: 0.6
+}
+/* Cards */
+.movie-card {
+    box-shadow: $boxShadowCard;
+    text-align: center;
+    transition: $transition;
+    cursor: pointer;
+
+    &:hover,
+    &:focus {
+        box-shadow: $boxShadowCardMore;
+        background-color: $black90;
+
+        .card-title {
+            color: $primary;
+        }
+
+        img {
+            opacity: .8
+        }
+    }
+
+    &:active {
+        box-shadow: $boxShadowCardLess;
+
+        .card-title {
+            color: $mutedPrimary;
+        }
+    }
+}
+
+/* Image */
+.image-container {
     position: relative;
-}
-.imageBox {
     width: 100%;
-    height: 200px; 
+    height: 200px;
+    padding-top: 56.25%;
     overflow: hidden;
 }
-.similarMovieCard img{
+
+.image-container img {
+    position: absolute;
+    top: 0;
+    left: 0;
     width: 100%;
     height: 100%;
-    object-fit: cover; 
-    object-position: center;
-}
-.similarMovies .movieDetails {
-    min-height: 50px
-}
-
-/* FORMS */
-.mainView_form p{
-    text-align: center
-}
-.signupView_form,
-.loginView_form {
-    border: $border;
-    padding: $spaceNormal;
-    flex-direction: column;
-    align-items: center; 
-    width: 100%; 
-    max-width: 600px; 
-    margin: 0 auto; 
-}
-h4 {
-    text-transform: uppercase;
-    width: 100%;
-    text-align: center
-}
-form {
-    width: 150px;
-    flex-direction:column;
-    display: flex;
-    width: 100%; 
-
-}
-label {
-    margin: $spaceNormal;
-    display: flex;
-    flex-direction:column
-}
-label:last-child {
-    margin-bottom: $spaceBig
-}
-form span {
-    display:block;
-    font-size: small;
-    color: $gray;
-}
-form input {
-    width: 100%;
-    padding: $spaceSmall;
-}
-form button {
-    display: block;
-    margin: $spaceBig auto
-}
-@media (max-width:650px){
-    .similarMovieCard {
-        flex: 100%;
-    }
+    object-fit: cover;
 }

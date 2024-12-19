@@ -1,0 +1,82 @@
+@import "../../index.scss";
+
+/* Form */
+.form-floating>.form-control:not(:placeholder-shown)~label:after,
+.form-floating > .form-control:focus ~ label:after, 
+.form-floating > .form-control:not(:placeholder-shown) ~ label:after, 
+.form-floating > .form-control-plaintext ~ label:after, 
+.form-floating > .form-select ~ label:after  {
+    background-color: transparent
+}
+
+.form-text.input-info {
+    color: $white50;
+    font-size: $smallText;
+}
+
+/* Toggle */
+.slider-toggle-container {
+    position: relative;
+    width: 200px;
+    height: 40px;
+    background-color: $black50;
+    border-radius: $borderRadiusRdn;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    transition: background-color $transition;
+    margin: $smallSpace auto;
+    box-shadow: $boxShadow;
+
+}
+
+.slider-circle {
+    position: absolute;
+    width: 60px;
+    height: 30px;
+    background-color: $black70;
+    border-radius: $borderRadiusRdn;
+    transition: transform $transition;
+    box-shadow: $boxShadow;
+
+}
+
+.slider-circle.login {
+    transform: translateX(5px);
+}
+
+.slider-circle.signup {
+    transform: translateX(135px);
+}
+
+.slider-text-left,
+.slider-text-right {
+    position: absolute;
+    font-size: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    text-align: center;
+    transition: 0.3s ease;
+    color: $gray;
+}
+
+.slider-text-left {
+    left: 15px;
+}
+
+.slider-text-right {
+    right: 10px;
+}
+
+.slider-text-left.active,
+.slider-text-right.active {
+    color: $primary;
+    font-weight: bold
+}
+
+.slider-text-left:hover,
+.slider-text-right:hover,
+.slider-text-left:focus,
+.slider-text-right:focus {
+    font-weight: bold
+}
