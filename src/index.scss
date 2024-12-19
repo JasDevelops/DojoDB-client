@@ -14,7 +14,7 @@ $black50: rgba(1, 1, 1, .5);
 
 $smallText: 12px;
 $headingFont: "Passero One", sans-serif;
-$textFont: "Urbanist", sans-serif;
+$textFont: "Rubik", sans-serif;
 
 $borderBlk: 2px solid $black;
 $borderRed: 2px solid $primary;
@@ -62,8 +62,14 @@ p,
 .figure-caption {
     color: $gray;
 }
+.card-text {
+    font-size:14px
+}
+.card-title {
+    min-height:60px;
+}
 .font-weight-bold {
-    font-weight:900
+    font-weight:700
 }
 h1,
 h2,
