@@ -1,12 +1,16 @@
 @import "../../index.scss";
 
 /* Form */
-.form-floating>.form-control:not(:placeholder-shown)~label:after {
+.form-floating>.form-control:not(:placeholder-shown)~label:after,
+.form-floating > .form-control:focus ~ label:after, 
+.form-floating > .form-control:not(:placeholder-shown) ~ label:after, 
+.form-floating > .form-control-plaintext ~ label:after, 
+.form-floating > .form-select ~ label:after  {
     background-color: transparent
 }
 
-.input-info {
-    color: $gray;
+.form-text.input-info {
+    color: $white50;
     font-size: $smallText;
 }
 

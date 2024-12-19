@@ -48,8 +48,10 @@ export const MainView = () => {
                         bio: movie.director.bio,
                         birthYear: movie.director.birthYear,
                         deathYear: movie.director.deathYear,
-                    }
-                }));
+                    },
+                    actors: movie.actors,  // Include the actors here
+                releaseYear: movie.releaseYear,
+            }));
                 setMovies(moviesFromApi);
             })
             .catch((error) => alert("Error fetching movies: " + error));
