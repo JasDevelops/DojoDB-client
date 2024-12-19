@@ -53,14 +53,16 @@ export const SignupView = ({ onSignedUp }) => {
             },
             body: JSON.stringify(data),
         })
-            .then((response) => {
-                if (!response.ok) {
-                    alert("Signup successful - you can login now");
-                    window.location.reload();  // Reload page on successful signup
-                } else {
-                    alert("Signup failed");
-                }
-            })
+        .then((response) => {
+            if (response.ok) {
+                alert("Signup successful - you can login now");
+                window.location.reload();
+            } else {
+                return response.json().then((errorData) => {
+                    setErrorMessage(errorData.message || "Signup failed.");
+                });
+            }
+        })
             .catch(() => {
                 setErrorMessage("Something went wrong. Please try again.");
             });
