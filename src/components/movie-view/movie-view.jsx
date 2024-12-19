@@ -1,29 +1,40 @@
+import { useParams, Link } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { Col, Row, Card, Button, Figure } from "react-bootstrap";
 import PropTypes from "prop-types";
 
 import "./movie-view.scss";
 
-import Row from "react-bootstrap/Row";
-import Col from "react-bootstrap/Col";
-import Button from "react-bootstrap/Button";
-import Card from "react-bootstrap/Card";
-import Figure from "react-bootstrap/Figure";
+export const MovieView = ({ allMovies }) => {
+    const { movieId } = useParams();
+    const [movie, setMovie] = useState(null);
 
-import { MovieCard } from "../movie-card/movie-card";
+    // Fetch the movie details using movieId
+    useEffect(() => {
+        const currentMovie = allMovies.find((movie) => movie.id === movieId);
+        setMovie(currentMovie);
+    }, [movieId, allMovies]);
 
-export const MovieView = ({ movie, allMovies, onBackClick, onMovieClick }) => {
+    if (!movie) {
+        return <Col><h3>Loading...</h3></Col>;
+    }
 
-    {/* Filter movies by same genre, excl. current movie, limit similar movies to 3 */ }
+    // Filter similar movies by the same genre, excluding the current movie
     const similarMovies = allMovies
         .filter((m) => m.genre.name === movie.genre.name && m.id !== movie.id)
         .slice(0, 3);
-    return (
-        <Col className="movieView">
 
-            <Row className="bg mt-5 mb-5 p-3  justify-content-between" style={{ height: "100%" }}>
+    return (
+        <div className="movieView">
+            <Row className="bg mt-5 mb-5 p-3 justify-content-between" style={{ height: "100%" }}>
+
+                {/* Movie Title */}
                 <div className="title mb-3">
                     <h2>{movie.title}</h2>
                 </div>
-                <Col md={4} className="d-flex flex-column justify-content-betwen align-items-center">
+
+                {/* Movie Image and Attribution */}
+                <Col md={4} className="d-flex flex-column justify-content-between align-items-center">
                     <Figure className="w-100">
                         <Figure.Image
                             width="100%"
@@ -37,15 +48,20 @@ export const MovieView = ({ movie, allMovies, onBackClick, onMovieClick }) => {
                         </Figure.Caption>
                     </Figure>
                 </Col>
-                <Col md={8} className="d-flex flex-column justify-content-between" >
+
+                {/* Movie Details (Description, Director, Actors, Genre, Release Year) */}
+                <Col md={8} className="d-flex flex-column justify-content-between">
                     <div className="description mb-4">
                         <span>{movie.description}</span>
                     </div>
 
+                    {/* Director Info */}
                     <div className="mb-3">
                         <span className="font-weight-bold">Director: </span>
                         <span>{movie.director.name}</span>
                     </div>
+
+                    {/* Actors Info */}
                     <div className="mb-3">
                         <span className="font-weight-bold">Actors: </span>
                         {movie.actors && movie.actors.length > 0 ? (
@@ -59,6 +75,8 @@ export const MovieView = ({ movie, allMovies, onBackClick, onMovieClick }) => {
                             <span>No actors available</span>
                         )}
                     </div>
+
+                    {/* Genre and Release Year */}
                     <Row className="mb-3 mt-3" style={{ flexGrow: 1 }}>
                         <Col xs={6} className="d-flex justify-content-start align-items-start">
                             <div>
@@ -73,17 +91,23 @@ export const MovieView = ({ movie, allMovies, onBackClick, onMovieClick }) => {
                             </div>
                         </Col>
                     </Row>
+
+                    {/* Back Button */}
                     <div className="mt-auto">
-                        <Button onClick={onBackClick} className="back-btn">Back</Button>
+                        <Link to="/" className="back-btn">
+                            <Button variant="secondary">Back</Button>
+                        </Link>
                     </div>
                 </Col>
             </Row>
+
+            {/* Similar Movies Section */}
             <h3>Similar Movies</h3>
             <Row>
                 {similarMovies.length > 0 ? (
-                    similarMovies.slice(0, 3).map((similarMovie) => (
+                    similarMovies.map((similarMovie) => (
                         <Col key={similarMovie.id} md={4} className="mb-4">
-                            <Card className="movie-card  h-100 bg" onClick={() => onMovieClick(similarMovie)}>
+                            <Card className="movie-card h-100 bg">
                                 <div className="image-container">
                                     <Card.Img
                                         variant="top"
@@ -94,7 +118,9 @@ export const MovieView = ({ movie, allMovies, onBackClick, onMovieClick }) => {
                                 <Card.Body className="d-flex flex-column">
                                     <Card.Title>{similarMovie.title}</Card.Title>
                                     <Card.Text>Directed by {similarMovie.director.name}</Card.Text>
-                                    <Button onClick={() => onMovieClick(similarMovie)} >View Details</Button>
+                                    <Link to={`/movies/${similarMovie.id}`} className="btn btn-primary">
+                                        View Details
+                                    </Link>
                                 </Card.Body>
                             </Card>
                         </Col>
@@ -105,40 +131,33 @@ export const MovieView = ({ movie, allMovies, onBackClick, onMovieClick }) => {
                     </Col>
                 )}
             </Row>
-        </Col>
+        </div>
     );
 };
+
 MovieView.propTypes = {
-    movie: PropTypes.shape({
-        title: PropTypes.string.isRequired,
-        description: PropTypes.string.isRequired,
-        genre: PropTypes.shape({
-            name: PropTypes.string.isRequired,
-        }).isRequired,
-        director: PropTypes.shape({
-            name: PropTypes.string.isRequired,
-        }).isRequired,
-        image: PropTypes.shape({
-            imageUrl: PropTypes.string.isRequired,
-            imageAttribution: PropTypes.string.isRequired,
-        }).isRequired,
-        actors: PropTypes.arrayOf(
-            PropTypes.shape({
-                _id: PropTypes.string.isRequired,
-                name: PropTypes.string.isRequired,
-                role: PropTypes.string.isRequired,
-            })
-        ).isRequired,
-        releaseYear: PropTypes.number.isRequired,
-    }).isRequired,
     allMovies: PropTypes.arrayOf(
         PropTypes.shape({
             id: PropTypes.string.isRequired,
             genre: PropTypes.shape({
                 name: PropTypes.string.isRequired,
             }).isRequired,
+            title: PropTypes.string.isRequired,
+            image: PropTypes.shape({
+                imageUrl: PropTypes.string.isRequired,
+                imageAttribution: PropTypes.string.isRequired,
+            }).isRequired,
+            description: PropTypes.string.isRequired,
+            director: PropTypes.shape({
+                name: PropTypes.string.isRequired,
+            }).isRequired,
+            actors: PropTypes.arrayOf(
+                PropTypes.shape({
+                    name: PropTypes.string.isRequired,
+                    role: PropTypes.string.isRequired,
+                })
+            ),
+            releaseYear: PropTypes.number.isRequired,
         })
     ).isRequired,
-    onBackClick: PropTypes.func.isRequired,
-    onMovieClick: PropTypes.func.isRequired,
 };
