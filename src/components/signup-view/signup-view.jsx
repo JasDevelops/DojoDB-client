@@ -29,8 +29,8 @@ export const SignupView = ({ onSignedUp }) => {
             setErrorMessage("Please enter a valid email address.");
             return;
         }
-        if (password.length < 5) {
-            setErrorMessage("Password must be at least 5 characters long.");
+        if (password.length < 3) {
+            setErrorMessage("Password must be at least 3 characters long.");
             return;
         }
         if (username.length < 3) {
@@ -100,11 +100,11 @@ export const SignupView = ({ onSignedUp }) => {
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
                             required
-                            minLength="5"
+                            minLength="3"
                             placeholder="Enter your password"
                         />
                         <Form.Text className="input-info">
-                            The password must be at least 5 characters long.
+                            The password must be at least 3 characters long.
                         </Form.Text>
                     </FloatingLabel>
                 </Form.Group>
