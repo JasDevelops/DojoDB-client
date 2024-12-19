@@ -33,7 +33,7 @@ export const SignupView = ({ onSignedUp }) => {
             setErrorMessage("Password must be at least 3 characters long.");
             return;
         }
-        if (username.length < 3) {
+        if (username.length < 1) {
             setErrorMessage("Please enter a username.");
             return;
         }
@@ -42,7 +42,7 @@ export const SignupView = ({ onSignedUp }) => {
             username: username,
             password: password,
             email: email,
-            birthday: birthday,
+            birthday: birthday || null,
         };
 
 
@@ -52,6 +52,7 @@ export const SignupView = ({ onSignedUp }) => {
                 "Content-Type": "application/json",
             },
             body: JSON.stringify(data),
+            credentials: "include",
         })
         .then((response) => {
             if (response.ok) {
@@ -83,6 +84,7 @@ export const SignupView = ({ onSignedUp }) => {
                             onChange={(e) => setUsername(e.target.value)}
                             required
                             placeholder="Enter your username"
+                            minLength="1"
                         />
                         <Form.Text className="input-info">
                             Please enter a username.
