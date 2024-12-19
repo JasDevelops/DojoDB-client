@@ -4,7 +4,7 @@ import { Card } from "react-bootstrap";
 
 import "./movie-card.scss";
 
-export const MovieCard = ({ movie }) => {
+export const MovieCard = ({ movie, isFavorite, onAddToFavorites, onRemoveFromFavorites }) => {
     return (
         <Card className="movie-card h-100 bg">
             <Link to={`/movies/${movie.id}`}>
@@ -16,12 +16,25 @@ export const MovieCard = ({ movie }) => {
                     <Card.Text>Directed by {movie.director.name}</Card.Text>
                 </Card.Body>
             </Link>
+            {/* Add Favorite/Remove Favorite button */}
+            <div className="movie-card-footer">
+                {isFavorite ? (
+                    <Button variant="danger" onClick={() => onRemoveFromFavorites(movie.id)}>
+                        Remove from Favorites
+                    </Button>
+                ) : (
+                    <Button variant="primary" onClick={() => onAddToFavorites(movie.id)}>
+                        Add to Favorites
+                    </Button>
+                )}
+            </div>
         </Card>
     );
 };
 
 MovieCard.propTypes = {
     movie: PropTypes.shape({
+        id: PropTypes.string.isRequired,
         title: PropTypes.string.isRequired,
         image: PropTypes.shape({
             imageUrl: PropTypes.string.isRequired,
@@ -30,4 +43,7 @@ MovieCard.propTypes = {
             name: PropTypes.string.isRequired,
         }).isRequired,
     }).isRequired,
+    isFavorite: PropTypes.bool.isRequired,
+    onAddToFavorites: PropTypes.func.isRequired,
+    onRemoveFromFavorites: PropTypes.func.isRequired,
 };

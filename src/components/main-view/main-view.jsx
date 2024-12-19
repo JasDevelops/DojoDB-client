@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Row, Col, Button } from "react-bootstrap";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom ";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 
 import { MovieCard } from "../movie-card/movie-card";
 import { MovieView } from "../movie-view/movie-view";
@@ -77,7 +77,7 @@ export const MainView = () => {
 
     return (
         <BrowserRouter>
-        <NavigationBar user={user} onLoggedOut={() => { setUser(null); }} />
+            <NavigationBar user={user} onLoggedOut={() => { setUser(null); }} />
             <Row className="mainView justify-content-md-center">
                 <Routes>
                     {/* Login Route */}
@@ -111,7 +111,7 @@ export const MainView = () => {
                         path="/profile"
                         element={
                             user ? (
-                                <ProfileView user={user} movies={movies} />
+                                <ProfileView user={user} movies={movies} onLogout={handleLogout} />
                             ) : (
                                 <Navigate to="/login" />
                             )
@@ -125,14 +125,24 @@ export const MainView = () => {
                                 movies.length === 0 ? (
                                     <Col><h3>The list is empty!</h3></Col>
                                 ) : (
-                                    <MovieView allMovies={movies} onBackClick={() => <Navigate to="/" />} />
+                                    <MovieView
+                                        allMovies={movies}
+                                        user={user}
+                                        onBackClick={() => <Navigate to="/" />}
+                                        similarMovies={(() => {
+                                            const movieId = window.location.pathname.split("/")[2];
+                                            const selectedMovie = movies.find(movie => movie.id === movieId);
+                                            return movies
+                                                .filter((movie) => movie.genre.name === selectedMovie.genre.name && movie.id !== selectedMovie.id)
+                                                .slice(0, 3); // Get up to 3 similar movies
+                                        })()}
+                                    />
                                 )
                             ) : (
                                 <Navigate to="/login" replace />
                             )
                         }
                     />
-
                     {/* Main Movie List Route */}
                     <Route
                         path="/"
@@ -154,7 +164,7 @@ export const MainView = () => {
                                                 <Col key={movie.id} xs={12} sm={6} md={4} lg={3}>
                                                     <Link to={`/movies/${movie.id}`}>
                                                         <MovieCard movie={movie} />
-                                                    </Link>    
+                                                    </Link>
                                                 </Col>
                                             ))}
                                         </Row>
@@ -170,4 +180,5 @@ export const MainView = () => {
         </BrowserRouter>
     );
 };
+
 export default MainView;
