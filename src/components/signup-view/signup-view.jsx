@@ -34,7 +34,7 @@ export const SignupView = ({ onSignedUp }) => {
             return;
         }
         if (username.length < 3) {
-            setErrorMessage("Username must be at least 5 characters long.");
+            setErrorMessage("Please enter a username.");
             return;
         }
 
@@ -82,11 +82,10 @@ export const SignupView = ({ onSignedUp }) => {
                             value={username}
                             onChange={(e) => setUsername(e.target.value)}
                             required
-                            minLength="5"
                             placeholder="Enter your username"
                         />
                         <Form.Text className="input-info">
-                            The username must be at least 5 characters long.
+                            Please enter a username.
                         </Form.Text>
                     </FloatingLabel>
                 </Form.Group>
