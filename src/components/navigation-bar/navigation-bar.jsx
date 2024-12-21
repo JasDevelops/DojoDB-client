@@ -5,14 +5,14 @@ import "./navigation-bar.scss";
 
 export const NavigationBar = ({ user, onLoggedOut }) => {
     return (
-        <Navbar sticky="top">
-            <Container>
+        <Navbar data-bs-theme="dark" expand="lg">
+            
                 <Navbar.Brand as={Link} to="/">
                     DojoDB
                 </Navbar.Brand>
                 <Navbar.Toggle aria-controls="basic-navbar-nav" />
                 <Navbar.Collapse id="basic-navbar-nav">
-                    <Nav className="me-auto">
+                    <Nav className="ms-auto">
                         {/* If no user is logged in, show Login and Signup links */}
                         {!user && (
                             <>
@@ -24,7 +24,6 @@ export const NavigationBar = ({ user, onLoggedOut }) => {
                                 </Nav.Link>
                             </>
                         )}
-
                         {/* If a user is logged in, show Home and Logout links */}
                         {user && (
                             <>
@@ -41,7 +40,7 @@ export const NavigationBar = ({ user, onLoggedOut }) => {
                         )}
                     </Nav>
                 </Navbar.Collapse>
-            </Container>
-        </Navbar>
+        </Navbar>            
+
     );
 };

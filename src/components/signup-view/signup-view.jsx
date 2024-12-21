@@ -1,10 +1,6 @@
 import React, { useState } from "react";
 
-import Form from "react-bootstrap/Form";
-import Col from "react-bootstrap/Col";
-import Button from "react-bootstrap/Button";
-import Alert from "react-bootstrap/Alert";
-import FloatingLabel from 'react-bootstrap/FloatingLabel';
+import { Form, Col, Button, Alert, FloatingLabel} from "react-bootstrap";
 
 export const SignupView = ({ onSignedUp }) => {
     const [username, setUsername] = useState("");

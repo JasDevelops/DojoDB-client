@@ -5,25 +5,33 @@ import { Card, Button } from "react-bootstrap";
 import "./movie-card.scss";
 
 export const MovieCard = ({ movie, isFavourite, onAddToFavourites, onRemoveFromFavourites }) => {
+    const handleFavouriteToggle = () => {
+        if (isFavourite) {
+            onRemoveFromFavourites(movie.id);
+        } else {
+            onAddToFavourites(movie.id);
+        }
+    };
+    const isFavourite = favourites.some((fav) => fav.movieId === movie._id);
+
     return (
-        <Card className="movie-card h-100 bg">
+        <Card lassName="h-100">
             <div className="image-container">
                 <Card.Img variant="top" src={movie.image.imageUrl} alt={movie.title} loading="lazy"/>
             </div>
-            <Card.Body className="d-flex flex-column justify-content-between">
-                <Link to={`/movies/${movie.id}`}>
-                    <Card.Title>{movie.title}</Card.Title>
-                </Link>
+            <Card.Body >
+            <Card.Title>
+            <Link to={`/movies/${movie.id}`}>{movie.title}</Link></Card.Title>
+                
                 <Card.Text>Directed by {movie.director.name}</Card.Text>
             </Card.Body>
             {/* Add/Remove Favourite button */}
-            <div className="movie-card-footer">
-                    <Button
-                    variant={isFavourite ? "danger" : "primary"}
-                    onClick={() => isFavourite ? onRemoveFromFavourites(movie.id) : onAddToFavourites(movie.id)}>
-                    {isFavourite ? "Remove from Favourites" : "Add to Favourites"}
-                </Button>
-                            </div>
+            <Button
+                variant={isFavourite ? "danger" : "primary"}
+                onClick={handleFavouriteToggle}
+            >
+                {isFavourite ? "Remove from Favourites" : "Add to Favourites"}
+            </Button>
         </Card>
     );
 };

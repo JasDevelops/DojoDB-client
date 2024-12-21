@@ -9,7 +9,7 @@ import "./index.scss";
 // Main component
 const DojoDBApplication = () => {
     return (
-        <Container className="d-flex align-items-center justify-content-center min-vh-100" >
+        <Container>
             <MainView />
         </Container>
     );
