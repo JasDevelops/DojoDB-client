@@ -1,12 +1,14 @@
 import { Navbar, Container, Nav } from "react-bootstrap";
 import { Link } from "react-router-dom";
 
+import "./navigation-bar.scss";
+
 export const NavigationBar = ({ user, onLoggedOut }) => {
     return (
-        <Navbar bg="dark" expand="lg">
+        <Navbar sticky="top">
             <Container>
                 <Navbar.Brand as={Link} to="/">
-                    Dojo DB
+                    DojoDB
                 </Navbar.Brand>
                 <Navbar.Toggle aria-controls="basic-navbar-nav" />
                 <Navbar.Collapse id="basic-navbar-nav">
@@ -29,7 +31,12 @@ export const NavigationBar = ({ user, onLoggedOut }) => {
                                 <Nav.Link as={Link} to="/">
                                     Home
                                 </Nav.Link>
-                                <Nav.Link onClick={onLoggedOut}>Logout</Nav.Link>
+                                <Nav.Link as={Link} to="/profile">
+                                    Profile
+                                </Nav.Link>
+                                <Nav.Link onClick={onLoggedOut}>
+                                    Logout
+                                    </Nav.Link>
                             </>
                         )}
                     </Nav>

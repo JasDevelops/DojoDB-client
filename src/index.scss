@@ -34,12 +34,6 @@ $transition: 0.3s ease;
 
 @import "~bootstrap/scss/bootstrap.scss";
 
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
 body {
     font-family: $textFont;
     background: $black90;
@@ -49,79 +43,6 @@ body {
     color: $white;
 }
 
-.bg{
-    background-color: $black70;
-    border-radius: $borderRadius;
-    box-shadow: $boxShadowCard;
-}
-p {
-    font-size: 16px;
-    line-height:150%;
-}
-p,
-.figure-caption {
-    color: $gray;
-}
-.card-text {
-    font-size:14px
-}
-.card-title {
-    min-height:60px;
-}
-.font-weight-bold {
-    font-weight:700
-}
-h1,
-h2,
-h3,
-h4,
-h5 {
-    font-family: $headingFont;
-    text-align: center;
-    letter-spacing: 1px;
-    color: $white
-}
-
-/* Button */
-
-.btn {
-    font-weight: bold;
-    padding: 8px $bigSpace;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    transition: $transition;
-    border-radius: $borderRadiusRdn;
-
-}
-
-.btn-primary {
-    background-color: $primary;
-    margin: $bigSpace auto;
-    display: block;
-    border: $borderRed;
-
-}
-
-.btn:hover,
-.btn:focus {
-    background-color: transparent;
-    color: $primary;
-    border: $borderRed;
-    border-radius: $borderRadius;
-}
-
-.btn:active,
-:not(.btn-check)+.btn:active,
-.btn-check:checked+.btn,
-:not(.btn-check)+.btn:active,
-.btn:first-child:active,
-.btn.show {
-    background-color: transparent;
-    color: $primary;
-    border: $borderRed;
-    border-radius: $borderRadius;
-    opacity: 0.6
-}
 /* Cards */
 .movie-card {
     box-shadow: $boxShadowCard;

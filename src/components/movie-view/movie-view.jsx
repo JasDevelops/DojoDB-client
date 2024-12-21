@@ -1,37 +1,46 @@
 import { useParams, Link } from "react-router-dom";
 import { useState, useEffect } from "react";
-import { Col, Row, Button, Figure } from "react-bootstrap";
+import { Col, Row, Button, Figure, Card } from "react-bootstrap";
 import PropTypes from "prop-types";
 
 import { MovieCard } from "../movie-card/movie-card";
 import "./movie-view.scss";
 
-export const MovieView = ({ allMovies, user, onUpdateFavorites, similarMovies }) => {
-    const { movieId } = useParams();
+export const MovieView = ({ allMovies, user, onAddToFavourites, onRemoveFromFavourites, similarMovies }) => {
+    const { movieID } = useParams();
     const [movie, setMovie] = useState(null);
-    const [isFavorite, setIsFavorite] = useState(false);
+    const [isFavourite, setIsFavourite] = useState(false);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
 
-    // Fetch the movie details using movieId
+    // Fetch the movie details using movieID
     useEffect(() => {
-        const currentMovie = allMovies.find((movie) => movie.id === movieId);
+        const currentMovie = allMovies.find((movie) => movie.id === movieID);
         setMovie(currentMovie);
-        // Check if the movie is in the user's favorites
-        if (user && user.FavoriteMovies.includes(movieId)) {
-            setIsFavorite(true);
+
+        // Check if the movie is in the user's favourites
+        if (user?.favourites?.some(fav => fav.movieId === movieID)) {
+            setIsFavourite(true);
+        } else {
+            setIsFavourite(false);
         }
-    }, [movieId, allMovies, user]);
+    }, [movieID, allMovies, user]);
 
-    // Add/Remove from Favorites
-    const toggleFavorite = () => {
-        setLoading(true);
-        setError(null);
+    // Add/Remove from Favourites
+    const toggleFavourite = (movieID, username) => {
+        if (!username) {
+            return;
+        }
+
+        setLoading(true); // Start loading
+        setError(null); // Clear any previous errors
+
         const token = localStorage.getItem("token");
-        const method = isFavorite ? "DELETE" : "POST"; // POST to add, DELETE to remove
-        const url = `https://dojo-db-e5c2cf5a1b56.herokuapp.com/users/favorites/${movieId}`;
+        const method = isFavourite ? "DELETE" : "PUT"; // PUT to add, DELETE to remove
 
-        fetch(url, {
+        console.log('User favourites:', user.favourites);
+
+        fetch(`https://dojo-db-e5c2cf5a1b56.herokuapp.com/users/${username}/favourites/${movieID}`, {
             method: method,
             headers: {
                 "Content-Type": "application/json",
@@ -40,20 +49,50 @@ export const MovieView = ({ allMovies, user, onUpdateFavorites, similarMovies })
         })
             .then((response) => {
                 if (!response.ok) {
-                    throw new Error(`Failed to ${isFavorite ? "remove from" : "add to"} favorites.`);
+                    throw new Error(`Failed to ${isFavourite ? "remove from" : "add to"} favourites.`);
                 }
                 return response.json();
             })
-            .then((data) => {
-                setIsFavorite(!isFavorite); // Toggle the favorite status
-                setLoading(false);
-                onUpdateFavorites(); // Callback to update the favorites list in the parent component
+            .then(() => {
+                setIsFavourite(!isFavourite); // Toggle the favourite status
+                setLoading(false); // Stop loading
             })
             .catch((error) => {
-                setError(error.message);
-                setLoading(false);
+                setError(error.message); // Set error message
+                setLoading(false); // Stop loading
             });
     };
+
+    // Similar movies button toggle function
+    const toggleSimilarMovieFavourite = (movieID) => {
+        if (!user) {
+            return;
+        }
+
+        const token = localStorage.getItem("token");
+        const method = isFavourite ? "DELETE" : "PUT"; // PUT to add, DELETE to remove
+
+        fetch(`https://dojo-db-e5c2cf5a1b56.herokuapp.com/users/${user.username}/favourites/${movieID}`, {
+            method: method,
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+            },
+        })
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error("Failed to toggle similar movie favourite.");
+                }
+                return response.json();
+            })
+            .then(() => {
+                setIsFavourite(!isFavourite); // Toggle the favourite status
+            })
+            .catch((error) => {
+                setError(error.message); // Set error message
+            });
+    };
+
     if (!movie) {
         return <Col><h3>Loading...</h3></Col>;
     }
@@ -61,11 +100,10 @@ export const MovieView = ({ allMovies, user, onUpdateFavorites, similarMovies })
     return (
         <div className="movieView">
             <Row className="bg mt-5 mb-5 p-3 justify-content-between" style={{ height: "100%" }}>
-                {/* Movie Title */}
                 <div className="title mb-3">
                     <h2>{movie.title}</h2>
                 </div>
-                {/* Movie Image and Attribution */}
+
                 <Col md={4} className="d-flex flex-column justify-content-between align-items-center">
                     <Figure className="w-100">
                         <Figure.Image
@@ -80,31 +118,17 @@ export const MovieView = ({ allMovies, user, onUpdateFavorites, similarMovies })
                         </Figure.Caption>
                     </Figure>
                 </Col>
-                {/* Movie Details (Description, Director, Actors, Genre, Release Year) */}
+
                 <Col md={8} className="d-flex flex-column justify-content-between">
                     <div className="description mb-4">
                         <span>{movie.description}</span>
                     </div>
-                    {/* Director Info */}
+
                     <div className="mb-3">
                         <span className="font-weight-bold">Director: </span>
                         <span>{movie.director.name}</span>
                     </div>
-                    {/* Actors Info */}
-                    <div className="mb-3">
-                        <span className="font-weight-bold">Actors: </span>
-                        {movie.actors && movie.actors.length > 0 ? (
-                            movie.actors.map((actor, index) => (
-                                <span key={actor._id}>
-                                    {actor.name} as "{actor.role}"
-                                    {index < movie.actors.length - 1 ? ', ' : ''}
-                                </span>
-                            ))
-                        ) : (
-                            <span>No actors available</span>
-                        )}
-                    </div>
-                    {/* Genre and Release Year */}
+
                     <Row className="mb-3 mt-3" style={{ flexGrow: 1 }}>
                         <Col xs={6} className="d-flex justify-content-start align-items-start">
                             <div>
@@ -119,21 +143,21 @@ export const MovieView = ({ allMovies, user, onUpdateFavorites, similarMovies })
                             </div>
                         </Col>
                     </Row>
-                    {/* Add/Remove to Favorites Button */}
+
                     <div className="mb-3">
                         {loading ? (
                             <Button variant="secondary" disabled>Loading...</Button>
                         ) : (
                             <Button
-                                variant={isFavorite ? "danger" : "primary"}
-                                onClick={toggleFavorite}
+                                variant={isFavourite ? "danger" : "primary"}
+                                onClick={() => toggleFavourite(movie.id, user.username)}
                             >
-                                {isFavorite ? "Remove from Favorites" : "Add to Favorites"}
+                                {isFavourite ? "Remove from Favourites" : "Add to Favourites"}
                             </Button>
                         )}
                         {error && <p className="text-danger">{error}</p>}
                     </div>
-                    {/* Back Button */}
+
                     <div className="mt-auto">
                         <Link to="/" className="back-btn">
                             <Button variant="secondary">Back</Button>
@@ -141,7 +165,7 @@ export const MovieView = ({ allMovies, user, onUpdateFavorites, similarMovies })
                     </div>
                 </Col>
             </Row>
-            {/* Similar Movies Section */}
+
             <h3>Similar Movies</h3>
             <Row>
                 {similarMovies.length > 0 ? (
@@ -156,11 +180,18 @@ export const MovieView = ({ allMovies, user, onUpdateFavorites, similarMovies })
                                     />
                                 </div>
                                 <Card.Body className="d-flex flex-column">
-                                    <Card.Title>{similarMovie.title}</Card.Title>
+                                    <Card.Title>
+                                        <Link to={`/movies/${similarMovie.id}`}>
+                                            {similarMovie.title}
+                                        </Link>
+                                    </Card.Title>
                                     <Card.Text>Directed by {similarMovie.director.name}</Card.Text>
-                                    <Link to={`/movies/${similarMovie.id}`} className="btn btn-primary">
-                                        View Details
-                                    </Link>
+                                    <Button
+                                        variant={isFavourite ? "danger" : "primary"}
+                                        onClick={() => toggleSimilarMovieFavourite(similarMovie.id)}
+                                    >
+                                        {isFavourite ? "Remove from Favourites" : "Add to Favourites"}
+                                    </Button>
                                 </Card.Body>
                             </Card>
                         </Col>
@@ -191,27 +222,12 @@ MovieView.propTypes = {
             director: PropTypes.shape({
                 name: PropTypes.string.isRequired,
             }).isRequired,
-            actors: PropTypes.arrayOf(
-                PropTypes.shape({
-                    name: PropTypes.string.isRequired,
-                    role: PropTypes.string.isRequired,
-                })
-            ),
             releaseYear: PropTypes.number.isRequired,
         })
-    ).isRequired,
-    user: PropTypes.object.isRequired, // User object to check for favorite movies
-    onUpdateFavorites: PropTypes.func.isRequired, // Callback to update the favorites list
-    similarMovies: PropTypes.arrayOf(
-        PropTypes.shape({
-            id: PropTypes.string.isRequired,
-            title: PropTypes.string.isRequired,
-            genre: PropTypes.shape({
-                name: PropTypes.string.isRequired,
-            }).isRequired,
-            image: PropTypes.shape({
-                imageUrl: PropTypes.string.isRequired,
-            }).isRequired,
-        })
-    ).isRequired,
+    ),
+    user: PropTypes.shape({
+        username: PropTypes.string.isRequired,
+        favourites: PropTypes.array.isRequired,
+    }).isRequired,
+    similarMovies: PropTypes.array.isRequired,
 };

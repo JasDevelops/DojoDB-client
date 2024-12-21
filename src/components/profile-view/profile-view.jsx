@@ -4,127 +4,179 @@ import { useNavigate } from "react-router-dom";
 
 import { MovieCard } from "../movie-card/movie-card";
 
-export const ProfileView = ({ user, onLogout, movies }) => {
-    const [profile, setProfile] = useState(user); 
-    const [editing, setEditing] = useState(false); 
+export const ProfileView = ({ user, movies, onLogout, favourites, onRemoveFromFavourites }) => {
+    const [profile, setProfile] = useState({});
+    const [editing, setEditing] = useState(false);
     const [newInfo, setNewInfo] = useState({
-        username: user.username,
-        email: user.email,
-        birthday: user.birthday,
-        password: '', 
+        username: user.username || '',
+        email: user.email || '',
+        birthday: user.birthday || '',
+        password: '',
     });
     const [confirmPassword, setConfirmPassword] = useState('');
-    const [favoriteMovies, setFavoriteMovies] = useState([]);
+    const [favouriteMovies, setFavouriteMovies] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const navigate = useNavigate();
 
-    // Fetch user favorite movies based on their favorites array
+    // Fetch user profile and favourites
     useEffect(() => {
-        const favoriteMoviesList = movies.filter(m => user.FavoriteMovies.includes(m._id));
-        setFavoriteMovies(favoriteMoviesList);
-    }, [movies, user]);
+        console.log("useEffect is running");
 
-    // Update user information on form submission
-    const handleProfileUpdate = (e) => {
+        const fetchProfile = async () => {
+            const storedUser = JSON.parse(localStorage.getItem("user"));
+            const storedToken = localStorage.getItem("token");
+
+            if (!storedUser || !storedToken) {
+                setError("User or token is missing. Please log in again.");
+                return;
+            }
+
+            const username = storedUser.username;
+            setLoading(true);
+            setError(null);
+
+            try {
+                const response = await fetch(`https://dojo-db-e5c2cf5a1b56.herokuapp.com/users/${username}`, {
+                    headers: { "Authorization": `Bearer ${storedToken}` },
+                });
+
+                if (!response.ok) {
+                    throw new Error("Failed to fetch profile.");
+                }
+
+                const data = await response.json();
+                const { user } = data;
+
+                console.log("Fetched user:", user);
+                console.log("Movies array:", movies);
+                console.log("User's favourites:", user.favourites);
+
+                setProfile(user);
+
+                // Populate favouriteMovies
+                const favouriteMoviesList = movies.filter(movie =>
+                    user.favourites.includes(String(movie.id))
+                );
+                console.log("Favourite Movies List:", favouriteMoviesList);
+
+                setFavouriteMovies(favouriteMoviesList);
+            } catch (error) {
+                setError(error.message);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchProfile();
+    }, [movies,user]);
+
+    // Handle profile update on form submission
+    const handleProfileUpdate = async (e) => {
         e.preventDefault();
-        if (newInfo.password !== confirmPassword) {
+
+        if (newInfo.password && newInfo.password !== confirmPassword) {
             setError("Passwords do not match.");
             return;
         }
-        setLoading(true);
-        setError(null);
+
+        const updatedData = { ...newInfo };
+        if (!updatedData.password) {
+            delete updatedData.password;
+        }
+
         const token = localStorage.getItem("token");
-        fetch("https://dojo-db-e5c2cf5a1b56.herokuapp.com/users/update", {
-            method: "PUT",
-            headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${token}`,
-            },
-            body: JSON.stringify(newInfo),
-        })
-        .then(response => {
+        setLoading(true);
+
+        try {
+            const response = await fetch(`https://dojo-db-e5c2cf5a1b56.herokuapp.com/users/${user.username}`, {
+                method: 'PUT',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(updatedData),
+            });
+
             if (!response.ok) {
-                throw new Error("Failed to update your profile");
+                throw new Error("Failed to update profile.");
             }
-            return response.json();
-        })
-        .then(data => {
-            setLoading(false);
-            setProfile(newInfo);
+
+            const updatedProfile = await response.json();
+            setProfile(updatedProfile);
             setEditing(false);
-        })
-        .catch(error => {
-            setLoading(false);
+        } catch (error) {
             setError(error.message);
-        });
+        } finally {
+            setLoading(false);
+        }
     };
 
-    // Handle remove movie from favorites
-    const handleRemoveFromFavorites = (movieId) => {
+    // Handle removing a movie from favourites
+    const handleRemoveFromFavourites = (movieID) => {
         setLoading(true);
         setError(null);
         const token = localStorage.getItem("token");
-        fetch(`https://dojo-db-e5c2cf5a1b56.herokuapp.com/users/favorites/${movieId}`, {
-            method: "DELETE",
-            headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${token}`,
-            },
-        })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error("Failed to remove movie from favorites");
-            }
-            return response.json();
-        })
-        .then(() => {
-            setLoading(false);
-            setFavoriteMovies(favoriteMovies.filter(m => m._id !== movieId));
-        })
-        .catch(error => {
-            setLoading(false);
-            setError(error.message);
-        });
-    };
-// Delete Account
-const deleteAccount = () => {
-    if (window.confirm("Are you sure you want to delete your account? This action cannot be undone.")) {
-        setLoading(true); 
-        const token = localStorage.getItem("token");
-        const username = user.username;  
 
-        fetch(`https://dojo-db-e5c2cf5a1b56.herokuapp.com/users/${username}`, {
+        fetch(`https://dojo-db-e5c2cf5a1b56.herokuapp.com/users/${user.username}/favourites/${movieID}`, {
             method: "DELETE",
             headers: {
                 "Content-Type": "application/json",
-                Authorization: `Bearer ${token}`, 
+                "Authorization": `Bearer ${token}`,
             },
         })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error("Failed to delete account.");
-            }
-            return response.json();
-        })
-        .then(data => {
-            setLoading(false);
-            onLogout(); // Log the user out after successful deletion
-            navigate("/login"); // Redirect to login page after account deletion
-        })
-        .catch(error => {
-            setLoading(false);
-            setError(error.message);
-        });
-    }
-};
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error("Failed to remove movie from favourites");
+                }
+                return response.json();
+            })
+            .then(() => {
+                setLoading(false);
+                setFavouriteMovies(favouriteMovies.filter(m => m.id !== movieID));
+            })
+            .catch(error => {
+                setLoading(false);
+                setError(error.message);
+            });
+    };
+
+    // Delete account handler
+    const deleteAccount = () => {
+        if (window.confirm("Are you sure you want to delete your account? This action cannot be undone.")) {
+            setLoading(true);
+            const token = localStorage.getItem("token");
+
+            fetch(`https://dojo-db-e5c2cf5a1b56.herokuapp.com/users/${profile.username}`, {
+                method: "DELETE",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`,
+                },
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error("Failed to delete account.");
+                    }
+                    return response.json();
+                })
+                .then(() => {
+                    setLoading(false);
+                    onLogout();
+                    navigate("/signup");
+                })
+                .catch(error => {
+                    setLoading(false);
+                    setError(error.message);
+                });
+        }
+    };
 
     // Handle logout
     const handleLogout = () => {
-        onLogout(); 
-        navigate('/login'); // Redirect to login page after logout
+        onLogout();
+        navigate("/login");
     };
-
 
     return (
         <Row className="justify-content-center">
@@ -139,32 +191,28 @@ const deleteAccount = () => {
                                 <p><strong>Username:</strong> {profile.username}</p>
                                 <p><strong>Email:</strong> {profile.email}</p>
                                 <p><strong>Birthday:</strong> {profile.birthday}</p>
-
-                                {/* Display Favorite Movies */}
-                                <h3>Favorite Movies</h3>
+                                <h3>Favourite Movies</h3>
                                 <Row>
-                                    {favoriteMovies.length > 0 ? (
-                                        favoriteMovies.map(movie => (
-                                            <Col key={movie._id} md={4}>
+                                    {favouriteMovies.length > 0 ? (
+                                        favouriteMovies.map(movie => (
+                                            <Col key={movie.id} md={4}>
                                                 <MovieCard
                                                     movie={movie}
-                                                    isFavorite
-                                                    onRemove={() => handleRemoveFromFavorites(movie._id)}
+                                                    isFavourite
+                                                    onRemove={() => handleRemoveFromFavourites(movie.id)}
                                                 />
                                             </Col>
                                         ))
                                     ) : (
-                                        <p>You have no favorite movies yet.</p>
+                                        <p>You have no favourite movies yet. Add some from the movie list!</p>
                                     )}
                                 </Row>
-
                                 <Button variant="primary" onClick={() => setEditing(true)}>Edit Profile</Button>
                                 <Button variant="danger" onClick={deleteAccount}>Delete Account</Button>
                                 <Button variant="danger" onClick={handleLogout}>Logout</Button>
                             </>
                         ) : (
                             <>
-                                {/* Edit Profile Form */}
                                 <Form onSubmit={handleProfileUpdate}>
                                     <Form.Group controlId="username">
                                         <Form.Label>Username</Form.Label>
@@ -174,7 +222,6 @@ const deleteAccount = () => {
                                             onChange={e => setNewInfo({ ...newInfo, username: e.target.value })}
                                         />
                                     </Form.Group>
-
                                     <Form.Group controlId="email">
                                         <Form.Label>Email</Form.Label>
                                         <Form.Control
@@ -183,7 +230,6 @@ const deleteAccount = () => {
                                             onChange={e => setNewInfo({ ...newInfo, email: e.target.value })}
                                         />
                                     </Form.Group>
-
                                     <Form.Group controlId="birthday">
                                         <Form.Label>Birthday</Form.Label>
                                         <Form.Control
@@ -192,7 +238,6 @@ const deleteAccount = () => {
                                             onChange={e => setNewInfo({ ...newInfo, birthday: e.target.value })}
                                         />
                                     </Form.Group>
-
                                     <Form.Group controlId="password">
                                         <Form.Label>Password</Form.Label>
                                         <Form.Control
@@ -202,7 +247,6 @@ const deleteAccount = () => {
                                             onChange={e => setNewInfo({ ...newInfo, password: e.target.value })}
                                         />
                                     </Form.Group>
-
                                     <Form.Group controlId="confirmPassword">
                                         <Form.Label>Confirm New Password</Form.Label>
                                         <Form.Control
@@ -212,7 +256,6 @@ const deleteAccount = () => {
                                             onChange={e => setConfirmPassword(e.target.value)}
                                         />
                                     </Form.Group>
-
                                     <Button variant="success" type="submit">Save Changes</Button>
                                     <Button variant="secondary" onClick={() => setEditing(false)}>Cancel</Button>
                                 </Form>
