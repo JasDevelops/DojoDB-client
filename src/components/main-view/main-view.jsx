@@ -139,8 +139,12 @@ export const MainView = () => {
         <BrowserRouter>
             <NavigationBar user={user} onLoggedOut={handleLogout} />
             <Routes>
-                <Route path="/login" element={user ? (<Navigate to="/" />) : (<Col md={6}><LoginView onLoggedIn={handleLogin} /></Col>)} />
-                <Route path="/signup" element={user ? (<Navigate to="/" />) : (<Col md={6}><SignupView /></Col>)} />
+                <Route path="/login" element={user ? (<Navigate to="/" />) : (<Col md={10}>
+                    <LoginView onLoggedIn={handleLogin} /></Col>)}
+                />
+                <Route path="/signup" element={user ? (<Navigate to="/" />) : (<Col md={10}>
+                    <SignupView /></Col>)}
+                />
                 <Route path="/profile" element={user ? (
                     <ProfileView
                         user={user}
@@ -150,7 +154,8 @@ export const MainView = () => {
                         onRemove={toggleFavourite}
                         onProfileUpdate={handleProfileUpdate}
                     />
-                ) : (<Navigate to="/signup" />)} />
+                ) : (<Navigate to="/login" />)}
+                />
                 <Route path="/movies/:movieID" element={user ? (
                     <MovieView
                         allMovies={allMovies}
@@ -159,12 +164,13 @@ export const MainView = () => {
                         onToggleFavourite={toggleFavourite}
                         similarMovies={similarMovies}
                     />
-                ) : (<Navigate to="/login" replace />)} />
+                ) : (<Navigate to="/login" replace />)}
+                />
                 <Route path="/" element={user ? (
                     allMovies.length === 0 ? (
                         <Col><h3>The list is empty!</h3></Col>
                     ) : (
-                        <Row className="w-100 gx-4 gy-4">
+                        <Row className="w-100 ">
                             {allMovies.map((movie) => (
                                 <Col key={movie.id} xs={12} sm={6} md={4} lg={3}>
                                     <MovieCard

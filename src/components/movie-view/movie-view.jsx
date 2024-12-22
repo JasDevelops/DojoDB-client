@@ -20,7 +20,7 @@ export const MovieView = ({ allMovies, favourites, onToggleFavourite }) => {
     };
     // Similar movies 
     const similarMovies = allMovies
-        .filter(simMovie => simMovie.id !== movie.id) // Exclude current movie
+        .filter(simMovie => simMovie.id !== movie.id) 
         .slice(0, 3);
 
     return (

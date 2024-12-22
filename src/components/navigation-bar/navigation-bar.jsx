@@ -4,14 +4,13 @@ import { Link } from "react-router-dom";
 export const NavigationBar = ({ user, onLoggedOut }) => {
     return (
         <Container>
-        <Navbar bg="dark" expand="lg">
+            <Navbar bg="dark" expand="lg">
                 <Navbar.Brand as={Link} to="/">
                     DojoDB
                 </Navbar.Brand>
                 <Navbar.Toggle aria-controls="basic-navbar-nav" />
                 <Navbar.Collapse id="basic-navbar-nav">
                     <Nav className="ms-auto">
-                        {/* If no user is logged in, show Login and Signup links */}
                         {!user && (
                             <>
                                 <Nav.Link as={Link} to="/login">
@@ -22,8 +21,6 @@ export const NavigationBar = ({ user, onLoggedOut }) => {
                                 </Nav.Link>
                             </>
                         )}
-
-                        {/* If a user is logged in, show Home and Logout links */}
                         {user && (
                             <>
                                 <Nav.Link as={Link} to="/">
@@ -34,12 +31,12 @@ export const NavigationBar = ({ user, onLoggedOut }) => {
                                 </Nav.Link>
                                 <Nav.Link onClick={onLoggedOut}>
                                     Logout
-                                    </Nav.Link>
+                                </Nav.Link>
                             </>
                         )}
                     </Nav>
                 </Navbar.Collapse>
-        </Navbar>
+            </Navbar>
         </Container>
     );
 };

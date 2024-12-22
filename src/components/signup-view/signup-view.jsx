@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-import { Form, Col, Button, Alert, FloatingLabel} from "react-bootstrap";
+import { Form, Col, Button, Alert, FloatingLabel } from "react-bootstrap";
 
 export const SignupView = ({ onSignedUp }) => {
     const [username, setUsername] = useState("");
@@ -12,16 +12,15 @@ export const SignupView = ({ onSignedUp }) => {
     const [successMessage, setSuccessMessage] = useState("");
     const navigate = useNavigate();
 
-
     const validateEmail = (email) => {
         const emailPattern = /^[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}$/;
         return emailPattern.test(email);
     };
 
     const convertDateFormat = (date) => {
-        if (!date) return null; // If no date is provided, return null
+        if (!date) return null; 
         const [day, month, year] = date.split(".");
-        return `${year}-${month}-${day}`; // Return in YYYY-MM-DD format
+        return `${year}-${month}-${day}`;
     };
 
     const handleSubmit = (event) => {
@@ -47,7 +46,7 @@ export const SignupView = ({ onSignedUp }) => {
             password: password,
             email: email,
             ...(birthday && { birthday: birthday }),
-                };
+        };
 
         fetch("https://dojo-db-e5c2cf5a1b56.herokuapp.com/users", {
             method: "POST",
@@ -57,24 +56,24 @@ export const SignupView = ({ onSignedUp }) => {
             body: JSON.stringify(data),
             credentials: "include",
         })
-        .then((response) => {
-            if (!response.ok) {
-                return response.json().then((errorData) => {
-                    const errorMessage = errorData.message || "Signup failed. Please try again.";
-                    throw new Error(errorMessage);
-                });
-            }
-            return response.json();
-        })
-        .then((data) => {
-            console.log("Signup successful:", data);
-            alert("Signup successful - you can login now");
-            navigate("/login");   
-        })
-        .catch((error) => {
-            console.error("Error during signup:", error);
-            setErrorMessage(error.message || "Something went wrong. Please try again.");
-        });
+            .then((response) => {
+                if (!response.ok) {
+                    return response.json().then((errorData) => {
+                        const errorMessage = errorData.message || "Signup failed. Please try again.";
+                        throw new Error(errorMessage);
+                    });
+                }
+                return response.json();
+            })
+            .then((data) => {
+                console.log("Signup successful:", data);
+                alert("Signup successful - you can login now");
+                navigate("/login");
+            })
+            .catch((error) => {
+                console.error("Error during signup:", error);
+                setErrorMessage(error.message || "Something went wrong. Please try again.");
+            });
     };
     return (
         <Col className="signupView_form bg w-100 p-4">
