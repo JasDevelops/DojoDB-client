@@ -60,7 +60,7 @@ export const MainView = () => {
                 }));
 
                 // Fetch favourites
-                const favouritesResponse = await fetch(`https://dojo-db-e5c2cf5a1b56.herokuapp.com/users/${user.username}`, {
+                const favouritesResponse = await fetch(`https://dojo-db-e5c2cf5a1b56.herokuapp.com/users/${encodeURIComponent(user.username)}`, {
                     headers: {
                         "Authorization": `Bearer ${storedToken}`,
                         "Content-Type": "application/json"
@@ -131,6 +131,8 @@ export const MainView = () => {
         setUser(null);
         setToken(null);
         localStorage.clear();
+        localStorage.removeItem("user");
+        localStorage.removeItem("token");
     };
 
     return (
@@ -144,10 +146,11 @@ export const MainView = () => {
                         user={user}
                         movies={allMovies}
                         favourites={favourites}
+                        onLogout={handleLogout}
                         onRemove={toggleFavourite}
                         onProfileUpdate={handleProfileUpdate}
                     />
-                ) : (<Navigate to="/login" />)} />
+                ) : (<Navigate to="/signup" />)} />
                 <Route path="/movies/:movieID" element={user ? (
                     <MovieView
                         allMovies={allMovies}

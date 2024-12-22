@@ -1,4 +1,6 @@
 import { useState, useEffect } from "react";
+import PropTypes from "prop-types";
+
 import { Row, Col, Button, Form, Card } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 
@@ -284,4 +286,12 @@ export const ProfileView = ({ user, movies, onLogout, favourites, onRemove, onPr
             </Col>
         </Row>
     );
+};
+ProfileView.propTypes = {
+    user: PropTypes.object.isRequired,
+    movies: PropTypes.array.isRequired,
+    onLogout: PropTypes.func.isRequired,
+    favourites: PropTypes.array.isRequired,
+    onRemove: PropTypes.func.isRequired,
+    onProfileUpdate: PropTypes.func.isRequired,
 };

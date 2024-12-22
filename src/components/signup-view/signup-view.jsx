@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 import { Form, Col, Button, Alert, FloatingLabel} from "react-bootstrap";
 
@@ -9,6 +10,8 @@ export const SignupView = ({ onSignedUp }) => {
     const [birthday, setBirthday] = useState("");
     const [errorMessage, setErrorMessage] = useState("");
     const [successMessage, setSuccessMessage] = useState("");
+    const navigate = useNavigate();
+
 
     const validateEmail = (email) => {
         const emailPattern = /^[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}$/;
@@ -66,7 +69,7 @@ export const SignupView = ({ onSignedUp }) => {
         .then((data) => {
             console.log("Signup successful:", data);
             alert("Signup successful - you can login now");
-            window.location.reload();  
+            navigate("/login");   
         })
         .catch((error) => {
             console.error("Error during signup:", error);
