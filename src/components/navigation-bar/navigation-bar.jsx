@@ -1,12 +1,10 @@
 import { Navbar, Container, Nav } from "react-bootstrap";
 import { Link } from "react-router-dom";
 
-import "./navigation-bar.scss";
-
 export const NavigationBar = ({ user, onLoggedOut }) => {
     return (
-        <Navbar data-bs-theme="dark" expand="lg">
-            
+        <Container>
+        <Navbar bg="dark" expand="lg">
                 <Navbar.Brand as={Link} to="/">
                     DojoDB
                 </Navbar.Brand>
@@ -24,6 +22,7 @@ export const NavigationBar = ({ user, onLoggedOut }) => {
                                 </Nav.Link>
                             </>
                         )}
+
                         {/* If a user is logged in, show Home and Logout links */}
                         {user && (
                             <>
@@ -40,7 +39,7 @@ export const NavigationBar = ({ user, onLoggedOut }) => {
                         )}
                     </Nav>
                 </Navbar.Collapse>
-        </Navbar>            
-
+        </Navbar>
+        </Container>
     );
 };
