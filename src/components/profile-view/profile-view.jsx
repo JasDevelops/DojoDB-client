@@ -2,9 +2,7 @@ import { useState, useEffect } from "react";
 import { Row, Col, Button, Form, Card } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 
-import { MovieCard } from "../movie-card/movie-card";
-
-export const ProfileView = ({ user, movies, onLogout, favourites, onRemoveFromFavourites }) => {
+export const ProfileView = ({ user, movies, onLogout, favourites, onRemove }) => {
     const [profile, setProfile] = useState({});
     const [editing, setEditing] = useState(false);
     const [newInfo, setNewInfo] = useState({
@@ -18,11 +16,9 @@ export const ProfileView = ({ user, movies, onLogout, favourites, onRemoveFromFa
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const navigate = useNavigate();
-
+ 
     // Fetch user profile and favourites
     useEffect(() => {
-        console.log("useEffect is running");
-
         const fetchProfile = async () => {
             const storedUser = JSON.parse(localStorage.getItem("user"));
             const storedToken = localStorage.getItem("token");
@@ -48,18 +44,12 @@ export const ProfileView = ({ user, movies, onLogout, favourites, onRemoveFromFa
                 const data = await response.json();
                 const { user } = data;
 
-                console.log("Fetched user:", user);
-                console.log("Movies array:", movies);
-                console.log("User's favourites:", user.favourites);
-
                 setProfile(user);
 
                 // Populate favouriteMovies
                 const favouriteMoviesList = movies.filter(movie =>
-                    user.favourites.includes(String(movie.id))
+                    user.favourites.some(fav => String(fav.movieId) === String(movie.id)) 
                 );
-                console.log("Favourite Movies List:", favouriteMoviesList);
-
                 setFavouriteMovies(favouriteMoviesList);
             } catch (error) {
                 setError(error.message);
@@ -69,7 +59,7 @@ export const ProfileView = ({ user, movies, onLogout, favourites, onRemoveFromFa
         };
 
         fetchProfile();
-    }, [movies,user]);
+    }, [movies, user]);
 
     // Handle profile update on form submission
     const handleProfileUpdate = async (e) => {
@@ -132,8 +122,8 @@ export const ProfileView = ({ user, movies, onLogout, favourites, onRemoveFromFa
                 return response.json();
             })
             .then(() => {
-                setLoading(false);
-                setFavouriteMovies(favouriteMovies.filter(m => m.id !== movieID));
+                // Update the favouriteMovies after deletion
+                setFavouriteMovies(favouriteMovies.filter(m => String(m.id) !== String(movieID))); 
             })
             .catch(error => {
                 setLoading(false);
@@ -193,20 +183,23 @@ export const ProfileView = ({ user, movies, onLogout, favourites, onRemoveFromFa
                                 <p><strong>Birthday:</strong> {profile.birthday}</p>
                                 <h3>Favourite Movies</h3>
                                 <Row>
-                                    {favouriteMovies.length > 0 ? (
-                                        favouriteMovies.map(movie => (
-                                            <Col key={movie.id} md={4}>
-                                                <MovieCard
-                                                    movie={movie}
-                                                    isFavourite
-                                                    onRemove={() => handleRemoveFromFavourites(movie.id)}
-                                                />
-                                            </Col>
-                                        ))
-                                    ) : (
-                                        <p>You have no favourite movies yet. Add some from the movie list!</p>
-                                    )}
-                                </Row>
+                            {favouriteMovies.length > 0 ? (
+                                favouriteMovies.map(movie => (
+                                    <Col key={movie.id} md={4}>
+                                        <div>
+                                            <h5>
+                                                <a href={`/movies/${movie.id}`}>{movie.title}</a>
+                                            </h5>
+                                            <Button onClick={() => onRemove(movie.id, true)}>
+                            Remove from Favourites
+                        </Button>
+                                        </div>
+                                    </Col>
+                                ))
+                            ) : (
+                                <p>You have no favourite movies yet. Add some from the movie list!</p>
+                            )}
+                        </Row>
                                 <Button variant="primary" onClick={() => setEditing(true)}>Edit Profile</Button>
                                 <Button variant="danger" onClick={deleteAccount}>Delete Account</Button>
                                 <Button variant="danger" onClick={handleLogout}>Logout</Button>

@@ -3,8 +3,14 @@ import { Link } from "react-router-dom";
 import { Card, Button } from "react-bootstrap";
 import "./movie-card.scss";
 
-export const MovieCard = ({ movie, isFavourite, onToggleFavourite }) => {
-
+export const MovieCard = ({movie, isFavourite, onToggleFavourite, onRemove }) => {
+    const handleClick = () => {
+        if (onRemove) {
+            onRemove(movie.id);
+        } else {
+            onToggleFavourite(movie.id, isFavourite); 
+        }
+    };
     return (
         <Card className="h-100">
             <div className="image-container">
@@ -19,7 +25,7 @@ export const MovieCard = ({ movie, isFavourite, onToggleFavourite }) => {
             {/* Add/Remove Favourite button */}
             <Button
                 variant={isFavourite ? "danger" : "primary"}
-                onClick={() => onToggleFavourite(movie.id, isFavourite)}
+                onClick={handleClick}
             >
                 {isFavourite ? "Remove from Favourites" : "Add to Favourites"}
             </Button>
@@ -39,5 +45,6 @@ MovieCard.propTypes = {
         }).isRequired,
     }).isRequired,
     isFavourite: PropTypes.bool.isRequired,
-    onToggleFavourite: PropTypes.func.isRequired,
+    onToggleFavourite: PropTypes.func,  
+    onRemove: PropTypes.func,  
 };
