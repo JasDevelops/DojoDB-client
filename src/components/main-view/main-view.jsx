@@ -60,7 +60,7 @@ export const MainView = () => {
                 }));
 
                 // Fetch favourites
-                const favouritesResponse = await fetch(`https://dojo-db-e5c2cf5a1b56.herokuapp.com/users/${encodeURIComponent(user.username)}`, {
+                const favouritesResponse = await fetch(`https://dojo-db-e5c2cf5a1b56.herokuapp.com/users/${user.username}`, {
                     headers: {
                         "Authorization": `Bearer ${storedToken}`,
                         "Content-Type": "application/json"

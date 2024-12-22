@@ -19,7 +19,7 @@ export const MovieCard = ({ movie, isFavourite, onToggleFavourite, onRemove }) =
             </div>
             <Card.Body>
                 <Card.Title>
-                    <Link to={`/movies/${encodeURIComponent(movie.id)}`}>{movie.title}</Link>
+                    <Link to={`/movies/${movie.id}`}>{movie.title}</Link>
                 </Card.Title>
                 <Card.Text>Directed by {movie.director.name}</Card.Text>
             </Card.Body>
