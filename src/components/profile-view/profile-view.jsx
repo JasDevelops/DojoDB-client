@@ -30,12 +30,7 @@ export const ProfileView = ({ user, movies, onLogout, favourites, onRemove, onPr
             day: "numeric",
         });
     };
-    // Update the username state whenever the user prop changes (e.g., when the username is updated)
-    useEffect(() => {
-        if (user && user.username !== username) {
-            setUsername(user.username);
-        }
-    }, [user]);
+
 
     // Handle removing a movie from favourites
     const handleRemoveFromFavourites = (movieID) => {
@@ -72,6 +67,7 @@ export const ProfileView = ({ user, movies, onLogout, favourites, onRemove, onPr
 
     // Fetch user profile and favourites
     useEffect(() => {
+
         const fetchProfile = async () => {
             const storedUser = JSON.parse(localStorage.getItem("user"));
             const storedToken = localStorage.getItem("token");
@@ -102,6 +98,12 @@ export const ProfileView = ({ user, movies, onLogout, favourites, onRemove, onPr
                 const { user } = data;
 
                 setProfile(user);
+                setNewInfo({
+                    username: user.username,
+                    email: user.email,
+                    birthday: user.birthday,
+                    password: '',
+                });
 
                 // Populate favouriteMovies
                 const favouriteMoviesList = movies.filter(movie =>
@@ -119,34 +121,76 @@ export const ProfileView = ({ user, movies, onLogout, favourites, onRemove, onPr
         fetchProfile();
     }, [movies, user]);
 
-    const handleProfileUpdate = () => {
-        if (newInfo.password !== confirmPassword) {
+    // Update the username state 
+    useEffect(() => {
+        if (user && user.username !== username) {
+            setUsername(user.username);
+        }
+    }, [user]);
+
+    const handleProfileUpdate = (e) => {
+        e.preventDefault();
+
+        if (newInfo.password && newInfo.password !== confirmPassword) {
             setError("Passwords do not match.");
             return;
         }
+
         setLoading(true);
         setError(null);
 
-        fetch(`https://dojo-db-e5c2cf5a1b56.herokuapp.com/users/${user.username}`, {
+        const updatedData = {
+            newUsername: newInfo.username || undefined,
+            newEmail: newInfo.email || undefined,
+            newPassword: newInfo.password || undefined,
+            newBirthday: newInfo.birthday || undefined,
+            favourites: newInfo.favourites || []
+        };
+        if (newInfo.username !== profile.username) {
+            updatedData.username = newInfo.username;
+        }
+        if (newInfo.email !== profile.email) {
+            updatedData.email = newInfo.email;
+        }
+        if (newInfo.birthday !== profile.birthday) {
+            updatedData.birthday = newInfo.birthday;
+        }
+        if (newInfo.password) {
+            updatedData.password = newInfo.password;
+        }
+
+        if (Object.keys(updatedData).length === 0) {
+            setError("No changes detected.");
+            setLoading(false);
+            return;
+        }
+
+        const usernameToUse = profile.username || newInfo.username;
+
+        fetch(`https://dojo-db-e5c2cf5a1b56.herokuapp.com/users/${profile.username}`, {
             method: "PUT",
             headers: {
                 "Authorization": `Bearer ${localStorage.getItem("token")}`,
                 "Content-Type": "application/json",
             },
-            body: JSON.stringify(newInfo),
+            body: JSON.stringify(updatedData),
         })
-            .then((response) => {
-                if (!response.ok) throw new Error("Failed to update profile");
-                return response.json();
-            })
-            .then((updatedUser) => {
-                onProfileUpdate(updatedUser);
+            .then(response => response.ok ? response.json() : Promise.reject("Failed to update"))
+            .then(updatedUser => {
+                setProfile(updatedUser.user);
                 setEditing(false);
-                setNewInfo({ ...newInfo });
+                setNewInfo({
+                    username: updatedUser.user.username,
+                    email: updatedUser.user.email,
+                    birthday: updatedUser.user.birthday,
+                    password: "",
+                });
+                onProfileUpdate(updatedUser.user);
             })
-            .catch((error) => setError(error.message))
+            .catch(error => setError(error.message))
             .finally(() => setLoading(false));
     };
+
     // Delete account handler
     const deleteAccount = () => {
         if (window.confirm("Are you sure you want to delete your account? This action cannot be undone.")) {
@@ -249,15 +293,7 @@ export const ProfileView = ({ user, movies, onLogout, favourites, onRemove, onPr
                                             onChange={e => setNewInfo({ ...newInfo, birthday: e.target.value })}
                                         />
                                     </Form.Group>
-                                    <Form.Group controlId="currentPassword">
-                                        <Form.Label>Current Password</Form.Label>
-                                        <Form.Control
-                                            type="password"
-                                            placeholder="Enter your current password"
-                                            value={currentPassword}
-                                            onChange={e => setCurrentPassword(e.target.value)}
-                                        />
-                                    </Form.Group>
+
                                     <Form.Group controlId="password">
                                         <Form.Label>New Password</Form.Label>
                                         <Form.Control
@@ -276,6 +312,7 @@ export const ProfileView = ({ user, movies, onLogout, favourites, onRemove, onPr
                                             onChange={e => setConfirmPassword(e.target.value)}
                                         />
                                     </Form.Group>
+
                                     <Button variant="success" type="submit">Save Changes</Button>
                                     <Button variant="secondary" onClick={() => setEditing(false)}>Cancel</Button>
                                 </Form>
