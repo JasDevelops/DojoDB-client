@@ -20,6 +20,11 @@ export const MainView = () => {
     const [token, setToken] = useState(storedToken ? storedToken : null);
     const [favourites, setFavourites] = useState([]);
 
+    const handleProfileUpdate = (updatedUser) => {
+        setUser(updatedUser); 
+        localStorage.setItem("user", JSON.stringify(updatedUser));
+    };
+
     useEffect(() => {
         if (!token || !user) return;
 
@@ -28,7 +33,10 @@ export const MainView = () => {
             try {
                 // Fetch movies 
                 const moviesResponse = await fetch("https://dojo-db-e5c2cf5a1b56.herokuapp.com/movies", {
-                    headers: { "Authorization": `Bearer ${token}` },
+                    headers: {
+                        "Authorization": `Bearer ${storedToken}`,
+                        "Content-Type": "application/json"
+                    },
                 });
                 const moviesData = await moviesResponse.json();
                 const moviesFromApi = moviesData.map((movie) => ({
@@ -47,7 +55,10 @@ export const MainView = () => {
 
                 // Fetch favourites
                 const favouritesResponse = await fetch(`https://dojo-db-e5c2cf5a1b56.herokuapp.com/users/${user.username}`, {
-                    headers: { Authorization: `Bearer ${token}` },
+                    headers: {
+                        "Authorization": `Bearer ${storedToken}`,
+                        "Content-Type": "application/json"
+                    },
                 });
 
                 const favouritesData = await favouritesResponse.json();
@@ -72,36 +83,36 @@ export const MainView = () => {
 
     // Favourite Add/remove
     const toggleFavourite = async (movieID, isFavourite) => {
-        const endpoint = `https://dojo-db-e5c2cf5a1b56.herokuapp.com/users/${user.username}/favourites/${movieID}`;
-        const method = isFavourite ? "DELETE" : "PUT";
+    const endpoint = `https://dojo-db-e5c2cf5a1b56.herokuapp.com/users/${user.username}/favourites/${movieID}`;
+    const method = isFavourite ? "DELETE" : "PUT";
 
-        try {
-            const response = await fetch(endpoint, {
-                method,
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${token}`,
-                },
-            });
+    try {
+        const response = await fetch(endpoint, {
+            method,
+            headers: {
+                "Authorization": `Bearer ${storedToken}`,
+                "Content-Type": "application/json"
+            },
+        });
 
-            if (!response.ok) throw new Error(`Failed to update favourites: ${response.status}`);
+        if (!response.ok) throw new Error(`Failed to update favourites: ${response.status}`);
 
-            const updatedFavourites = await response.json();
+        const updatedFavourites = await response.json();
 
-            // Update movies and favourites states
-            setFavourites(updatedFavourites.favourites);
-            setMovies((prevMovies) =>
-                prevMovies.map((movie) =>
-                    movie.id === movieID
-                        ? { ...movie, isFavourite: !isFavourite }
-                        : movie
-                )
-            );
-        } catch (error) {
-            console.error("Error toggling favourite:", error);
-            alert("An error occurred while updating your favourites.");
-        }
-    };
+        // Update favourites in the local state
+        setFavourites(updatedFavourites.favourites);
+        setMovies((prevMovies) =>
+            prevMovies.map((movie) =>
+                movie.id === movieID
+                    ? { ...movie, isFavourite: !isFavourite }
+                    : movie
+            )
+        );
+    } catch (error) {
+        console.error("Error toggling favourite:", error);
+        alert("An error occurred while updating your favourites.");
+    }
+};
 
     const MovieWithParams = ({ movies, user, onToggleFavourite }) => {
         const { movieID } = useParams();
@@ -164,7 +175,9 @@ export const MainView = () => {
                         user={user}
                         movies={movies}
                         favourites={favourites}
-                        onRemove={toggleFavourite}  />
+                        onRemove={toggleFavourite} 
+                        onProfileUpdate={handleProfileUpdate} 
+                        />
                 ) : (
                     <Navigate to="/login" />)} />
 
