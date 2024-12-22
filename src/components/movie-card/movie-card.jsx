@@ -10,10 +10,11 @@ export const MovieCard = ({movie, isFavourite, onToggleFavourite, onRemove }) =>
         } else {
             onToggleFavourite(movie.id, isFavourite); 
         }
-    };
+    }; 
     return (
         <Card className="h-100">
             <div className="image-container">
+            console.log(movie);
                 <Card.Img variant="top" src={movie.image.imageUrl} alt={movie.title} loading="lazy"/>
             </div>
             <Card.Body>
@@ -39,7 +40,10 @@ MovieCard.propTypes = {
     movie: PropTypes.shape({
         id: PropTypes.string.isRequired,
         title: PropTypes.string.isRequired,
-        image: PropTypes.string.isRequired,
+        image: PropTypes.shape({
+            imageUrl: PropTypes.string.isRequired,
+            imageAttribution: PropTypes.string,
+        }).isRequired,
         director: PropTypes.shape({
             name: PropTypes.string.isRequired,
         }).isRequired,

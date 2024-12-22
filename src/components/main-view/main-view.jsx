@@ -14,24 +14,30 @@ import "./main-view.scss";
 export const MainView = () => {
     const storedUser = JSON.parse(localStorage.getItem("user"));
     const storedToken = localStorage.getItem("token");
-
-    const [movies, setMovies] = useState([]);
+    const [allMovies, setAllMovies] = useState([]);
     const [user, setUser] = useState(storedUser ? storedUser : null);
     const [token, setToken] = useState(storedToken ? storedToken : null);
     const [favourites, setFavourites] = useState([]);
+    const [similarMovies, setSimilarMovies] = useState([]);
+
+    const getUniqueSimilarMovies = (movies) => {
+        return Array.from(new Set(movies.map(movie => movie.id)))
+            .map(id => movies.find(movie => movie.id === id));
+    };
+
+    const { movieID } = useParams();
 
     const handleProfileUpdate = (updatedUser) => {
-        setUser(updatedUser); 
+        setUser(updatedUser);
         localStorage.setItem("user", JSON.stringify(updatedUser));
     };
 
     useEffect(() => {
         if (!token || !user) return;
 
-        // Fetch movies and favourites
         const fetchData = async () => {
             try {
-                // Fetch movies 
+                // Fetch movies
                 const moviesResponse = await fetch("https://dojo-db-e5c2cf5a1b56.herokuapp.com/movies", {
                     headers: {
                         "Authorization": `Bearer ${storedToken}`,
@@ -72,81 +78,53 @@ export const MainView = () => {
                 }));
 
                 setFavourites(favouritesList);
-                setMovies(updatedMovies);
+                setAllMovies(updatedMovies);
+                setSimilarMovies(getUniqueSimilarMovies(moviesFromApi.slice(0, 3))); 
+
             } catch (error) {
                 console.error("Error fetching data:", error);
             }
         };
-
         fetchData();
     }, [token, user]);
 
-    // Favourite Add/remove
     const toggleFavourite = async (movieID, isFavourite) => {
-    const endpoint = `https://dojo-db-e5c2cf5a1b56.herokuapp.com/users/${user.username}/favourites/${movieID}`;
-    const method = isFavourite ? "DELETE" : "PUT";
+        const endpoint = `https://dojo-db-e5c2cf5a1b56.herokuapp.com/users/${user.username}/favourites/${movieID}`;
+        const method = isFavourite ? "DELETE" : "PUT";
 
-    try {
-        const response = await fetch(endpoint, {
-            method,
-            headers: {
-                "Authorization": `Bearer ${storedToken}`,
-                "Content-Type": "application/json"
-            },
-        });
+        try {
+            const response = await fetch(endpoint, {
+                method,
+                headers: {
+                    "Authorization": `Bearer ${storedToken}`,
+                    "Content-Type": "application/json"
+                },
+            });
 
-        if (!response.ok) throw new Error(`Failed to update favourites: ${response.status}`);
+            if (!response.ok) throw new Error(`Failed to update favourites: ${response.status}`);
 
-        const updatedFavourites = await response.json();
+            const updatedFavourites = await response.json();
 
-        // Update favourites in the local state
-        setFavourites(updatedFavourites.favourites);
-        setMovies((prevMovies) =>
-            prevMovies.map((movie) =>
-                movie.id === movieID
-                    ? { ...movie, isFavourite: !isFavourite }
-                    : movie
-            )
-        );
-    } catch (error) {
-        console.error("Error toggling favourite:", error);
-        alert("An error occurred while updating your favourites.");
-    }
-};
-
-    const MovieWithParams = ({ movies, user, onToggleFavourite }) => {
-        const { movieID } = useParams();
-        const movie = movies.find((m) => m.id === movieID);
-
-        if (!movie) {
-            return <Col><h3>Movie not found</h3></Col>;
-        }
-
-        const getSimilarMovies = (movieID) => {
-            const currentMovie = movies.find((movie) => movie.id === movieID);
-            if (!currentMovie) return [];
-            return movies.filter(
-                (movie) => movie.genre.name === currentMovie.genre.name && movie.id !== movieID
+            // Update favourites in the local state
+            setFavourites(updatedFavourites.favourites);
+            setAllMovies((prevMovies) =>
+                prevMovies.map((movie) =>
+                    movie.id === movieID
+                        ? { ...movie, isFavourite: !isFavourite }
+                        : movie
+                )
             );
-        };
-        const similarMovies = getSimilarMovies(movieID).slice(0, 3);
-
-        return (
-            <MovieView
-                movie={movie}
-                allMovies={movies}
-                similarMovies={similarMovies}
-                user={user}
-                onToggleFavourite={() => onToggleFavourite(movie.id, movie.isFavourite)}
-            />
-        );
+        } catch (error) {
+            console.error("Error toggling favourite:", error);
+            alert("An error occurred while updating your favourites.");
+        }
     };
+
     const handleLogin = (user, token) => {
         setUser(user);
         setToken(token);
         localStorage.setItem("user", JSON.stringify(user));
         localStorage.setItem("token", token);
-        console.log('Logged in user:', user);
     };
 
     const handleLogout = () => {
@@ -154,63 +132,48 @@ export const MainView = () => {
         setToken(null);
         localStorage.clear();
     };
+
     return (
         <BrowserRouter>
-            {/* Navigation */}
             <NavigationBar user={user} onLoggedOut={handleLogout} />
             <Routes>
-                {/* Login Route */}
-                <Route path="/login" element={user ? (<Navigate to="/" />
-                ) : (
-                    <Col md={6}><LoginView onLoggedIn={handleLogin} /></Col>)} />
-
-                {/* Signup Route Route */}
-                <Route path="/signup" element={user ? (<Navigate to="/" />
-                ) : (
-                    <Col md={6}><SignupView /></Col>)} />
-
-                {/* Profile Route */}
+                <Route path="/login" element={user ? (<Navigate to="/" />) : (<Col md={6}><LoginView onLoggedIn={handleLogin} /></Col>)} />
+                <Route path="/signup" element={user ? (<Navigate to="/" />) : (<Col md={6}><SignupView /></Col>)} />
                 <Route path="/profile" element={user ? (
                     <ProfileView
                         user={user}
-                        movies={movies}
+                        movies={allMovies}
                         favourites={favourites}
-                        onRemove={toggleFavourite} 
-                        onProfileUpdate={handleProfileUpdate} 
-                        />
-                ) : (
-                    <Navigate to="/login" />)} />
-
-                {/* MovieView Route */}
+                        onRemove={toggleFavourite}
+                        onProfileUpdate={handleProfileUpdate}
+                    />
+                ) : (<Navigate to="/login" />)} />
                 <Route path="/movies/:movieID" element={user ? (
-                    <MovieWithParams
-                        movies={movies}
+                    <MovieView
+                        allMovies={allMovies}
                         user={user}
-                        onToggleFavourite={toggleFavourite} />
-                ) : (
-                    <Navigate to="/login" replace />)} />
-
-                {/* MovieCard Route */}
+                        favourites={favourites}
+                        onToggleFavourite={toggleFavourite}
+                        similarMovies={similarMovies}
+                    />
+                ) : (<Navigate to="/login" replace />)} />
                 <Route path="/" element={user ? (
-                    movies.length === 0 ? (<Col><h3>The list is empty!</h3></Col>
+                    allMovies.length === 0 ? (
+                        <Col><h3>The list is empty!</h3></Col>
                     ) : (
                         <Row className="w-100 gx-4 gy-4">
-                            {movies.map((movie) => (
+                            {allMovies.map((movie) => (
                                 <Col key={movie.id} xs={12} sm={6} md={4} lg={3}>
                                     <MovieCard
                                         movie={movie}
-                                        isFavourite={movie.isFavourite}
-                                        onToggleFavourite={() => toggleFavourite(movie.id, movie.isFavourite)}
+                                        isFavourite={favourites.some(fav => fav.movieId.toString() === movie.id.toString())}
+                                        onToggleFavourite={(movieId, isFavourite) => toggleFavourite(movieId, isFavourite)}
                                     />
                                 </Col>
                             ))}
                         </Row>
                     )
-                ) : (
-                    <Navigate to="/login" replace />
-                )
-                }
-                />
+                ) : (<Navigate to="/login" replace />)} />
             </Routes>
         </BrowserRouter>
     );
