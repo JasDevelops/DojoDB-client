@@ -20,54 +20,54 @@ export const ProfileView = ({ user, movies, onLogout, favourites, onRemove, onPr
     const [error, setError] = useState(null);
     const navigate = useNavigate();
 
-const formatDate = (dateString) => {
-            const date = new Date(dateString);
-            return date.toLocaleDateString("en-US", {
-                year: "numeric",
-                month: "long",
-                day: "numeric",
-            });
-        };
-   // Update the username state whenever the user prop changes (e.g., when the username is updated)
-   useEffect(() => {
-    if (user && user.username !== username) {
-        setUsername(user.username);
-    }
-}, [user]);
-
-// Handle removing a movie from favourites
-const handleRemoveFromFavourites = (movieID) => {
-    if (!username) {
-        console.error("Username is not defined!");
-        return;
-    }
-
-    // Continue with your fetch or API call to remove the movie
-    const token = localStorage.getItem("token");
-
-    fetch(`https://dojo-db-e5c2cf5a1b56.herokuapp.com/users/${username}/favourites/${movieID}`, {
-        method: "DELETE",
-        headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${token}`,
-        },
-    })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error("Failed to remove movie from favourites");
-            }
-            return response.json();
-        })
-        .then(() => {
-            // Update the favouriteMovies after deletion
-            setFavouriteMovies(favouriteMovies.filter(m => String(m.id) !== String(movieID)));
-        })
-        .catch(error => {
-            setLoading(false);
-            setError(error.message);
+    const formatDate = (dateString) => {
+        const date = new Date(dateString);
+        return date.toLocaleDateString("en-US", {
+            year: "numeric",
+            month: "long",
+            day: "numeric",
         });
-};
- 
+    };
+    // Update the username state whenever the user prop changes (e.g., when the username is updated)
+    useEffect(() => {
+        if (user && user.username !== username) {
+            setUsername(user.username);
+        }
+    }, [user]);
+
+    // Handle removing a movie from favourites
+    const handleRemoveFromFavourites = (movieID) => {
+        if (!username) {
+            console.error("Username is not defined!");
+            return;
+        }
+
+        // Continue with your fetch or API call to remove the movie
+        const token = localStorage.getItem("token");
+
+        fetch(`https://dojo-db-e5c2cf5a1b56.herokuapp.com/users/${username}/favourites/${movieID}`, {
+            method: "DELETE",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`,
+            },
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error("Failed to remove movie from favourites");
+                }
+                return response.json();
+            })
+            .then(() => {
+                // Update the favouriteMovies after deletion
+                setFavouriteMovies(favouriteMovies.filter(m => String(m.id) !== String(movieID)));
+            })
+            .catch(error => {
+                setLoading(false);
+                setError(error.message);
+            });
+    };
+
     // Fetch user profile and favourites
     useEffect(() => {
         const fetchProfile = async () => {
@@ -106,7 +106,7 @@ const handleRemoveFromFavourites = (movieID) => {
                     user.favourites.some(fav => String(fav.movieId) === String(movie.id))
                 );
                 setFavouriteMovies(favouriteMoviesList);
-                
+
             } catch (error) {
                 setError(error.message);
             } finally {
@@ -201,12 +201,12 @@ const handleRemoveFromFavourites = (movieID) => {
                                         favouriteMovies.map(movie => (
                                             <Col key={movie.id} md={4}>
                                                 <div>
-                                                <h5>
-                        <a href={`/movies/${movie.id}`}>{movie.title}</a>
-                    </h5>
-                    <Button onClick={() => handleRemoveFromFavourites(movie.id)}>
-                        Remove from Favourites
-                    </Button>
+                                                    <h5>
+                                                        <a href={`/movies/${movie.id}`}>{movie.title}</a>
+                                                    </h5>
+                                                    <Button onClick={() => handleRemoveFromFavourites(movie.id)}>
+                                                        Remove from Favourites
+                                                    </Button>
                                                 </div>
                                             </Col>
                                         ))
@@ -225,7 +225,7 @@ const handleRemoveFromFavourites = (movieID) => {
                                         <Form.Label>Username</Form.Label>
                                         <Form.Control
                                             type="text"
-                                            placeholder={profile.username || 'Enter your username'} 
+                                            placeholder={profile.username || 'Enter your username'}
                                             value={newInfo.username}
                                             onChange={e => setNewInfo({ ...newInfo, username: e.target.value })}
                                         />

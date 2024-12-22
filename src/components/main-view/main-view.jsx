@@ -79,7 +79,7 @@ export const MainView = () => {
 
                 setFavourites(favouritesList);
                 setAllMovies(updatedMovies);
-                setSimilarMovies(getUniqueSimilarMovies(moviesFromApi.slice(0, 3))); 
+                setSimilarMovies(getUniqueSimilarMovies(moviesFromApi.slice(0, 3)));
 
             } catch (error) {
                 console.error("Error fetching data:", error);

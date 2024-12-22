@@ -13,18 +13,16 @@ export const MovieView = ({ allMovies, favourites, onToggleFavourite }) => {
     if (!movie) {
         return <Col><h3>Loading...</h3></Col>;
     }
-    console.log(movie);
     const isFavourite = favourites.some(fav => fav.movieId === movie.id);
 
     const handleToggleFavourite = () => {
         onToggleFavourite(movie.id, isFavourite);
     };
-    const uniqueSimilarMovies = allMovies.filter(
-        simMovie => simMovie.id !== movie.id && favourites.some(fav => fav.movieId === simMovie.id)
-    );
-        console.log('Favourites:', favourites);
-    console.log('Unique Similar Movies:', uniqueSimilarMovies);
-    
+    // Similar movies 
+    const similarMovies = allMovies
+        .filter(simMovie => simMovie.id !== movie.id) // Exclude current movie
+        .slice(0, 3);
+
     return (
         <div className="movieView">
             <Row>
@@ -81,23 +79,18 @@ export const MovieView = ({ allMovies, favourites, onToggleFavourite }) => {
 
             <h3>Similar Movies</h3>
             <Row>
-                {uniqueSimilarMovies.length > 0 ? (
-                    uniqueSimilarMovies.map(similarMovie => (
+                {similarMovies.map(similarMovie => {
+                    const isFavourite = favourites.some(fav => fav.movieId === similarMovie.id);
+                    return (
                         <Col key={similarMovie.id} md={4} className="mb-4">
-
-console.log(similarMovie); 
                             <MovieCard
                                 movie={similarMovie}
-                                isFavourite={favourites.some(fav => fav.movieId === similarMovie.id) || false}
+                                isFavourite={isFavourite}
                                 onToggleFavourite={onToggleFavourite}
                             />
                         </Col>
-                    ))
-                ) : (
-                    <Col>
-                        <p>No similar movies found - sorry!</p>
-                    </Col>
-                )}
+                    );
+                })}
             </Row>
         </div>
     );
