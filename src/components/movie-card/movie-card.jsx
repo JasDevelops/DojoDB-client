@@ -1,7 +1,6 @@
 import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
 import { Card, Button } from "react-bootstrap";
-import "./movie-card.scss";
 
 export const MovieCard = ({ movie, isFavourite, onToggleFavourite, onRemove }) => {
     const handleClick = () => {
@@ -14,7 +13,6 @@ export const MovieCard = ({ movie, isFavourite, onToggleFavourite, onRemove }) =
     return (
         <Card className="h-100">
             <div className="image-container">
-                console.log(movie);
                 <Card.Img variant="top" src={movie.image.imageUrl} alt={movie.title} loading="lazy" />
             </div>
             <Card.Body>
@@ -25,10 +23,18 @@ export const MovieCard = ({ movie, isFavourite, onToggleFavourite, onRemove }) =
             </Card.Body>
             {/* Add/Remove Favourite button */}
             <Button
-                variant={isFavourite ? "danger" : "primary"}
+                variant={isFavourite ? "dark" : "dark"}
                 onClick={handleClick}
             >
-                {isFavourite ? "Remove from Favourites" : "Add to Favourites"}
+                {isFavourite ? (
+        <>
+            <i className="bi bi-heart-fill"></i> 
+        </>
+    ) : (
+        <>
+            <i className="bi bi-heart"></i> 
+        </>
+    )}
             </Button>
 
         </Card>

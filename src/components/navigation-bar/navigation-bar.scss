@@ -1,1 +1,60 @@
 @import '../../index.scss';
+
+.navbar-brand.logo {
+    font-family: $logoFont;
+    font-size: $extraLarge;
+    letter-spacing: -2px;
+    text-shadow: $textShadow;
+    padding: $smallSpace;
+    color: $black;;
+}
+.navbar-collapse {
+    flex-grow:0
+}
+.navbar-expand-md .navbar-nav .nav-link {
+    color: $secondary;
+    text-align: center;
+    transition: $transition;
+    font-weight: $bolder;
+    width: 105px;
+
+
+    &:hover,
+    &:focus {
+        font-weight: $thin;
+
+    }
+
+    &.active{
+        border-bottom: $border;
+        border-color: $secondary;
+        color: $secondary;
+        font-weight: $bolder;
+    }
+}
+
+button.navbar-toggler {
+    border-radius: $borderRadius;
+    border: $border;
+    border-color: $secondary;
+}
+.bi-list:before{
+    color: $secondary;
+}
+.navbar-collapse .navbar-nav .nav-link {
+
+    width: auto;
+
+
+    &:hover,
+    &:focus {
+        font-weight: $thin;
+
+    }
+
+    &.active{
+        border-bottom: none;
+        color: $secondary;
+        font-weight: $bolder;
+    }
+}

@@ -20,77 +20,111 @@ export const MovieView = ({ allMovies, favourites, onToggleFavourite }) => {
     };
     // Similar movies 
     const similarMovies = allMovies
-        .filter(simMovie => simMovie.id !== movie.id) 
+        .filter(simMovie => simMovie.id !== movie.id)
         .slice(0, 3);
 
     return (
-        <div className="movieView">
+        <div className="movieView d-flex flex-column h-100">
             <Row>
                 <Col>
-                    <h2>{movie.title}</h2>
+                    <h1 className="my-4">{movie.title}</h1>
                 </Col>
+            </Row>
+            <Row className="align-items-center movieDetails mb-4 flex-grow-1">
                 <Col md={4}>
                     <Figure className="w-100">
                         <Figure.Image
                             width="100%"
                             alt={movie.title}
-                            src={movie.image && movie.image.imageUrl ? movie.image.imageUrl : 'https://placehold.co/600x400/000000/FFF'}
-                            className="img-fluid rounded"
+                            src={
+                                movie.image && movie.image.imageUrl
+                                    ? movie.image.imageUrl
+                                    : "https://placehold.co/600x400/000000/FFF"
+                            }
+                            className="img-fluid"
                         />
-
                         <Figure.Caption>
-                            <span className="font-weight-bold">Image Attribution: </span>
-                            {movie.image?.imageAttribution || 'N/A'}
+                            <span className="font-weight-bold small">Image from </span>
+                            {movie.image?.imageAttribution || "N/A"}
                         </Figure.Caption>
                     </Figure>
                 </Col>
                 <Col md={8}>
-                    <div className="description mb-4">
-                        <span>{movie.description}</span>
-                    </div>
-                    <div>
-                        <span className="font-weight-bold">Director: </span>
-                        <span>{movie.director.name}</span>
-                    </div>
-                    <Row>
-                        <Col xs={6}>
+                <Row>
+                        <Col xs={6} className="d-flex justify-content-start">
                             <div>
-                                <span className="font-weight-bold">Genre: </span>
+                                <span className="font-weight-bold small">Genre: </span>
                                 <span>{movie.genre.name}</span>
                             </div>
                         </Col>
-                        <Col xs={6}>
+                        <Col xs={6}className="d-flex justify-content-end">
                             <div>
-                                <span className="font-weight-bold">Release Year: </span>
+                                <span className="font-weight-bold small">Release Year: </span>
                                 <span>{movie.releaseYear}</span>
                             </div>
                         </Col>
                     </Row>
-                    <button onClick={handleToggleFavourite}>
-                        {isFavourite ? "Remove from Favourites" : "Add to Favourites"}
-                    </button>
-                    <div className="mt-auto">
-                        <Link to="/" className="back-btn">
-                            <Button variant="secondary">Back</Button>
-                        </Link>
+                    <div className="uppercase mb-4">
+                        <span>{movie.description}</span>
                     </div>
-                </Col>
-            </Row>
+                    <div className="actors mb-3">
+                        <span>
+                            {movie.actors && movie.actors.length > 0 ? (
+                                movie.actors.map((actor, index) => (
+                                    <span key={index}>
+                                        {actor.name} as "{actor.role}"
+                                    </span>
+                                ))
+                            ) : (
+                                <span>N/A</span>
+                            )}
+                        </span>
+                    </div>
+                    <div className="directors mb-4">
+                        <span>directed by {movie.director.name}</span>
+                    </div>
 
-            <h3>Similar Movies</h3>
+                    <div className="d-flex justify-content-end">
+                    <Button
+                        variant={isFavourite ? "dark" : "dark"}
+                        onClick={handleToggleFavourite}
+                        className="ms-3"
+                    >
+                        {isFavourite ? (
+                            <>
+                                <i className="bi bi-heart-fill"></i>
+                            </>
+                        ) : (
+                            <>
+                                <i className="bi bi-heart"></i>
+                            </>
+                        )}
+                    </Button>
+                </div>
+            </Col>
+        </Row>
+
+        <div className="d-flex justify-content-end mb-3">
+            <Link to="/" className="back-btn">
+                <Button variant="primary">Back</Button>
+            </Link>
+        </div>
             <Row>
-                {similarMovies.map(similarMovie => {
-                    const isFavourite = favourites.some(fav => fav.movieId === similarMovie.id);
-                    return (
-                        <Col key={similarMovie.id} md={4} className="mb-4">
-                            <MovieCard
-                                movie={similarMovie}
-                                isFavourite={isFavourite}
-                                onToggleFavourite={onToggleFavourite}
-                            />
-                        </Col>
-                    );
-                })}
+                <h3 className="my-4">Similar Movies</h3>
+                <Row>
+                    {similarMovies.map(similarMovie => {
+                        const isFavourite = favourites.some(fav => fav.movieId === similarMovie.id);
+                        return (
+                            <Col key={similarMovie.id} md={4} className="mb-4">
+                                <MovieCard
+                                    movie={similarMovie}
+                                    isFavourite={isFavourite}
+                                    onToggleFavourite={onToggleFavourite}
+                                />
+                            </Col>
+                        );
+                    })}
+                </Row>
             </Row>
         </div>
     );

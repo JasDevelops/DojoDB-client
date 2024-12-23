@@ -2,26 +2,42 @@
 @import "~bootstrap/scss/variables";
 @import "~bootstrap/scss/mixins";
 
-$primary: #a20404;
-$mutedPrimary: #731010;
-$gray: #999;
-$white: #fefefe;
-$white50: rgba(254, 254, 254, .5);
-$black: #1f1f1f;
-$black90: rgba(1, 1, 1, .9);
-$black70: rgba(1, 1, 1, .7);
-$black50: rgba(1, 1, 1, .5);
+$primary: #D62828;
+$secondary: #FCBF49;
+$tertiary: #E27807;
+$black: #1a1a1a;
+$white: #f7f7f7;
+$green: #0B3934;
+$gray: #9c9c9c;
 
-$smallText: 12px;
-$headingFont: "Passero One", sans-serif;
-$textFont: "Rubik", sans-serif;
+$black90: rgba(26,26,26, .9);
+$black70: rgba(26,26,26, .7);
+$black50: rgba(26,26,26, .5);
 
-$borderBlk: 2px solid $black;
-$borderRed: 2px solid $primary;
-$borderRadius: 5px;
+$logoFont: "Barrio", sans-serif;
+$titleFont: "Kirang Haerang", sans-serif;
+$textFont: "Montserrat", sans-serif;
+
+$smallText: 11px;
+$normalText: 14px;
+
+$textShadow: 2px 2px $white;
+
+$extraBold: 900;
+$bolder: 700;
+$bold: 400;
+$normal: 300;
+$thin: 200;
+
+
+$border: 2px solid ;
+$borderRadius: 1px;
 $borderRadiusRdn: 50px;
 
-$boxShadow: 0 4px 10px $black50;
+$boxShadowGrn: 4px 4px 0 0 $green;
+$boxShadowLight: 4px 4px 0 0 $white;
+$boxShadowDark: 4px 4px 0 0 $black;
+$boxShadowDarkSm: 2px 2px 0 0 $black;
 $boxShadowCard: 0 10px 40px 5px $black70;
 $boxShadowCardMore: 0 10px 40px 0 $black90;
 $boxShadowCardLess: 0 10px 40px -5px $black70;
@@ -29,34 +45,151 @@ $boxShadowCardLess: 0 10px 40px -5px $black70;
 $smallSpace: 5px;
 $mediumSpace: 15px;
 $bigSpace: 25px;
+$extraLarge: 50px;
 
 $transition: 0.3s ease;
 
 @import "~bootstrap/scss/bootstrap.scss";
-
 body {
     font-family: $textFont;
-    background: $black90;
-    background: linear-gradient(151deg, rgba(117, 18, 18, 1) 0%, rgba(66, 15, 15, 1) 22%, rgba(26, 26, 26, 1) 100%);
-    background-position: center;
-    background-attachment: fixed;
+    background: $green;
+    color: $black90;
+    font-weight: $normal;
+}
+p {
+    font-size: $normalText ;
     color: $white;
+}
+.uppercase span {
+    color: $white;
+    line-height: 200%;
+}
+
+.uppercase {
+    text-transform: uppercase;
+    letter-spacing:1px;
+    text-align: center;
+    padding: $mediumSpace 0;
+}
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-family: $titleFont;
+    text-transform: uppercase;
+    text-align: center;
+}
+h1,h4 {
+    color: $tertiary
+}
+.font-weight-bold, strong {
+    font-weight:$bolder
+}
+.bi {
+    -webkit-text-stroke: 1.3px;
+
+}
+/* Buttons */
+.btn {
+    border-radius: $borderRadius;
+    box-shadow: $boxShadowDark; 
+    font-weight: $bolder;
+
+    &:hover,
+    &:focus {
+        box-shadow: $boxShadowDarkSm;
+        background-color: $secondary;
+        font-weight: $bold;
+    }
+    &:active {
+        box-shadow: none;
+    }
+}
+.btn-primary {
+    background-color: $secondary;
+    color: $green;
+    border:none;
+
+    &:hover,
+    &:focus {
+        color: $green;
+    }
+    &:active {
+        background-color: $tertiary;
+    }
+}
+.btn-dark {
+    background-color: transparent ;
+    border:none;
+    text-align: right;
+
+    &:hover,
+    &:focus {
+        background-color: transparent ;
+        border:none;
+    }
+    &:active {
+        box-shadow: none;
+    }
+
+}
+.profileView .btn {
+    width: 100%
+}
+.btn-secondary {
+    background-color: $tertiary;
+    border:none;
+}
+/* Forms */
+.form .form-floating > .form-control {
+    font-weight: $bold;
+    border-radius: $borderRadius;
+
+
+}
+.form-floating > .form-control:focus ~ label, 
+.form-floating > .form-control:not(:placeholder-shown) ~ label, 
+.form-floating > .form-control-plaintext ~ label, 
+.form-floating > .form-select ~ label,
+.form-label {
+    padding: $smallSpace;
+
+}
+.form-text,
+.figure-caption {
+    color: $gray;
+}
+/* Icons */
+.bi-heart,
+.bi-heart-fill {
+    color: $primary;
 }
 
 /* Cards */
-.movie-card {
-    box-shadow: $boxShadowCard;
+.card, .movieDetails{
     text-align: center;
     transition: $transition;
-    cursor: pointer;
+    border-radius: $borderRadius;
+    box-shadow: $boxShadowDark;
+    border:none;
+    background-color: $black;
+    color: $gray;
+
+    .card-title a{
+        color: $secondary;
+        text-decoration:none
+    }
 
     &:hover,
     &:focus {
         box-shadow: $boxShadowCardMore;
         background-color: $black90;
 
-        .card-title {
-            color: $primary;
+        .card-title a {
+            color: $white;
+            text-decoration:none
         }
 
         img {
@@ -66,13 +199,15 @@ body {
 
     &:active {
         box-shadow: $boxShadowCardLess;
-
-        .card-title {
-            color: $mutedPrimary;
-        }
     }
 }
+.movieDetails, .ProfileView .card  {
 
+    &:hover,
+    &:focus {
+        box-shadow: none;
+     }
+}
 /* Image */
 .image-container {
     position: relative;

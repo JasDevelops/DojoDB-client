@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-import { Form, Col, Button, Alert, FloatingLabel } from "react-bootstrap";
+import { Form, Col, Button, Alert, FloatingLabel, Row } from "react-bootstrap";
 
 export const SignupView = ({ onSignedUp }) => {
     const [username, setUsername] = useState("");
@@ -18,7 +18,7 @@ export const SignupView = ({ onSignedUp }) => {
     };
 
     const convertDateFormat = (date) => {
-        if (!date) return null; 
+        if (!date) return null;
         const [day, month, year] = date.split(".");
         return `${year}-${month}-${day}`;
     };
@@ -66,7 +66,6 @@ export const SignupView = ({ onSignedUp }) => {
                 return response.json();
             })
             .then((data) => {
-                console.log("Signup successful:", data);
                 alert("Signup successful - you can login now");
                 navigate("/login");
             })
@@ -76,85 +75,69 @@ export const SignupView = ({ onSignedUp }) => {
             });
     };
     return (
-        <Col className="signupView_form bg w-100 p-4">
-            <h4>Create an account:</h4>
-            <Form onSubmit={handleSubmit}>
-                <Form.Group controlId="username">
-                    <FloatingLabel
-                        controlId="floatingTextarea"
-                        label="Username"
-                        className="mb-3"
-                    >
-                        <Form.Control
-                            type="text"
-                            value={username}
-                            onChange={(e) => setUsername(e.target.value)}
-                            required
-                            placeholder="Enter your username"
-                            minLength="1"
-                        />
-                        <Form.Text className="input-info">
-                            Please enter a username.
-                        </Form.Text>
-                    </FloatingLabel>
-                </Form.Group>
-                <Form.Group controlId="password">
-                    <FloatingLabel
-                        controlId="floatingTextarea"
-                        label="Password"
-                        className="mb-3"
-                    >
-                        <Form.Control
-                            type="password"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                            required
-                            minLength="3"
-                            placeholder="Enter your password"
-                        />
-                        <Form.Text className="input-info">
-                            The password must be at least 3 characters long.
-                        </Form.Text>
-                    </FloatingLabel>
-                </Form.Group>
-                <Form.Group controlId="email">
-                    <FloatingLabel
-                        controlId="floatingTextarea"
-                        label="Email"
-                        className="mb-3"
-                    >
-                        <Form.Control
-                            type="email"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                            required
-                            pattern="^[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}$"
-                            placeholder="Enter your email"
-                        />
-                        <Form.Text className="input-info">
-                            Please enter a valid email address.
-                        </Form.Text>
-                    </FloatingLabel>
-                </Form.Group>
-                <Form.Group controlId="birthday">
-                    <FloatingLabel
-                        controlId="floatingTextarea"
-                        label="Birthday"
-                        className="mb-3"
-                    >
-                        <Form.Control
-                            type="date"
-                            value={birthday}
-                            onChange={(e) => setBirthday(e.target.value)}
-                            placeholder="Select your birthday"
-                        />
-                    </FloatingLabel>
-                </Form.Group>
-                {errorMessage && <Alert variant="danger">{errorMessage}</Alert>}
-                <Button variant="primary" type="submit" className="mt-5">
-                    Submit
-                </Button>
-            </Form>
-        </Col>
+        <Row className="form">
+            <Col xs={12} md={6} lg={4} className="mx-auto">
+                <h1 className="my-4">Create an account:</h1>
+                <Form onSubmit={handleSubmit}>
+                    <Form.Group controlId="username">
+                        <FloatingLabel controlId="floatingUsername" label="Username" className="mb-3">
+                            <Form.Control
+                                type="text"
+                                value={username}
+                                onChange={(e) => setUsername(e.target.value)}
+                                required
+                                placeholder="Enter your username"
+                            />
+                            <Form.Text className="input-info">Please enter a username.</Form.Text>
+                        </FloatingLabel>
+                    </Form.Group>
+
+                    <Form.Group controlId="password">
+                        <FloatingLabel controlId="floatingPassword" label="Password" className="mb-3">
+                            <Form.Control
+                                type="password"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                required
+                                minLength="3"
+                                placeholder="Enter your password"
+                            />
+                            <Form.Text className="input-info">The password must be at least 3 characters long.</Form.Text>
+                        </FloatingLabel>
+                    </Form.Group>
+
+                    <Form.Group controlId="email">
+                        <FloatingLabel controlId="floatingEmail" label="Email" className="mb-3">
+                            <Form.Control
+                                type="email"
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                                required
+                                placeholder="Enter your email"
+                            />
+                            <Form.Text className="input-info">Please enter a valid email address.</Form.Text>
+                        </FloatingLabel>
+                    </Form.Group>
+
+                    <Form.Group controlId="birthday">
+                        <FloatingLabel controlId="floatingBirthday" label="Birthday" className="mb-3">
+                            <Form.Control
+                                type="date"
+                                value={birthday}
+                                onChange={(e) => setBirthday(e.target.value)}
+                                placeholder="Select your birthday"
+                            />
+                        </FloatingLabel>
+                    </Form.Group>
+
+                    {errorMessage && <Alert variant="info">{errorMessage}</Alert>}
+                    {successMessage && <Alert variant="info">{successMessage}</Alert>}
+
+                    <Button variant="primary" type="submit" size="lg" className="w-100 mt-5">
+                        Sign up
+                    </Button>
+                </Form>
+            </Col>
+        </Row>
     );
 };

@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
 import PropTypes from "prop-types";
+import "./profile-view.scss";
 
-import { Row, Col, Button, Form, Card } from "react-bootstrap";
-import { useNavigate } from "react-router-dom";
+import { Row, Col, Button, Form, Card, Collapse, FloatingLabel, Alert } from "react-bootstrap";
+import { useNavigate, Link } from "react-router-dom";
 
 export const ProfileView = ({ user, movies, onLogout, favourites, onRemove, onProfileUpdate }) => {
     const [profile, setProfile] = useState({});
@@ -30,16 +31,11 @@ export const ProfileView = ({ user, movies, onLogout, favourites, onRemove, onPr
             day: "numeric",
         });
     };
-
-
-    // Handle removing a movie from favourites
     const handleRemoveFromFavourites = (movieID) => {
         if (!username) {
             console.error("Username is not defined!");
             return;
         }
-
-        // Continue with your fetch or API call to remove the movie
         const token = localStorage.getItem("token");
 
         fetch(`https://dojo-db-e5c2cf5a1b56.herokuapp.com/users/${username}/favourites/${movieID}`, {
@@ -56,7 +52,6 @@ export const ProfileView = ({ user, movies, onLogout, favourites, onRemove, onPr
                 return response.json();
             })
             .then(() => {
-                // Update the favouriteMovies after deletion
                 setFavouriteMovies(favouriteMovies.filter(m => String(m.id) !== String(movieID)));
             })
             .catch(error => {
@@ -83,10 +78,10 @@ export const ProfileView = ({ user, movies, onLogout, favourites, onRemove, onPr
 
             try {
                 const response = await fetch(`https://dojo-db-e5c2cf5a1b56.herokuapp.com/users/${username}`, {
-                    method: 'GET',
+                    method: "GET",
                     headers: {
-                        'Authorization': `Bearer ${storedToken}`,
-                        'Content-Type': 'application/json',
+                        "Authorization": `Bearer ${storedToken}`,
+                        "Content-Type": "application/json",
                     },
                 });
 
@@ -102,7 +97,7 @@ export const ProfileView = ({ user, movies, onLogout, favourites, onRemove, onPr
                     username: user.username,
                     email: user.email,
                     birthday: user.birthday,
-                    password: '',
+                    password: "",
                 });
 
                 // Populate favouriteMovies
@@ -191,7 +186,7 @@ export const ProfileView = ({ user, movies, onLogout, favourites, onRemove, onPr
             .finally(() => setLoading(false));
     };
 
-    // Delete account handler
+    // Delete account 
     const deleteAccount = () => {
         if (window.confirm("Are you sure you want to delete your account? This action cannot be undone.")) {
             setLoading(true);
@@ -227,103 +222,126 @@ export const ProfileView = ({ user, movies, onLogout, favourites, onRemove, onPr
         onLogout();
         navigate("/login");
     };
-
     return (
-        <Row className="justify-content-center">
-            <Col md={8}>
-                <Card>
-                    <Card.Body>
-                        <h2>User Profile</h2>
-                        {loading && <div>Loading...</div>}
-                        {error && <div style={{ color: "red" }}>{error}</div>}
-                        {!editing ? (
-                            <>
-                                <p><strong>Username:</strong> {profile.username}</p>
-                                <p><strong>Email:</strong> {profile.email}</p>
-                                <p><strong>Birthday:</strong> {profile.birthday ? formatDate(profile.birthday) : 'Not provided'}</p>
-                                <h3>Favourite Movies</h3>
-                                <Row>
-                                    {favouriteMovies.length > 0 ? (
-                                        favouriteMovies.map(movie => (
-                                            <Col key={movie.id} md={4}>
-                                                <div>
-                                                    <h5>
-                                                        <a href={`/movies/${movie.id}`}>{movie.title}</a>
-                                                    </h5>
-                                                    <Button onClick={() => handleRemoveFromFavourites(movie.id)}>
-                                                        Remove from Favourites
-                                                    </Button>
-                                                </div>
-                                            </Col>
-                                        ))
-                                    ) : (
-                                        <p>You have no favourite movies yet. Add some from the movie list!</p>
-                                    )}
+        <>
+            <Row className="justify-content-center profileView mb-5" >
+                <h1 className="my-4">User Profile</h1>
+                <Col md={12}>
+                    {error && <Alert variant="info">{error}</Alert>}
+                    {!editing ? (
+                        <>
+                            <Row>
+                                <Col md={8} className="align-items-left mb-4 flex-grow-1">
+                                    <p><strong>Username:</strong> {profile.username}</p>
+                                    <p><strong>Email:</strong> {profile.email}</p>
+                                    <p><strong>Birthday:</strong> {profile.birthday ? formatDate(profile.birthday) : "Not provided"}</p>
+                                </Col>
+                                <Col md={4} className="align-items-center">
+                                    <div ><Button variant="secondary" className="m-2" onClick={() => setEditing(true)}>Edit Profile</Button></div>
+                                    <div > <Button variant="outline-light" className="m-2" nClick={deleteAccount}>Delete Account</Button></div>
+                                </Col>
+                            </Row>
+                        </>
+                    ) : (
+                        <>
+                            <Form onSubmit={handleProfileUpdate}>
+                                <FloatingLabel controlId="username" label="Username" className="mb-3">
+                                    <Form.Control
+                                        type="text"
+                                        placeholder="Enter your username"
+                                        value={newInfo.username}
+                                        onChange={(e) => setNewInfo({ ...newInfo, username: e.target.value })}
+                                    />
+                                </FloatingLabel>
+
+                                <FloatingLabel controlId="email" label="Email" className="mb-3">
+                                    <Form.Control
+                                        type="email"
+                                        placeholder="Enter your email"
+                                        value={newInfo.email}
+                                        onChange={(e) => setNewInfo({ ...newInfo, email: e.target.value })}
+                                    />
+                                </FloatingLabel>
+
+                                <FloatingLabel controlId="birthday" label="Birthday" className="mb-3">
+                                    <Form.Control
+                                        type="date"
+                                        placeholder="Enter your birthday"
+                                        value={newInfo.birthday || profile.birthday?.slice(0, 10) || ""}
+                                        onChange={(e) => setNewInfo({ ...newInfo, birthday: e.target.value })}
+                                    />
+                                </FloatingLabel>
+
+                                <FloatingLabel controlId="password" label="New Password" className="mb-3">
+                                    <Form.Control
+                                        type="password"
+                                        placeholder="New password"
+                                        value={newInfo.password}
+                                        onChange={(e) => setNewInfo({ ...newInfo, password: e.target.value })}
+                                    />
+                                </FloatingLabel>
+
+                                <FloatingLabel controlId="confirmPassword" label="Confirm New Password" className="mb-3">
+                                    <Form.Control
+                                        type="password"
+                                        placeholder="Confirm new password"
+                                        value={confirmPassword}
+                                        onChange={(e) => setConfirmPassword(e.target.value)}
+                                    />
+                                </FloatingLabel>
+
+                                <Row className="justify-content-center mt-5">
+                                    <Col xs={12} md={6} lg={4} className="mx-auto">
+                                        <Button variant="primary" type="submit">
+                                            Save Changes
+                                        </Button>
+                                    </Col>
+                                    <Col xs={12} md={6} lg={4} className="mx-auto">
+                                        <Button variant="secondary" onClick={() => setEditing(false)}>
+                                            Cancel
+                                        </Button>
+                                    </Col>
                                 </Row>
-                                <Button variant="primary" onClick={() => setEditing(true)}>Edit Profile</Button>
-                                <Button variant="danger" onClick={deleteAccount}>Delete Account</Button>
-                                <Button variant="danger" onClick={handleLogout}>Logout</Button>
-                            </>
-                        ) : (
-                            <>
-                                <Form onSubmit={handleProfileUpdate}>
-                                    <Form.Group controlId="username">
-                                        <Form.Label>Username</Form.Label>
-                                        <Form.Control
-                                            type="text"
-                                            placeholder={profile.username || 'Enter your username'}
-                                            value={newInfo.username}
-                                            onChange={e => setNewInfo({ ...newInfo, username: e.target.value })}
-                                        />
-                                    </Form.Group>
-                                    <Form.Group controlId="email">
-                                        <Form.Label>Email</Form.Label>
-                                        <Form.Control
-                                            type="email"
-                                            placeholder={profile.email || 'Enter your email'}
-                                            value={newInfo.email}
-                                            onChange={e => setNewInfo({ ...newInfo, email: e.target.value })}
-                                        />
-                                    </Form.Group>
-                                    <Form.Group controlId="birthday">
-                                        <Form.Label>Birthday</Form.Label>
-                                        <Form.Control
-                                            type="date"
-                                            value={newInfo.birthday || profile.birthday?.slice(0, 10) || ''}
-                                            onChange={e => setNewInfo({ ...newInfo, birthday: e.target.value })}
-                                        />
-                                    </Form.Group>
+                            </Form>;
+                        </>
+                    )}
+                </Col>
+            </Row>
 
-                                    <Form.Group controlId="password">
-                                        <Form.Label>New Password</Form.Label>
-                                        <Form.Control
-                                            type="password"
-                                            placeholder="New password"
-                                            value={newInfo.password}
-                                            onChange={e => setNewInfo({ ...newInfo, password: e.target.value })}
-                                        />
-                                    </Form.Group>
-                                    <Form.Group controlId="confirmPassword">
-                                        <Form.Label>Confirm New Password</Form.Label>
-                                        <Form.Control
-                                            type="password"
-                                            placeholder="Confirm new password"
-                                            value={confirmPassword}
-                                            onChange={e => setConfirmPassword(e.target.value)}
-                                        />
-                                    </Form.Group>
+            <Row className="g-3 text-center uppercase">
+                <h3  className="my-4">Favourite Movies</h3>
+                {favouriteMovies.length > 0 ? (
+                    favouriteMovies.map(movie => (
+                        <Col key={movie.id} md={4} xs={12} sm={6} lg={3}>
+                            <Card className="h-100">
+                                <div className="image-container">
+                                    <Card.Img variant="top" src={movie.image.imageUrl} alt={movie.title} loading="lazy" />
+                                </div>
+                                <Card.Body>
+                                    <Card.Title>
+                                        <Link to={`/movies/${movie.id}`}>{movie.title}</Link>
+                                    </Card.Title>
+                                </Card.Body>
+                                <Button
+                                    variant="dark"
+                                    onClick={() => handleRemoveFromFavourites(movie.id)}
+                                >
+                                    <i className="bi bi-heart-fill"></i>
+                                </Button>
+                            </Card>
+                        </Col>
+                    ))
+                ) : (
+                    <p className="uppercase">You have no favourite movies yet. Add some from the movie list!
+                    <br/>  <i class="bi bi-search-heart-fill"></i>
 
-                                    <Button variant="success" type="submit">Save Changes</Button>
-                                    <Button variant="secondary" onClick={() => setEditing(false)}>Cancel</Button>
-                                </Form>
-                            </>
-                        )}
-                    </Card.Body>
-                </Card>
-            </Col>
-        </Row>
+                    </p>
+                )}
+            </Row>
+
+        </>
     );
-};
+}
 ProfileView.propTypes = {
     user: PropTypes.object.isRequired,
     movies: PropTypes.array.isRequired,

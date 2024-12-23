@@ -139,10 +139,10 @@ export const MainView = () => {
         <BrowserRouter>
             <NavigationBar user={user} onLoggedOut={handleLogout} />
             <Routes>
-                <Route path="/login" element={user ? (<Navigate to="/" />) : (<Col md={10}>
+                <Route path="/login" element={user ? (<Navigate to="/" />) : (<Col>
                     <LoginView onLoggedIn={handleLogin} /></Col>)}
                 />
-                <Route path="/signup" element={user ? (<Navigate to="/" />) : (<Col md={10}>
+                <Route path="/signup" element={user ? (<Navigate to="/" />) : (<Col>
                     <SignupView /></Col>)}
                 />
                 <Route path="/profile" element={user ? (
@@ -170,7 +170,7 @@ export const MainView = () => {
                     allMovies.length === 0 ? (
                         <Col><h3>The list is empty!</h3></Col>
                     ) : (
-                        <Row className="w-100 ">
+                        <Row className="g-3 ">
                             {allMovies.map((movie) => (
                                 <Col key={movie.id} xs={12} sm={6} md={4} lg={3}>
                                     <MovieCard
