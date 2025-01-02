@@ -71,13 +71,12 @@ export const MainView = () => {
                 const favouritesList = Array.isArray(favouritesData.user.favourites)
                     ? favouritesData.user.favourites
                     : [];
-
                 const updatedMovies = moviesFromApi.map((movie) => ({
                     ...movie,
                     isFavourite: favouritesList.some((fav) => fav.movieId.toString() === movie.id),
                 }));
 
-                setFavourites(favouritesList);
+                setFavourites(Array.isArray(favouritesList) ? favouritesList : []);
                 setAllMovies(updatedMovies);
                 setSimilarMovies(getUniqueSimilarMovies(moviesFromApi.slice(0, 3)));
 
@@ -175,7 +174,10 @@ export const MainView = () => {
                                 <Col key={movie.id} xs={12} sm={6} md={4} lg={3}>
                                     <MovieCard
                                         movie={movie}
-                                        isFavourite={favourites.some(fav => fav.movieId.toString() === movie.id.toString())}
+                                        isFavourite={
+                                            Array.isArray(favourites) &&
+                                            favourites.some(fav => fav.movieId.toString() === movie.id.toString())
+                                        }
                                         onToggleFavourite={(movieId, isFavourite) => toggleFavourite(movieId, isFavourite)}
                                     />
                                 </Col>

@@ -27,10 +27,14 @@ export const MovieView = ({ allMovies, favourites, onToggleFavourite }) => {
         <div className="movieView d-flex flex-column h-100">
             <Row>
                 <Col>
-                    <h1 className="my-4">{movie.title}</h1>
+                    <h1 className="mt-4">{movie.title}</h1>
+                    <div className="mb-4 center">
+                        <p>Directed by {movie.director.name}</p>
+                    </div>
                 </Col>
             </Row>
             <Row className="align-items-center movieDetails mb-4 flex-grow-1">
+
                 <Col md={4}>
                     <Figure className="w-100">
                         <Figure.Image
@@ -43,72 +47,77 @@ export const MovieView = ({ allMovies, favourites, onToggleFavourite }) => {
                             }
                             className="img-fluid"
                         />
-                        <Figure.Caption>
-                            <span className="font-weight-bold small">Image from </span>
+                        <Figure.Caption className="small">
+                            <span className="font-weight-bold">Image from: </span>
                             {movie.image?.imageAttribution || "N/A"}
                         </Figure.Caption>
                     </Figure>
                 </Col>
+
                 <Col md={8}>
-                <Row>
-                        <Col xs={6} className="d-flex justify-content-start">
+                    <Row>
+                        <Col xs={6} className="d-flex justify-content-start mb-4">
                             <div>
-                                <span className="font-weight-bold small">Genre: </span>
-                                <span>{movie.genre.name}</span>
+                                <p>
+                                    <span className="font-weight-bold">Genre: </span>
+                                    {movie.genre.name}</p>
                             </div>
                         </Col>
-                        <Col xs={6}className="d-flex justify-content-end">
+                        <Col xs={6} className="d-flex justify-content-end">
                             <div>
-                                <span className="font-weight-bold small">Release Year: </span>
-                                <span>{movie.releaseYear}</span>
+                                <p>
+                                    <span className="font-weight-bold">Release Year: </span>
+                                    {movie.releaseYear}</p>
                             </div>
                         </Col>
                     </Row>
-                    <div className="uppercase mb-4">
-                        <span>{movie.description}</span>
+                    <div className="description mb-4">
+                        <p>{movie.description}</p>
                     </div>
-                    <div className="actors mb-3">
-                        <span>
-                            {movie.actors && movie.actors.length > 0 ? (
-                                movie.actors.map((actor, index) => (
-                                    <span key={index}>
-                                        {actor.name} as "{actor.role}"
-                                    </span>
-                                ))
-                            ) : (
-                                <span>N/A</span>
-                            )}
-                        </span>
-                    </div>
-                    <div className="directors mb-4">
-                        <span>directed by {movie.director.name}</span>
+                    <div className="moreInfo">
+                        <div className="actors mb-3">
+                            <p>
+                                {movie.actors && movie.actors.length > 0 ? (
+                                    movie.actors.map((actor, index) => (
+                                        <p key={index}>
+                                            <span className="font-weight-bold">{actor.name}</span> as "{actor.role}"
+                                            {index < movie.actors.length - 1 && ", "}
+                                        </p>
+                                    ))
+                                ) : (
+                                    <p>N/A</p>
+                                )}
+                            </p>
+                        </div>
+
                     </div>
 
                     <div className="d-flex justify-content-end">
-                    <Button
-                        variant={isFavourite ? "dark" : "dark"}
-                        onClick={handleToggleFavourite}
-                        className="ms-3"
-                    >
-                        {isFavourite ? (
-                            <>
-                                <i className="bi bi-heart-fill"></i>
-                            </>
-                        ) : (
-                            <>
-                                <i className="bi bi-heart"></i>
-                            </>
-                        )}
-                    </Button>
-                </div>
-            </Col>
-        </Row>
+                        <Button
+                            variant={isFavourite ? "dark" : "dark"}
+                            onClick={handleToggleFavourite}
+                            className="ms-3 btn-heart"
+                        >
+                            {isFavourite ? (
+                                <>
+                                    <i className="bi bi-heart-fill"></i>
+                                </>
+                            ) : (
+                                <>
+                                    <i className="bi bi-heart"></i>
+                                </>
+                            )}
+                        </Button>
+                    </div>
+                </Col>
+            </Row>
 
-        <div className="d-flex justify-content-end mb-3">
-            <Link to="/" className="back-btn">
-                <Button variant="primary">Back</Button>
-            </Link>
-        </div>
+            <div className="d-flex justify-content-end mb-3">
+                <Link to="/" className="back-btn">
+                    <Button variant="secondary"><i class="bi bi-arrow-left-short"></i>
+                        Back</Button>
+                </Link>
+            </div>
             <Row>
                 <h3 className="my-4">Similar Movies</h3>
                 <Row>

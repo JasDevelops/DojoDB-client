@@ -2,24 +2,27 @@
 @import "~bootstrap/scss/variables";
 @import "~bootstrap/scss/mixins";
 
-$primary: #D62828;
-$secondary: #FCBF49;
-$tertiary: #E27807;
+$primary: #ce4257;
+$secondary: #f6bd60;
+$tertiary: #e86252;
 $black: #1a1a1a;
 $white: #f7f7f7;
-$green: #0B3934;
+$green: #edf2f4;
 $gray: #9c9c9c;
 
-$black90: rgba(26,26,26, .9);
-$black70: rgba(26,26,26, .7);
-$black50: rgba(26,26,26, .5);
+$opacityDim: .8;
+$opacityDimmer: .5;
+
+$black90: rgba(26, 26, 26, .9);
+$black70: rgba(26, 26, 26, .7);
+$black50: rgba(26, 26, 26, .5);
 
 $logoFont: "Barrio", sans-serif;
 $titleFont: "Kirang Haerang", sans-serif;
 $textFont: "Montserrat", sans-serif;
 
-$smallText: 11px;
-$normalText: 14px;
+$smallText: 10px;
+$normalText: 16px;
 
 $textShadow: 2px 2px $white;
 
@@ -30,8 +33,8 @@ $normal: 300;
 $thin: 200;
 
 
-$border: 2px solid ;
-$borderRadius: 1px;
+$border: 2px solid;
+$borderRadius: 2px;
 $borderRadiusRdn: 50px;
 
 $boxShadowGrn: 4px 4px 0 0 $green;
@@ -50,51 +53,68 @@ $extraLarge: 50px;
 $transition: 0.3s ease;
 
 @import "~bootstrap/scss/bootstrap.scss";
+
 body {
     font-family: $textFont;
     background: $green;
     color: $black90;
     font-weight: $normal;
 }
+
 p {
     font-size: $normalText ;
     color: $white;
-}
-.uppercase span {
-    color: $white;
-    line-height: 200%;
+    margin-bottom: 0
 }
 
-.uppercase {
-    text-transform: uppercase;
-    letter-spacing:1px;
-    text-align: center;
-    padding: $mediumSpace 0;
-}
 h1,
 h2,
 h3,
-h4,
-h5,
-h6 {
+h4 {
     font-family: $titleFont;
     text-transform: uppercase;
     text-align: center;
 }
-h1,h4 {
-    color: $tertiary
+
+h1,
+h3,
+h4 {
+    color: $secondary
 }
-.font-weight-bold, strong {
-    font-weight:$bolder
+
+.small {
+    font-size: $smallText
 }
+
+.font-weight-bold,
+strong,
+h5 {
+    font-weight: $bolder
+}
+
+.center {
+    text-align: center
+}
+
 .bi {
     -webkit-text-stroke: 1.3px;
 
 }
+
+.dark p {
+    color: $black;
+    margin-bottom: $mediumSpace
+}
+
+.lightBg {
+    background: $white;
+    border-radius: $borderRadius;
+}
+
 /* Buttons */
 .btn {
     border-radius: $borderRadius;
-    box-shadow: $boxShadowDark; 
+    box-shadow: $boxShadowDark;
     font-weight: $bolder;
 
     &:hover,
@@ -103,111 +123,156 @@ h1,h4 {
         background-color: $secondary;
         font-weight: $bold;
     }
+
     &:active {
         box-shadow: none;
+        background-color: $tertiary;
     }
 }
+
 .btn-primary {
     background-color: $secondary;
     color: $green;
-    border:none;
+    border: none;
 
     &:hover,
     &:focus {
         color: $green;
     }
+
     &:active {
         background-color: $tertiary;
     }
 }
-.btn-dark {
-    background-color: transparent ;
-    border:none;
+
+.btn-heart {
+    background-color: transparent;
+    border: none;
     text-align: right;
+    box-shadow: none;
 
     &:hover,
     &:focus {
-        background-color: transparent ;
-        border:none;
-    }
-    &:active {
+        background-color: transparent;
+        border: none;
         box-shadow: none;
     }
 
+    &:active {
+        box-shadow: none;
+        background-color: $black;
+    }
+
 }
+
 .profileView .btn {
     width: 100%
 }
+
 .btn-secondary {
     background-color: $tertiary;
-    border:none;
+    border: none;
 }
+
 /* Forms */
-.form .form-floating > .form-control {
+.form .form-floating>.form-control {
     font-weight: $bold;
     border-radius: $borderRadius;
 
 
 }
-.form-floating > .form-control:focus ~ label, 
-.form-floating > .form-control:not(:placeholder-shown) ~ label, 
-.form-floating > .form-control-plaintext ~ label, 
-.form-floating > .form-select ~ label,
+
+.form-floating>.form-control:focus~label,
+.form-floating>.form-control:not(:placeholder-shown)~label,
+.form-floating>.form-control-plaintext~label,
+.form-floating>.form-select~label,
 .form-label {
     padding: $smallSpace;
 
 }
+
 .form-text,
 .figure-caption {
     color: $gray;
 }
+
 /* Icons */
+
 .bi-heart,
 .bi-heart-fill {
     color: $primary;
+
+    &:hover,
+    &:focus {
+        opacity: $opacityDim
+    }
+
+    &:active {
+        opacity: $opacityDimmer
+    }
 }
 
 /* Cards */
-.card, .movieDetails{
+.card,
+.movieDetails {
     text-align: center;
     transition: $transition;
     border-radius: $borderRadius;
     box-shadow: $boxShadowDark;
-    border:none;
+    border: none;
     background-color: $black;
     color: $gray;
 
-    .card-title a{
-        color: $secondary;
-        text-decoration:none
+    .card-title a {
+        color: $tertiary;
+        text-decoration: none;
+        display: inline-block;
+
+        &:hover,
+        &:focus {
+            color: $secondary;
+            text-decoration: none;
+        }
     }
 
     &:hover,
     &:focus {
         box-shadow: $boxShadowCardMore;
         background-color: $black90;
+    }
 
-        .card-title a {
-            color: $white;
-            text-decoration:none
-        }
-
-        img {
-            opacity: .8
-        }
+    &+img {
+        opacity: $opacityDim;
     }
 
     &:active {
         box-shadow: $boxShadowCardLess;
     }
 }
-.movieDetails, .ProfileView .card  {
+
+
+.movieDetails {
+    box-shadow: $boxShadowCardMore;
+}
+
+.movieDetails {
+
+    &:hover,
+    &:focus {
+        img {
+            opacity: 1
+        }
+    }
+}
+
+.ProfileView .card {
 
     &:hover,
     &:focus {
         box-shadow: none;
-     }
+    }
 }
+
 /* Image */
 .image-container {
     position: relative;

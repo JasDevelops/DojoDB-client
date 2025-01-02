@@ -1,8 +1,7 @@
 import { useState, useEffect } from "react";
 import PropTypes from "prop-types";
-import "./profile-view.scss";
 
-import { Row, Col, Button, Form, Card, Collapse, FloatingLabel, Alert } from "react-bootstrap";
+import { Row, Col, Button, Form, Card, ListGroup, FloatingLabel, Alert, ListGroupItem } from "react-bootstrap";
 import { useNavigate, Link } from "react-router-dom";
 
 export const ProfileView = ({ user, movies, onLogout, favourites, onRemove, onProfileUpdate }) => {
@@ -226,22 +225,35 @@ export const ProfileView = ({ user, movies, onLogout, favourites, onRemove, onPr
         <>
             <Row className="justify-content-center profileView mb-5" >
                 <h1 className="my-4">User Profile</h1>
-                <Col md={12}>
+                <Col sm={12} md={10}>
                     {error && <Alert variant="info">{error}</Alert>}
                     {!editing ? (
                         <>
-                            <Row>
-                                <Col md={8} className="align-items-left mb-4 flex-grow-1">
-                                    <p><strong>Username:</strong> {profile.username}</p>
-                                    <p><strong>Email:</strong> {profile.email}</p>
-                                    <p><strong>Birthday:</strong> {profile.birthday ? formatDate(profile.birthday) : "Not provided"}</p>
-                                </Col>
-                                <Col md={4} className="align-items-center">
-                                    <div ><Button variant="secondary" className="m-2" onClick={() => setEditing(true)}>Edit Profile</Button></div>
-                                    <div > <Button variant="outline-light" className="m-2" nClick={deleteAccount}>Delete Account</Button></div>
+                            <div className="mb-4 dark lightBg p-5">
+                                <p className="mb-2"><strong>Username:</strong> {profile.username}</p>
+                                <p className="mb-2"><strong>Email:</strong> {profile.email}</p>
+                                <p className="mb-0"><strong>Birthday:</strong> {profile.birthday ? formatDate(profile.birthday) : "Not provided"}</p>
+                            </div>
+                            <Row className="justify-content-end mt-5">
+                                <Col xs={12} md="auto" className="d-flex flex-column align-items-end">
+                                    <Button
+                                        variant="secondary"
+                                        className="mb-3 w-100 w-md-auto"
+                                        onClick={() => setEditing(true)}
+                                    >
+                                        Edit Profile
+                                    </Button>
+                                    <Button
+                                        variant="outline-dark"
+                                        className="w-100 w-md-auto"
+                                        onClick={deleteAccount}
+                                    >
+                                        Delete Account
+                                    </Button>
                                 </Col>
                             </Row>
                         </>
+
                     ) : (
                         <>
                             <Form onSubmit={handleProfileUpdate}>
@@ -267,7 +279,13 @@ export const ProfileView = ({ user, movies, onLogout, favourites, onRemove, onPr
                                     <Form.Control
                                         type="date"
                                         placeholder="Enter your birthday"
-                                        value={newInfo.birthday || profile.birthday?.slice(0, 10) || ""}
+                                        value={
+                                            newInfo.birthday
+                                                ? newInfo.birthday.split("T")[0]
+                                                : profile.birthday
+                                                    ? profile.birthday.split("T")[0]
+                                                    : ""
+                                        }
                                         onChange={(e) => setNewInfo({ ...newInfo, birthday: e.target.value })}
                                     />
                                 </FloatingLabel>
@@ -278,6 +296,7 @@ export const ProfileView = ({ user, movies, onLogout, favourites, onRemove, onPr
                                         placeholder="New password"
                                         value={newInfo.password}
                                         onChange={(e) => setNewInfo({ ...newInfo, password: e.target.value })}
+                                        autoComplete="new-password"
                                     />
                                 </FloatingLabel>
 
@@ -290,14 +309,12 @@ export const ProfileView = ({ user, movies, onLogout, favourites, onRemove, onPr
                                     />
                                 </FloatingLabel>
 
-                                <Row className="justify-content-center mt-5">
-                                    <Col xs={12} md={6} lg={4} className="mx-auto">
-                                        <Button variant="primary" type="submit">
+                                <Row className="justify-content-end mt-5">
+                                    <Col xs={12} md="auto" className="d-flex flex-column align-items-end">
+                                        <Button variant="secondary" type="submit" className="mb-3 w-100 w-md-auto">
                                             Save Changes
                                         </Button>
-                                    </Col>
-                                    <Col xs={12} md={6} lg={4} className="mx-auto">
-                                        <Button variant="secondary" onClick={() => setEditing(false)}>
+                                        <Button variant="outline-dark" onClick={() => setEditing(false)} className="w-100 w-md-auto">
                                             Cancel
                                         </Button>
                                     </Col>
@@ -308,11 +325,11 @@ export const ProfileView = ({ user, movies, onLogout, favourites, onRemove, onPr
                 </Col>
             </Row>
 
-            <Row className="g-3 text-center uppercase">
-                <h3  className="my-4">Favourite Movies</h3>
+            <Row className="g-3">
+                <h5 className="mt-4">Favourite Movies: </h5>
                 {favouriteMovies.length > 0 ? (
                     favouriteMovies.map(movie => (
-                        <Col key={movie.id} md={4} xs={12} sm={6} lg={3}>
+                        <Col key={movie.id} xs={12} sm={6} md={4} lg={3}>
                             <Card className="h-100">
                                 <div className="image-container">
                                     <Card.Img variant="top" src={movie.image.imageUrl} alt={movie.title} loading="lazy" />
@@ -323,6 +340,7 @@ export const ProfileView = ({ user, movies, onLogout, favourites, onRemove, onPr
                                     </Card.Title>
                                 </Card.Body>
                                 <Button
+                                    className="btn-heart"
                                     variant="dark"
                                     onClick={() => handleRemoveFromFavourites(movie.id)}
                                 >
@@ -333,7 +351,7 @@ export const ProfileView = ({ user, movies, onLogout, favourites, onRemove, onPr
                     ))
                 ) : (
                     <p className="uppercase">You have no favourite movies yet. Add some from the movie list!
-                    <br/>  <i class="bi bi-search-heart-fill"></i>
+                        <br />  <i class="bi bi-search-heart-fill"></i>
 
                     </p>
                 )}

@@ -15,26 +15,27 @@ export const MovieCard = ({ movie, isFavourite, onToggleFavourite, onRemove }) =
             <div className="image-container">
                 <Card.Img variant="top" src={movie.image.imageUrl} alt={movie.title} loading="lazy" />
             </div>
-            <Card.Body>
+            <Card.Body className="d-flex flex-column">
                 <Card.Title>
                     <Link to={`/movies/${movie.id}`}>{movie.title}</Link>
                 </Card.Title>
-                <Card.Text>Directed by {movie.director.name}</Card.Text>
+                <Card.Text className="mt-auto">Directed by {movie.director.name}</Card.Text>
             </Card.Body>
             {/* Add/Remove Favourite button */}
             <Button
                 variant={isFavourite ? "dark" : "dark"}
                 onClick={handleClick}
+                className="btn-heart"
             >
                 {isFavourite ? (
-        <>
-            <i className="bi bi-heart-fill"></i> 
-        </>
-    ) : (
-        <>
-            <i className="bi bi-heart"></i> 
-        </>
-    )}
+                    <>
+                        <i className="bi bi-heart-fill"></i>
+                    </>
+                ) : (
+                    <>
+                        <i className="bi bi-heart"></i>
+                    </>
+                )}
             </Button>
 
         </Card>

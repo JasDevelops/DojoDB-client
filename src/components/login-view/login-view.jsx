@@ -49,7 +49,7 @@ export const LoginView = ({ onLoggedIn }) => {
                 <Form onSubmit={handleSubmit}>
                     <Form.Group controlId="username">
                         <FloatingLabel
-                            controlId="floatingTextarea"
+                            controlId="loginUsername"
                             label="Username"
                             className="mb-3"
                         >
@@ -65,7 +65,7 @@ export const LoginView = ({ onLoggedIn }) => {
 
                     <Form.Group controlId="password">
                         <FloatingLabel
-                            controlId="floatingTextarea"
+                            controlId="loginPassword"
                             label="Password"
                             className="mb-3"
                         >

@@ -1,60 +1,51 @@
-@import '../../index.scss';
+@import "../../index.scss";
 
-.navbar-brand.logo {
+
+.logo {
     font-family: $logoFont;
-    font-size: $extraLarge;
     letter-spacing: -2px;
     text-shadow: $textShadow;
     padding: $smallSpace;
-    color: $black;;
+    color: $black;
 }
-.navbar-collapse {
-    flex-grow:0
-}
-.navbar-expand-md .navbar-nav .nav-link {
+.logo span {
     color: $secondary;
-    text-align: center;
-    transition: $transition;
-    font-weight: $bolder;
-    width: 105px;
-
-
-    &:hover,
-    &:focus {
-        font-weight: $thin;
-
-    }
-
-    &.active{
-        border-bottom: $border;
-        border-color: $secondary;
-        color: $secondary;
-        font-weight: $bolder;
-    }
 }
+.navbar-brand.logo {
+    
+    font-size: $extraLarge;
 
+}
+.offcanvas-header .logo {
+    font-size: $bigSpace;
+}
 button.navbar-toggler {
-    border-radius: $borderRadius;
-    border: $border;
-    border-color: $secondary;
-}
-.bi-list:before{
-    color: $secondary;
-}
-.navbar-collapse .navbar-nav .nav-link {
-
-    width: auto;
-
-
+    border: none;
+    
     &:hover,
     &:focus {
-        font-weight: $thin;
-
+        box-shadow:none;
     }
+}
 
-    &.active{
-        border-bottom: none;
-        color: $secondary;
-        font-weight: $bolder;
+button.btn-link{
+    box-shadow:none;
+    color: $secondary;
+    
+    &:hover,
+    &:focus {
+        color: $tertiary;
+        background:none;
+        box-shadow:none;
     }
+    &:active {
+        opacity: $opacityDim;
+        color: $tertiary;
+    }
+}
+.form-control .search-input{
+    border-radius: $borderRadius;
+}
+:not(button.btn-link.btn-check) + button.btn-link.btn:active {
+    color: $tertiary;
 }
