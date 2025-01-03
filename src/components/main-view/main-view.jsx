@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Row, Col, Button } from "react-bootstrap";
+import { Row, Col } from "react-bootstrap";
 import { BrowserRouter, Routes, Route, Navigate, useParams, Link } from "react-router-dom";
 
 import { NavigationBar } from "../navigation-bar/navigation-bar";
@@ -8,8 +8,6 @@ import { MovieView } from "../movie-view/movie-view";
 import { LoginView } from "../login-view/login-view";
 import { SignupView } from "../signup-view/signup-view";
 import { ProfileView } from "../profile-view/profile-view";
-
-import "./main-view.scss";
 
 export const MainView = () => {
     const storedUser = JSON.parse(localStorage.getItem("user"));
@@ -104,7 +102,7 @@ export const MainView = () => {
 
             const updatedFavourites = await response.json();
 
-            // Update favourites in the local state
+            // Update favourites
             setFavourites(updatedFavourites.favourites);
             setAllMovies((prevMovies) =>
                 prevMovies.map((movie) =>
@@ -119,6 +117,7 @@ export const MainView = () => {
         }
     };
 
+    // Login
     const handleLogin = (user, token) => {
         setUser(user);
         setToken(token);
@@ -126,6 +125,7 @@ export const MainView = () => {
         localStorage.setItem("token", token);
     };
 
+    // Logout
     const handleLogout = () => {
         setUser(null);
         setToken(null);
@@ -138,12 +138,15 @@ export const MainView = () => {
         <BrowserRouter>
             <NavigationBar user={user} onLoggedOut={handleLogout} />
             <Routes>
+                {/* Login */}
                 <Route path="/login" element={user ? (<Navigate to="/" />) : (<Col>
                     <LoginView onLoggedIn={handleLogin} /></Col>)}
                 />
+                {/* Signup */}
                 <Route path="/signup" element={user ? (<Navigate to="/" />) : (<Col>
                     <SignupView /></Col>)}
                 />
+                {/* Profile */}
                 <Route path="/profile" element={user ? (
                     <ProfileView
                         user={user}
@@ -155,6 +158,7 @@ export const MainView = () => {
                     />
                 ) : (<Navigate to="/login" />)}
                 />
+                {/* Movie Details */}
                 <Route path="/movies/:movieID" element={user ? (
                     <MovieView
                         allMovies={allMovies}
@@ -165,11 +169,12 @@ export const MainView = () => {
                     />
                 ) : (<Navigate to="/login" replace />)}
                 />
+                {/* Home */}
                 <Route path="/" element={user ? (
                     allMovies.length === 0 ? (
                         <Col><h3>The list is empty!</h3></Col>
                     ) : (
-                        <Row className="g-3 ">
+                        <Row className="g-3 mb-5">
                             {allMovies.map((movie) => (
                                 <Col key={movie.id} xs={12} sm={6} md={4} lg={3}>
                                     <MovieCard

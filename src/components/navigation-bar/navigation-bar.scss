@@ -1,6 +1,5 @@
 @import "../../index.scss";
 
-
 .logo {
     font-family: $logoFont;
     letter-spacing: -2px;
@@ -8,44 +7,76 @@
     padding: $smallSpace;
     color: $black;
 }
+
 .logo span {
     color: $secondary;
 }
-.navbar-brand.logo {
-    
-    font-size: $extraLarge;
 
+.navbar-brand.logo {
+    font-size: $extraLarge;
 }
+
 .offcanvas-header .logo {
     font-size: $bigSpace;
 }
+
 button.navbar-toggler {
     border: none;
-    
+
     &:hover,
     &:focus {
-        box-shadow:none;
+        box-shadow: none;
+        opacity: $opacityDimmer;
+    }
+
+    &:active {
+        box-shadow: none;
+        opacity: $opacityDim;
     }
 }
 
-button.btn-link{
-    box-shadow:none;
+.offcanvas-body .nav-link {
+    color: $white;
+
+    &:hover,
+    &:focus {
+        color: $secondary
+    }
+
+    &:focus {
+        color: $tertiary
+    }
+
+    &.active {
+        font-weight: $bolder
+    }
+}
+
+.nav-link i {
+    padding-right: $bigSpace
+}
+
+button.btn-link {
+    box-shadow: none;
     color: $secondary;
-    
+
     &:hover,
     &:focus {
         color: $tertiary;
-        background:none;
-        box-shadow:none;
+        background: none;
+        box-shadow: none;
     }
+
     &:active {
         opacity: $opacityDim;
         color: $tertiary;
     }
 }
-.form-control .search-input{
+
+.form-control .search-input {
     border-radius: $borderRadius;
 }
-:not(button.btn-link.btn-check) + button.btn-link.btn:active {
+
+:not(button.btn-link.btn-check)+button.btn-link.btn:active {
     color: $tertiary;
 }

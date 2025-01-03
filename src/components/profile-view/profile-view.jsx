@@ -22,6 +22,11 @@ export const ProfileView = ({ user, movies, onLogout, favourites, onRemove, onPr
     const [error, setError] = useState(null);
     const navigate = useNavigate();
 
+    const validateEmail = (email) => {
+        const emailPattern = /^[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}$/;
+        return emailPattern.test(email);
+    };
+
     const formatDate = (dateString) => {
         const date = new Date(dateString);
         return date.toLocaleDateString("en-US", {
@@ -30,6 +35,7 @@ export const ProfileView = ({ user, movies, onLogout, favourites, onRemove, onPr
             day: "numeric",
         });
     };
+
     const handleRemoveFromFavourites = (movieID) => {
         if (!username) {
             console.error("Username is not defined!");
@@ -61,7 +67,6 @@ export const ProfileView = ({ user, movies, onLogout, favourites, onRemove, onPr
 
     // Fetch user profile and favourites
     useEffect(() => {
-
         const fetchProfile = async () => {
             const storedUser = JSON.parse(localStorage.getItem("user"));
             const storedToken = localStorage.getItem("token");
@@ -125,6 +130,11 @@ export const ProfileView = ({ user, movies, onLogout, favourites, onRemove, onPr
     const handleProfileUpdate = (e) => {
         e.preventDefault();
 
+        if (!validateEmail(newInfo.email)) {
+            setError("Please enter a valid email address.");
+            return;
+        }
+
         if (newInfo.password && newInfo.password !== confirmPassword) {
             setError("Passwords do not match.");
             return;
@@ -185,6 +195,13 @@ export const ProfileView = ({ user, movies, onLogout, favourites, onRemove, onPr
             .finally(() => setLoading(false));
     };
 
+    // Remove confirm password content
+    useEffect(() => {
+        if (editing) {
+            setConfirmPassword("");
+        }
+    }, [editing]);
+
     // Delete account 
     const deleteAccount = () => {
         if (window.confirm("Are you sure you want to delete your account? This action cannot be undone.")) {
@@ -228,6 +245,7 @@ export const ProfileView = ({ user, movies, onLogout, favourites, onRemove, onPr
                 <Col sm={12} md={10}>
                     {error && <Alert variant="info">{error}</Alert>}
                     {!editing ? (
+                        // User Profile
                         <>
                             <div className="mb-4 dark lightBg p-5">
                                 <p className="mb-2"><strong>Username:</strong> {profile.username}</p>
@@ -253,8 +271,8 @@ export const ProfileView = ({ user, movies, onLogout, favourites, onRemove, onPr
                                 </Col>
                             </Row>
                         </>
-
                     ) : (
+                        // User Profile Edit
                         <>
                             <Form onSubmit={handleProfileUpdate}>
                                 <FloatingLabel controlId="username" label="Username" className="mb-3">
@@ -265,7 +283,6 @@ export const ProfileView = ({ user, movies, onLogout, favourites, onRemove, onPr
                                         onChange={(e) => setNewInfo({ ...newInfo, username: e.target.value })}
                                     />
                                 </FloatingLabel>
-
                                 <FloatingLabel controlId="email" label="Email" className="mb-3">
                                     <Form.Control
                                         type="email"
@@ -274,7 +291,6 @@ export const ProfileView = ({ user, movies, onLogout, favourites, onRemove, onPr
                                         onChange={(e) => setNewInfo({ ...newInfo, email: e.target.value })}
                                     />
                                 </FloatingLabel>
-
                                 <FloatingLabel controlId="birthday" label="Birthday" className="mb-3">
                                     <Form.Control
                                         type="date"
@@ -289,26 +305,27 @@ export const ProfileView = ({ user, movies, onLogout, favourites, onRemove, onPr
                                         onChange={(e) => setNewInfo({ ...newInfo, birthday: e.target.value })}
                                     />
                                 </FloatingLabel>
-
                                 <FloatingLabel controlId="password" label="New Password" className="mb-3">
                                     <Form.Control
                                         type="password"
                                         placeholder="New password"
+                                        minLength="3"
                                         value={newInfo.password}
                                         onChange={(e) => setNewInfo({ ...newInfo, password: e.target.value })}
                                         autoComplete="new-password"
                                     />
-                                </FloatingLabel>
+                                    <Form.Text className="input-info">The password must be at least 3 characters long.</Form.Text>
 
+                                </FloatingLabel>
                                 <FloatingLabel controlId="confirmPassword" label="Confirm New Password" className="mb-3">
                                     <Form.Control
                                         type="password"
                                         placeholder="Confirm new password"
                                         value={confirmPassword}
                                         onChange={(e) => setConfirmPassword(e.target.value)}
+                                        autoComplete="off"
                                     />
                                 </FloatingLabel>
-
                                 <Row className="justify-content-end mt-5">
                                     <Col xs={12} md="auto" className="d-flex flex-column align-items-end">
                                         <Button variant="secondary" type="submit" className="mb-3 w-100 w-md-auto">
@@ -325,8 +342,8 @@ export const ProfileView = ({ user, movies, onLogout, favourites, onRemove, onPr
                 </Col>
             </Row>
 
-            <Row className="g-3">
-                <h5 className="mt-4">Favourite Movies: </h5>
+            <Row className="g-3 justify-content-center mb-5">
+                <h6 className="mt-4 font-weight-bold center">Favourite Movies: </h6>
                 {favouriteMovies.length > 0 ? (
                     favouriteMovies.map(movie => (
                         <Col key={movie.id} xs={12} sm={6} md={4} lg={3}>
@@ -350,9 +367,8 @@ export const ProfileView = ({ user, movies, onLogout, favourites, onRemove, onPr
                         </Col>
                     ))
                 ) : (
-                    <p className="uppercase">You have no favourite movies yet. Add some from the movie list!
-                        <br />  <i class="bi bi-search-heart-fill"></i>
-
+                    <p className="center dark mb-3">You have no favourite movies yet.
+                        <span className="secondary"><i class="bi bi-heartbreak-fill"></i></span> Add some from the movie list!
                     </p>
                 )}
             </Row>

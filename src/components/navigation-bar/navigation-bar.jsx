@@ -12,13 +12,12 @@ export const NavigationBar = ({ user, onLoggedOut }) => {
     const handleShow = () => setShow(true);
 
     return (
-        <Navbar expand={false} className="bg-body-secondary mb-3">
+        <Navbar expand={false} className="mb-3">
             <Container fluid>
                 <Navbar.Brand className="logo" as={Link} to="/">
                     Dojo<span>DB</span>
                 </Navbar.Brand>
-                <Navbar.Toggle aria-controls="offcanvasNavbar" onClick={handleShow}>
-                </Navbar.Toggle>
+                <Navbar.Toggle aria-controls="offcanvasNavbar" onClick={handleShow}></Navbar.Toggle>
                 <Navbar.Offcanvas
                     id="offcanvasNavbar"
                     aria-labelledby="offcanvasNavbarLabel"
@@ -26,11 +25,8 @@ export const NavigationBar = ({ user, onLoggedOut }) => {
                     show={show}
                     onHide={handleClose}
                     data-bs-theme="dark"
-
                 >
-                    <Offcanvas.Header closeButton>
-                        
-                    </Offcanvas.Header>
+                    <Offcanvas.Header closeButton></Offcanvas.Header>
                     <Offcanvas.Body>
                         <Nav className="justify-content-end flex-grow-1 pe-3">
                             {!user && (
@@ -46,15 +42,16 @@ export const NavigationBar = ({ user, onLoggedOut }) => {
                             {user && (
                                 <>
                                     <Nav.Link as={Link} to="/" active={location.pathname === "/"} onClick={handleClose} >
-                                    <i class="bi bi-house"></i> Home
+                                        <i class="bi bi-house"></i> Home
                                     </Nav.Link>
                                     <Nav.Link as={Link} to="/profile" active={location.pathname === "/profile"} onClick={handleClose}>
-                                    <i class="bi bi-person"></i> Profile
+                                        <i class="bi bi-person"></i> Profile
                                     </Nav.Link>
                                     <Nav.Link onClick={() => { onLoggedOut(); handleClose(); }}>
-                                    <i class="bi bi-door-closed"></i> Logout
+                                        <i class="bi bi-door-closed"></i> Logout
                                     </Nav.Link>
-                                    <Form className="d-flex mt-5">
+                                    {/* Search Form to come later */}
+                                    {/*  <Form className="d-flex mt-5">
                                         <Form.Control
                                             type="search"
                                             placeholder="Search"
@@ -62,11 +59,10 @@ export const NavigationBar = ({ user, onLoggedOut }) => {
                                             aria-label="Search"
                                         />
                                         <Button variant="link" className="search-button"><i class="bi bi-search"></i></Button>
-                                    </Form>
+                                    </Form> */}
                                 </>
                             )}
                         </Nav>
-
                     </Offcanvas.Body>
                 </Navbar.Offcanvas>
             </Container>

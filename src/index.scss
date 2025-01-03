@@ -21,8 +21,9 @@ $logoFont: "Barrio", sans-serif;
 $titleFont: "Kirang Haerang", sans-serif;
 $textFont: "Montserrat", sans-serif;
 
-$smallText: 10px;
+$smallText: 11px;
 $normalText: 16px;
+$biggerText: calc(1.275rem + .3vw);
 
 $textShadow: 2px 2px $white;
 
@@ -31,7 +32,6 @@ $bolder: 700;
 $bold: 400;
 $normal: 300;
 $thin: 200;
-
 
 $border: 2px solid;
 $borderRadius: 2px;
@@ -82,13 +82,17 @@ h4 {
     color: $secondary
 }
 
+h5 {
+    font-family: $titleFont;
+    font-size: $biggerText;
+}
+
 .small {
     font-size: $smallText
 }
 
 .font-weight-bold,
-strong,
-h5 {
+strong {
     font-weight: $bolder
 }
 
@@ -98,10 +102,14 @@ h5 {
 
 .bi {
     -webkit-text-stroke: 1.3px;
-
 }
 
-.dark p {
+.bi-heartbreak-fill {
+    -webkit-text-stroke: 0;
+}
+
+.dark p,
+.dark {
     color: $black;
     margin-bottom: $mediumSpace
 }
@@ -109,6 +117,11 @@ h5 {
 .lightBg {
     background: $white;
     border-radius: $borderRadius;
+}
+
+.secondary {
+    color: $secondary;
+    padding: $smallSpace;
 }
 
 /* Buttons */
@@ -158,9 +171,10 @@ h5 {
         box-shadow: none;
     }
 
-    &:active {
+    &:active,
+    :not(.btn-check)+.btn-heart.btn:active {
         box-shadow: none;
-        background-color: $black;
+        background-color: $black!important
     }
 
 }
@@ -178,17 +192,6 @@ h5 {
 .form .form-floating>.form-control {
     font-weight: $bold;
     border-radius: $borderRadius;
-
-
-}
-
-.form-floating>.form-control:focus~label,
-.form-floating>.form-control:not(:placeholder-shown)~label,
-.form-floating>.form-control-plaintext~label,
-.form-floating>.form-select~label,
-.form-label {
-    padding: $smallSpace;
-
 }
 
 .form-text,
@@ -238,7 +241,6 @@ h5 {
     &:hover,
     &:focus {
         box-shadow: $boxShadowCardMore;
-        background-color: $black90;
     }
 
     &+img {
@@ -250,12 +252,8 @@ h5 {
     }
 }
 
-
 .movieDetails {
     box-shadow: $boxShadowCardMore;
-}
-
-.movieDetails {
 
     &:hover,
     &:focus {

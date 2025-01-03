@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-
 import { Form, Col, Button, Alert, FloatingLabel, Row } from "react-bootstrap";
 
 export const LoginView = ({ onLoggedIn }) => {
@@ -44,7 +43,7 @@ export const LoginView = ({ onLoggedIn }) => {
 
     return (
         <Row className="form">
-            <Col xs={12} md={6} lg={4}  className="mx-auto">
+            <Col xs={12} md={6} lg={4} className="mx-auto">
                 <h1 className="my-4">Welcome back!</h1>
                 <Form onSubmit={handleSubmit}>
                     <Form.Group controlId="username">

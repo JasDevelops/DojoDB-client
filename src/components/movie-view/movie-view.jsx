@@ -1,23 +1,24 @@
 import { useParams, Link } from "react-router-dom";
-import { useState, useEffect } from "react";
 import { Col, Row, Button, Figure } from "react-bootstrap";
 import PropTypes from "prop-types";
 
 import { MovieCard } from "../movie-card/movie-card";
 import "./movie-view.scss";
 
-export const MovieView = ({ allMovies, favourites, onToggleFavourite }) => {
+export const MovieView = ({ allMovies, favourites = [], onToggleFavourite }) => {
     const { movieID } = useParams();
     const movie = allMovies.find(movie => movie.id === movieID);
 
     if (!movie) {
         return <Col><h3>Loading...</h3></Col>;
     }
-    const isFavourite = favourites.some(fav => fav.movieId === movie.id);
+
+    const isFavourite = Array.isArray(favourites) && favourites.some(fav => fav.movieId === movie.id);
 
     const handleToggleFavourite = () => {
         onToggleFavourite(movie.id, isFavourite);
     };
+
     // Similar movies 
     const similarMovies = allMovies
         .filter(simMovie => simMovie.id !== movie.id)
@@ -28,14 +29,13 @@ export const MovieView = ({ allMovies, favourites, onToggleFavourite }) => {
             <Row>
                 <Col>
                     <h1 className="mt-4">{movie.title}</h1>
-                    <div className="mb-4 center">
+                    <div className="mb-4 center dark">
                         <p>Directed by {movie.director.name}</p>
                     </div>
                 </Col>
             </Row>
             <Row className="align-items-center movieDetails mb-4 flex-grow-1">
-
-                <Col md={4}>
+                <Col md={4} className="p-3">
                     <Figure className="w-100">
                         <Figure.Image
                             width="100%"
@@ -53,9 +53,8 @@ export const MovieView = ({ allMovies, favourites, onToggleFavourite }) => {
                         </Figure.Caption>
                     </Figure>
                 </Col>
-
-                <Col md={8}>
-                    <Row>
+                <Col md={8} className="d-flex flex-column justify-content-between">
+                    <Row className="d-flex justify-content-between">
                         <Col xs={6} className="d-flex justify-content-start mb-4">
                             <div>
                                 <p>
@@ -71,7 +70,7 @@ export const MovieView = ({ allMovies, favourites, onToggleFavourite }) => {
                             </div>
                         </Col>
                     </Row>
-                    <div className="description mb-4">
+                    <div className="description my-4 flex-grow-1 d-flex align-items-center">
                         <p>{movie.description}</p>
                     </div>
                     <div className="moreInfo">
@@ -89,10 +88,9 @@ export const MovieView = ({ allMovies, favourites, onToggleFavourite }) => {
                                 )}
                             </p>
                         </div>
-
                     </div>
-
-                    <div className="d-flex justify-content-end">
+                    {/* Add/Remove Favourite button */}
+                    <div className="d-flex justify-content-end mt-auto">
                         <Button
                             variant={isFavourite ? "dark" : "dark"}
                             onClick={handleToggleFavourite}
@@ -111,13 +109,14 @@ export const MovieView = ({ allMovies, favourites, onToggleFavourite }) => {
                     </div>
                 </Col>
             </Row>
-
+            {/* Back Home button */}
             <div className="d-flex justify-content-end mb-3">
                 <Link to="/" className="back-btn">
                     <Button variant="secondary"><i class="bi bi-arrow-left-short"></i>
                         Back</Button>
                 </Link>
             </div>
+            {/* Similar Movies */}
             <Row>
                 <h3 className="my-4">Similar Movies</h3>
                 <Row>

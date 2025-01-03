@@ -17,10 +17,11 @@ export const MovieCard = ({ movie, isFavourite, onToggleFavourite, onRemove }) =
             </div>
             <Card.Body className="d-flex flex-column">
                 <Card.Title>
-                    <Link to={`/movies/${movie.id}`}>{movie.title}</Link>
+                    <h5><Link to={`/movies/${movie.id}`}>{movie.title}</Link></h5>
                 </Card.Title>
                 <Card.Text className="mt-auto">Directed by {movie.director.name}</Card.Text>
             </Card.Body>
+
             {/* Add/Remove Favourite button */}
             <Button
                 variant={isFavourite ? "dark" : "dark"}
@@ -37,7 +38,6 @@ export const MovieCard = ({ movie, isFavourite, onToggleFavourite, onRemove }) =
                     </>
                 )}
             </Button>
-
         </Card>
     );
 };
