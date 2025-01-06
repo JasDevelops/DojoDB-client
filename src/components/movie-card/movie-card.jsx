@@ -1,32 +1,61 @@
 import PropTypes from "prop-types";
+import { Link } from "react-router-dom";
+import { Card, Button } from "react-bootstrap";
 
-import "./movie-card.scss";
-
-import Col from "react-bootstrap/Col";
-import Card from "react-bootstrap/Card";
-
-export const MovieCard = ({ movie, onMovieClick }) => {
+export const MovieCard = ({ movie, isFavourite, onToggleFavourite, onRemove }) => {
+    const handleClick = () => {
+        if (onRemove) {
+            onRemove(movie.id);
+        } else {
+            onToggleFavourite(movie.id, isFavourite);
+        }
+    };
     return (
-        <Card className="movie-card h-100 bg" onClick={() => onMovieClick(movie)}>
+        <Card className="h-100">
             <div className="image-container">
-                <Card.Img variant="top" src={movie.image.imageUrl} alt={movie.title} />
+                <Card.Img variant="top" src={movie.image.imageUrl} alt={movie.title} loading="lazy" />
             </div>
-            <Card.Body className="d-flex flex-column justify-content-between">
-                <Card.Title>{movie.title}</Card.Title>
-                <Card.Text>Directed by {movie.director.name}</Card.Text>
+            <Card.Body className="d-flex flex-column">
+                <Card.Title>
+                    <h5><Link to={`/movies/${movie.id}`}>{movie.title}</Link></h5>
+                </Card.Title>
+                <Card.Text className="mt-auto">Directed by {movie.director.name}</Card.Text>
             </Card.Body>
+
+            {/* Add/Remove Favourite button */}
+            <Button
+                variant={isFavourite ? "dark" : "dark"}
+                onClick={handleClick}
+                className="btn-heart"
+            >
+                {isFavourite ? (
+                    <>
+                        <i className="bi bi-heart-fill"></i>
+                    </>
+                ) : (
+                    <>
+                        <i className="bi bi-heart"></i>
+                    </>
+                )}
+            </Button>
         </Card>
     );
 };
+
+
 MovieCard.propTypes = {
     movie: PropTypes.shape({
+        id: PropTypes.string.isRequired,
         title: PropTypes.string.isRequired,
         image: PropTypes.shape({
             imageUrl: PropTypes.string.isRequired,
+            imageAttribution: PropTypes.string,
         }).isRequired,
         director: PropTypes.shape({
             name: PropTypes.string.isRequired,
         }).isRequired,
     }).isRequired,
-    onMovieClick: PropTypes.func.isRequired,
+    isFavourite: PropTypes.bool.isRequired,
+    onToggleFavourite: PropTypes.func,
+    onRemove: PropTypes.func,
 };

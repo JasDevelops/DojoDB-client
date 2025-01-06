@@ -1,74 +1,132 @@
 import { useState, useEffect } from "react";
+import { Row, Col } from "react-bootstrap";
+import { BrowserRouter, Routes, Route, Navigate, useParams, Link } from "react-router-dom";
 
-import "./main-view.scss";
-
-import Row from "react-bootstrap/Row";
-import Col from "react-bootstrap/Col";
-import Button from "react-bootstrap/Button";
-
+import { NavigationBar } from "../navigation-bar/navigation-bar";
 import { MovieCard } from "../movie-card/movie-card";
 import { MovieView } from "../movie-view/movie-view";
 import { LoginView } from "../login-view/login-view";
 import { SignupView } from "../signup-view/signup-view";
+import { ProfileView } from "../profile-view/profile-view";
 
 export const MainView = () => {
     const storedUser = JSON.parse(localStorage.getItem("user"));
     const storedToken = localStorage.getItem("token");
-
-    const [movies, setMovies] = useState([]);
-    const [selectedMovie, setSelectedMovie] = useState(null);
+    const [allMovies, setAllMovies] = useState([]);
     const [user, setUser] = useState(storedUser ? storedUser : null);
     const [token, setToken] = useState(storedToken ? storedToken : null);
-    const [showLogin, setShowLogin] = useState(true); // Show LoginView or SignupView
+    const [favourites, setFavourites] = useState([]);
+    const [similarMovies, setSimilarMovies] = useState([]);
 
-    useEffect(() => { // Fetch movies if token is available
-        if (!token) return; // Don't fetch if there is no token
-        fetch("https://dojo-db-e5c2cf5a1b56.herokuapp.com/movies", {
-            headers: {
-                Authorization: `Bearer ${token}`, // Send token for authentication
-            },
-        })
-            .then((response) => response.json())
-            .then((data) => {
-                const moviesFromApi = data.map((movie) => ({
-                    id: movie._id,
+    const getUniqueSimilarMovies = (movies) => {
+        return Array.from(new Set(movies.map(movie => movie.id)))
+            .map(id => movies.find(movie => movie.id === id));
+    };
+
+    const { movieID } = useParams();
+
+    const handleProfileUpdate = (updatedUser) => {
+        setUser(updatedUser);
+        localStorage.setItem("user", JSON.stringify(updatedUser));
+    };
+
+    useEffect(() => {
+        if (!token || !user) return;
+
+        const fetchData = async () => {
+            try {
+                // Fetch movies
+                const moviesResponse = await fetch("https://dojo-db-e5c2cf5a1b56.herokuapp.com/movies", {
+                    headers: {
+                        "Authorization": `Bearer ${storedToken}`,
+                        "Content-Type": "application/json"
+                    },
+                });
+                const moviesData = await moviesResponse.json();
+                const moviesFromApi = moviesData.map((movie) => ({
+                    id: movie._id.toString(),
                     title: movie.title,
                     description: movie.description,
                     genre: {
                         name: movie.genre.name,
-                        description: movie.genre.description
+                        description: movie.genre.description,
                     },
-                    image: {
-                        imageUrl: movie.image?.imageUrl,
-                        imageAttribution: movie.image?.imageAttribution
-                    },
-                    featured: true,
-                    director: {
-                        name: movie.director.name,
-                        bio: movie.director.bio,
-                        birthYear: movie.director.birthYear,
-                        deathYear: movie.director.deathYear,
-                    },
-                    actors: movie.actors,  // Include the actors here
-                releaseYear: movie.releaseYear,
-            }));
-                setMovies(moviesFromApi);
-            })
-            .catch((error) => alert("Error fetching movies: " + error));
-    }, [token]); // Only fetch when token changes
+                    image: movie.image,
+                    director: { name: movie.director.name },
+                    actors: movie.actors,
+                    releaseYear: movie.releaseYear,
+                }));
 
-    const handleMovieClick = (newSelectedMovie) => {
-        setSelectedMovie(newSelectedMovie); // Update the selected movie when a similar movie is clicked
+                // Fetch favourites
+                const favouritesResponse = await fetch(`https://dojo-db-e5c2cf5a1b56.herokuapp.com/users/${user.username}`, {
+                    headers: {
+                        "Authorization": `Bearer ${storedToken}`,
+                        "Content-Type": "application/json"
+                    },
+                });
+
+                const favouritesData = await favouritesResponse.json();
+                const favouritesList = Array.isArray(favouritesData.user.favourites)
+                    ? favouritesData.user.favourites
+                    : [];
+                const updatedMovies = moviesFromApi.map((movie) => ({
+                    ...movie,
+                    isFavourite: favouritesList.some((fav) => fav.movieId.toString() === movie.id),
+                }));
+
+                setFavourites(Array.isArray(favouritesList) ? favouritesList : []);
+                setAllMovies(updatedMovies);
+                setSimilarMovies(getUniqueSimilarMovies(moviesFromApi.slice(0, 3)));
+
+            } catch (error) {
+                console.error("Error fetching data:", error);
+            }
+        };
+        fetchData();
+    }, [token, user]);
+
+    const toggleFavourite = async (movieID, isFavourite) => {
+        const endpoint = `https://dojo-db-e5c2cf5a1b56.herokuapp.com/users/${user.username}/favourites/${movieID}`;
+        const method = isFavourite ? "DELETE" : "PUT";
+
+        try {
+            const response = await fetch(endpoint, {
+                method,
+                headers: {
+                    "Authorization": `Bearer ${storedToken}`,
+                    "Content-Type": "application/json"
+                },
+            });
+
+            if (!response.ok) throw new Error(`Failed to update favourites: ${response.status}`);
+
+            const updatedFavourites = await response.json();
+
+            // Update favourites
+            setFavourites(updatedFavourites.favourites);
+            setAllMovies((prevMovies) =>
+                prevMovies.map((movie) =>
+                    movie.id === movieID
+                        ? { ...movie, isFavourite: !isFavourite }
+                        : movie
+                )
+            );
+        } catch (error) {
+            console.error("Error toggling favourite:", error);
+            alert("An error occurred while updating your favourites.");
+        }
     };
 
-    const handleLogin = (user, token) => { // Login
+    // Login
+    const handleLogin = (user, token) => {
         setUser(user);
         setToken(token);
         localStorage.setItem("user", JSON.stringify(user));
         localStorage.setItem("token", token);
     };
 
-    const handleLogout = () => { // Logout (reset)
+    // Logout
+    const handleLogout = () => {
         setUser(null);
         setToken(null);
         localStorage.clear();
@@ -76,65 +134,65 @@ export const MainView = () => {
         localStorage.removeItem("token");
     };
 
-    if (!user) {
-        return (
-            <Row className="mainView_form w-100 min-vh-100">
-                <Col className="w-100">
-                    <div className="slider-toggle-container" onClick={() => setShowLogin(!showLogin)}>
-                        <div className={`slider-circle ${showLogin ? "login" : "signup"}`} />
-                        <span className={`slider-text-left ${showLogin ? "active" : ""}`}>Log in</span>
-                        <span className={`slider-text-right ${!showLogin ? "active" : ""}`}>Sign up</span>
-                    </div>
-                </Col>
-
-                <Col className="d-flex justify-content-center align-items-start flex-grow-1 w-100 col-11 col-md-10 col-lg-8">
-                    {showLogin ? <LoginView onLoggedIn={handleLogin} /> : <SignupView />}
-                </Col>
-            </Row>
-        );
-    }
-
-    if (selectedMovie) { // Show MovieView, if a movie is selected
-        return (
-            <Row className="movieView_main">
-                <MovieView
-                    movie={selectedMovie}
-                    allMovies={movies}
-                    onBackClick={() => setSelectedMovie(null)}
-                    onMovieClick={handleMovieClick}
+    return (
+        <BrowserRouter>
+            <NavigationBar user={user} onLoggedOut={handleLogout} />
+            <Routes>
+                {/* Login */}
+                <Route path="/login" element={user ? (<Navigate to="/" />) : (<Col>
+                    <LoginView onLoggedIn={handleLogin} /></Col>)}
                 />
-            </Row>
-        );
-    }
-
-    if (movies.length === 0) { // If no movies a re available
-        return (
-            <Row className="mainView_empty">
-                <h3>The list is empty!</h3>
-            </Row>
-        );
-    }
-
-    return ( // Default view:showing all movie cards
-        <div className="movieCards_main">
-            <Row className="d-flex justify-content-end align-items-start">
-                <Col className="auto logout-col">
-                    <Button className="logout-btn" variant="primary" onClick={handleLogout}>Logout</Button>
-                </Col>
-            </Row>
-
-            <Row className="w-100 gx-4 gy-4">
-                {movies.map((movie) => (
-                    <Col key={movie.id} xs={12} sm={6} md={4} lg={3}>
-                        <MovieCard
-                            movie={movie}
-                            onMovieClick={() => setSelectedMovie(movie)}
-                        />
-                    </Col>
-                ))}
-            </Row>
-        </div>
-
+                {/* Signup */}
+                <Route path="/signup" element={user ? (<Navigate to="/" />) : (<Col>
+                    <SignupView /></Col>)}
+                />
+                {/* Profile */}
+                <Route path="/profile" element={user ? (
+                    <ProfileView
+                        user={user}
+                        movies={allMovies}
+                        favourites={favourites}
+                        onLogout={handleLogout}
+                        onRemove={toggleFavourite}
+                        onProfileUpdate={handleProfileUpdate}
+                    />
+                ) : (<Navigate to="/login" />)}
+                />
+                {/* Movie Details */}
+                <Route path="/movies/:movieID" element={user ? (
+                    <MovieView
+                        allMovies={allMovies}
+                        user={user}
+                        favourites={favourites}
+                        onToggleFavourite={toggleFavourite}
+                        similarMovies={similarMovies}
+                    />
+                ) : (<Navigate to="/login" replace />)}
+                />
+                {/* Home */}
+                <Route path="/" element={user ? (
+                    allMovies.length === 0 ? (
+                        <Col><h3>The list is empty!</h3></Col>
+                    ) : (
+                        <Row className="g-3 mb-5">
+                            {allMovies.map((movie) => (
+                                <Col key={movie.id} xs={12} sm={6} md={4} lg={3}>
+                                    <MovieCard
+                                        movie={movie}
+                                        isFavourite={
+                                            Array.isArray(favourites) &&
+                                            favourites.some(fav => fav.movieId.toString() === movie.id.toString())
+                                        }
+                                        onToggleFavourite={(movieId, isFavourite) => toggleFavourite(movieId, isFavourite)}
+                                    />
+                                </Col>
+                            ))}
+                        </Row>
+                    )
+                ) : (<Navigate to="/login" replace />)} />
+            </Routes>
+        </BrowserRouter>
     );
 };
+
 export default MainView;

@@ -1,16 +1,4 @@
-@import '../../index.scss';
-
-.description span {
-    color: $white;
-    line-height: 200%;
-}
-
-.description {
-    text-transform: uppercase;
-    letter-spacing:1px;
-    text-align: justify;
-    padding: $mediumSpace 0;
-}
+@import "../../index.scss";
 
 .movieView {
     height: 100%;

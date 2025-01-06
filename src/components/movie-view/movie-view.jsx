@@ -1,144 +1,162 @@
+import { useParams, Link } from "react-router-dom";
+import { Col, Row, Button, Figure } from "react-bootstrap";
 import PropTypes from "prop-types";
 
+import { MovieCard } from "../movie-card/movie-card";
 import "./movie-view.scss";
 
-import Row from "react-bootstrap/Row";
-import Col from "react-bootstrap/Col";
-import Button from "react-bootstrap/Button";
-import Card from "react-bootstrap/Card";
-import Figure from "react-bootstrap/Figure";
+export const MovieView = ({ allMovies, favourites = [], onToggleFavourite }) => {
+    const { movieID } = useParams();
+    const movie = allMovies.find(movie => movie.id === movieID);
 
-import { MovieCard } from "../movie-card/movie-card";
+    if (!movie) {
+        return <Col><h3>Loading...</h3></Col>;
+    }
 
-export const MovieView = ({ movie, allMovies, onBackClick, onMovieClick }) => {
+    const isFavourite = Array.isArray(favourites) && favourites.some(fav => fav.movieId === movie.id);
 
-    {/* Filter movies by same genre, excl. current movie, limit similar movies to 3 */ }
+    const handleToggleFavourite = () => {
+        onToggleFavourite(movie.id, isFavourite);
+    };
+
+    // Similar movies 
     const similarMovies = allMovies
-        .filter((m) => m.genre.name === movie.genre.name && m.id !== movie.id)
+        .filter(simMovie => simMovie.id !== movie.id)
         .slice(0, 3);
-    return (
-        <Col className="movieView">
 
-            <Row className="bg mt-5 mb-5 p-3  justify-content-between" style={{ height: "100%" }}>
-                <div className="title mb-3">
-                    <h2>{movie.title}</h2>
-                </div>
-                <Col md={4} className="d-flex flex-column justify-content-betwen align-items-center">
+    return (
+        <div className="movieView d-flex flex-column h-100">
+            <Row>
+                <Col>
+                    <h1 className="mt-4">{movie.title}</h1>
+                    <div className="mb-4 center dark">
+                        <p>Directed by {movie.director.name}</p>
+                    </div>
+                </Col>
+            </Row>
+            <Row className="align-items-center movieDetails mb-4 flex-grow-1">
+                <Col md={4} className="p-3">
                     <Figure className="w-100">
                         <Figure.Image
                             width="100%"
                             alt={movie.title}
-                            src={movie.image.imageUrl}
-                            className="img-fluid rounded"
+                            src={
+                                movie.image && movie.image.imageUrl
+                                    ? movie.image.imageUrl
+                                    : "https://placehold.co/600x400/000000/FFF"
+                            }
+                            className="img-fluid"
                         />
-                        <Figure.Caption>
-                            <span className="font-weight-bold">Image Attribution: </span>
-                            {movie.image.imageAttribution}
+                        <Figure.Caption className="small">
+                            <span className="font-weight-bold">Image from: </span>
+                            {movie.image?.imageAttribution || "N/A"}
                         </Figure.Caption>
                     </Figure>
                 </Col>
-                <Col md={8} className="d-flex flex-column justify-content-between" >
-                    <div className="description mb-4">
-                        <span>{movie.description}</span>
-                    </div>
-
-                    <div className="mb-3">
-                        <span className="font-weight-bold">Director: </span>
-                        <span>{movie.director.name}</span>
-                    </div>
-                    <div className="mb-3">
-                        <span className="font-weight-bold">Actors: </span>
-                        {movie.actors && movie.actors.length > 0 ? (
-                            movie.actors.map((actor, index) => (
-                                <span key={actor._id}>
-                                    {actor.name} as "{actor.role}"
-                                    {index < movie.actors.length - 1 ? ', ' : ''}
-                                </span>
-                            ))
-                        ) : (
-                            <span>No actors available</span>
-                        )}
-                    </div>
-                    <Row className="mb-3 mt-3" style={{ flexGrow: 1 }}>
-                        <Col xs={6} className="d-flex justify-content-start align-items-start">
+                <Col md={8} className="d-flex flex-column justify-content-between">
+                    <Row className="d-flex justify-content-between">
+                        <Col xs={6} className="d-flex justify-content-start mb-4">
                             <div>
-                                <span className="font-weight-bold">Genre: </span>
-                                <span>{movie.genre.name}</span>
+                                <p>
+                                    <span className="font-weight-bold">Genre: </span>
+                                    {movie.genre.name}</p>
                             </div>
                         </Col>
-                        <Col xs={6} className="d-flex justify-content-end align-items-start">
+                        <Col xs={6} className="d-flex justify-content-end">
                             <div>
-                                <span className="font-weight-bold">Release Year: </span>
-                                <span>{movie.releaseYear}</span>
+                                <p>
+                                    <span className="font-weight-bold">Release Year: </span>
+                                    {movie.releaseYear}</p>
                             </div>
                         </Col>
                     </Row>
-                    <div className="mt-auto">
-                        <Button onClick={onBackClick} className="back-btn">Back</Button>
+                    <div className="description my-4 flex-grow-1 d-flex align-items-center">
+                        <p>{movie.description}</p>
+                    </div>
+                    <div className="moreInfo">
+                        <div className="actors mb-3">
+                            <p>
+                                {movie.actors && movie.actors.length > 0 ? (
+                                    movie.actors.map((actor, index) => (
+                                        <p key={index}>
+                                            <span className="font-weight-bold">{actor.name}</span> as "{actor.role}"
+                                            {index < movie.actors.length - 1 && ", "}
+                                        </p>
+                                    ))
+                                ) : (
+                                    <p>N/A</p>
+                                )}
+                            </p>
+                        </div>
+                    </div>
+                    {/* Add/Remove Favourite button */}
+                    <div className="d-flex justify-content-end mt-auto">
+                        <Button
+                            variant={isFavourite ? "dark" : "dark"}
+                            onClick={handleToggleFavourite}
+                            className="ms-3 btn-heart"
+                        >
+                            {isFavourite ? (
+                                <>
+                                    <i className="bi bi-heart-fill"></i>
+                                </>
+                            ) : (
+                                <>
+                                    <i className="bi bi-heart"></i>
+                                </>
+                            )}
+                        </Button>
                     </div>
                 </Col>
             </Row>
-            <h3>Similar Movies</h3>
+            {/* Back Home button */}
+            <div className="d-flex justify-content-end mb-3">
+                <Link to="/" className="back-btn">
+                    <Button variant="secondary"><i class="bi bi-arrow-left-short"></i>
+                        Back</Button>
+                </Link>
+            </div>
+            {/* Similar Movies */}
             <Row>
-                {similarMovies.length > 0 ? (
-                    similarMovies.slice(0, 3).map((similarMovie) => (
-                        <Col key={similarMovie.id} md={4} className="mb-4">
-                            <Card className="movie-card  h-100 bg" onClick={() => onMovieClick(similarMovie)}>
-                                <div className="image-container">
-                                    <Card.Img
-                                        variant="top"
-                                        src={similarMovie.image.imageUrl}
-                                        alt={similarMovie.title}
-                                    />
-                                </div>
-                                <Card.Body className="d-flex flex-column">
-                                    <Card.Title>{similarMovie.title}</Card.Title>
-                                    <Card.Text>Directed by {similarMovie.director.name}</Card.Text>
-                                    <Button onClick={() => onMovieClick(similarMovie)} >View Details</Button>
-                                </Card.Body>
-                            </Card>
-                        </Col>
-                    ))
-                ) : (
-                    <Col>
-                        <p>No similar movies found - sorry!</p>
-                    </Col>
-                )}
+                <h3 className="my-4">Similar Movies</h3>
+                <Row>
+                    {similarMovies.map(similarMovie => {
+                        const isFavourite = favourites.some(fav => fav.movieId === similarMovie.id);
+                        return (
+                            <Col key={similarMovie.id} md={4} className="mb-4">
+                                <MovieCard
+                                    movie={similarMovie}
+                                    isFavourite={isFavourite}
+                                    onToggleFavourite={onToggleFavourite}
+                                />
+                            </Col>
+                        );
+                    })}
+                </Row>
             </Row>
-        </Col>
+        </div>
     );
 };
+
 MovieView.propTypes = {
-    movie: PropTypes.shape({
-        title: PropTypes.string.isRequired,
-        description: PropTypes.string.isRequired,
-        genre: PropTypes.shape({
-            name: PropTypes.string.isRequired,
-        }).isRequired,
-        director: PropTypes.shape({
-            name: PropTypes.string.isRequired,
-        }).isRequired,
-        image: PropTypes.shape({
-            imageUrl: PropTypes.string.isRequired,
-            imageAttribution: PropTypes.string.isRequired,
-        }).isRequired,
-        actors: PropTypes.arrayOf(
-            PropTypes.shape({
-                _id: PropTypes.string.isRequired,
-                name: PropTypes.string.isRequired,
-                role: PropTypes.string.isRequired,
-            })
-        ).isRequired,
-        releaseYear: PropTypes.number.isRequired,
-    }).isRequired,
     allMovies: PropTypes.arrayOf(
         PropTypes.shape({
             id: PropTypes.string.isRequired,
             genre: PropTypes.shape({
                 name: PropTypes.string.isRequired,
             }).isRequired,
+            title: PropTypes.string.isRequired,
+            image: PropTypes.shape({
+                imageUrl: PropTypes.string,
+                imageAttribution: PropTypes.string,
+            }),
+            description: PropTypes.string.isRequired,
+            director: PropTypes.shape({
+                name: PropTypes.string.isRequired,
+            }).isRequired,
+            releaseYear: PropTypes.number.isRequired,
         })
-    ).isRequired,
-    onBackClick: PropTypes.func.isRequired,
-    onMovieClick: PropTypes.func.isRequired,
+    ),
+    favourites: PropTypes.array.isRequired,
+    onToggleFavourite: PropTypes.func.isRequired,
 };

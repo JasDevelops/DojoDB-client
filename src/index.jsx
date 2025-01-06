@@ -1,5 +1,6 @@
 import { createRoot } from "react-dom/client";
 import Container from "react-bootstrap/Container";
+import "bootstrap-icons/font/bootstrap-icons.css";
 
 import { MainView } from "./components/main-view/main-view";
 
@@ -9,7 +10,7 @@ import "./index.scss";
 // Main component
 const DojoDBApplication = () => {
     return (
-        <Container className="d-flex align-items-center justify-content-center min-vh-100" >
+        <Container>
             <MainView />
         </Container>
     );

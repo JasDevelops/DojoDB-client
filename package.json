@@ -10,10 +10,13 @@
   "license": "ISC",
   "dependencies": {
     "bootstrap": "^5.3.3",
+    "bootstrap-icons": "^1.11.3",
     "prop-types": "^15.8.1",
     "react": "^19.0.0",
     "react-bootstrap": "^2.10.7",
-    "react-dom": "^19.0.0"
+    "react-dom": "^19.0.0",
+    "react-router": "^6.8.0",
+    "react-router-dom": "^6.8.0"
   },
   "devDependencies": {
     "@parcel/transformer-sass": "^2.13.2",
