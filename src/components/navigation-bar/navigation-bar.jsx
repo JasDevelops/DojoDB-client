@@ -1,15 +1,25 @@
 import { useState } from "react";
 
 import { Navbar, Container, Nav, Offcanvas, Form, Button } from "react-bootstrap";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import "./navigation-bar.scss";
 
 export const NavigationBar = ({ user, onLoggedOut }) => {
     const location = useLocation();
     const [show, setShow] = useState(false);
+    const [searchTerm, setSearchTerm] = useState("");
+    const navigate = useNavigate();
 
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
+
+    const handleSearch = (event) => {
+        event.preventDefault();
+        if (searchTerm.trim() === '') return; 
+        navigate(`/search/${encodeURIComponent(searchTerm)}`);
+        setSearchTerm(""); 
+        handleClose();
+    };
 
     return (
         <Navbar expand={false} className="mb-3">
@@ -50,16 +60,17 @@ export const NavigationBar = ({ user, onLoggedOut }) => {
                                     <Nav.Link onClick={() => { onLoggedOut(); handleClose(); }}>
                                         <i class="bi bi-door-closed"></i> Logout
                                     </Nav.Link>
-                                    {/* Search Form to come later */}
-                                    {/*  <Form className="d-flex mt-5">
+                                    <Form className="d-flex mt-5" onSubmit={handleSearch}>
                                         <Form.Control
                                             type="search"
-                                            placeholder="Search"
+                                            placeholder="Search DojoDB"
                                             className="me-2 search-input"
                                             aria-label="Search"
-                                        />
+                                            value={searchTerm}
+                                            onChange={(e) => setSearchTerm(e.target.value)}
+                                            />
                                         <Button variant="link" className="search-button"><i class="bi bi-search"></i></Button>
-                                    </Form> */}
+                                    </Form> 
                                 </>
                             )}
                         </Nav>

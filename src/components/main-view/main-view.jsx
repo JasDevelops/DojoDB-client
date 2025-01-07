@@ -8,6 +8,8 @@ import { MovieView } from "../movie-view/movie-view";
 import { LoginView } from "../login-view/login-view";
 import { SignupView } from "../signup-view/signup-view";
 import { ProfileView } from "../profile-view/profile-view";
+import { SearchResultsView } from "../searchresults-view/searchresults-view";
+
 
 export const MainView = () => {
     const storedUser = JSON.parse(localStorage.getItem("user"));
@@ -112,7 +114,6 @@ export const MainView = () => {
                 )
             );
         } catch (error) {
-            console.error("Error toggling favourite:", error);
             alert("An error occurred while updating your favourites.");
         }
     };
@@ -145,6 +146,15 @@ export const MainView = () => {
                 {/* Signup */}
                 <Route path="/signup" element={user ? (<Navigate to="/" />) : (<Col>
                     <SignupView /></Col>)}
+                />
+                {/* Search */}
+                <Route path="/search/:searchTerm" component={SearchResultsView} element={user ? (
+                    <SearchResultsView
+                        allMovies={allMovies}
+                        favourites={favourites}
+                        onToggleFavourite={toggleFavourite}
+                    />
+                ) : (<Navigate to="/login" replace />)}
                 />
                 {/* Profile */}
                 <Route path="/profile" element={user ? (
