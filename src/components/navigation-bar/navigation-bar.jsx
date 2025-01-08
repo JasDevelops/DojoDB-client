@@ -53,13 +53,13 @@ export const NavigationBar = ({ user, onLoggedOut }) => {
                             {user && (
                                 <>
                                     <Nav.Link as={Link} to="/" active={location.pathname === "/"} onClick={handleClose} >
-                                        <i class="bi bi-house"></i> Home
+                                        <i className="bi bi-house"></i> Home
                                     </Nav.Link>
                                     <Nav.Link as={Link} to="/profile" active={location.pathname === "/profile"} onClick={handleClose}>
-                                        <i class="bi bi-person"></i> Profile
+                                        <i className="bi bi-person"></i> Profile
                                     </Nav.Link>
                                     <Nav.Link onClick={() => { onLoggedOut(); handleClose(); }}>
-                                        <i class="bi bi-door-closed"></i> Logout
+                                        <i className="bi bi-door-closed"></i> Logout
                                     </Nav.Link>
                                     <Form className="d-flex mt-5" onSubmit={handleSearch}>
                                         <Form.Control
@@ -70,7 +70,7 @@ export const NavigationBar = ({ user, onLoggedOut }) => {
                                             value={searchTerm}
                                             onChange={(e) => setSearchTerm(e.target.value)}
                                             />
-                                        <Button  type="submit" variant="link" className="search-button"><i class="bi bi-search"></i></Button>
+                                        <Button  type="submit" variant="link" className="search-button"><i className="bi bi-search"></i></Button>
                                     </Form> 
                                 </>
                             )}

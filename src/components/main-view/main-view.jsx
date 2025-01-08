@@ -12,8 +12,7 @@ import { SearchResultsView } from "../searchresults-view/searchresults-view";
 import { ReleaseYear } from "../releaseyear-view/releaseyear-view";
 import { ActorsView } from "../actors-view/actors-view";
 import { DirectorsView } from "../directors-view/directors-view";
-/*import { GenreView } from "../releaseyear-view/releaseyear-view";
- */
+import { GenreView } from "../genre-view/genre-view";
 
 export const MainView = () => {
     const storedUser = JSON.parse(localStorage.getItem("user"));
@@ -242,18 +241,16 @@ export const MainView = () => {
                 />
 
                 {/* Genre */}
-                {/* <Route path="/genres/:name" element={user ? (
-                    
-                                       <Row className="g-3 mb-5">
-<GenreView
-                        allMovies={allMovies}
-                        favourites={favourites}
-                        onToggleFavourite={toggleFavourite}
-                    />
+                <Route path="/genres/:name" element={user ? (
+                    <Row className="g-3 mb-5">
+                        <GenreView
+                            allMovies={allMovies}
+                            favourites={favourites}
+                            onToggleFavourite={toggleFavourite}
+                        />
                     </Row>
                 ) : (<Navigate to="/login" replace />)}
                 />
-                */}
             </Routes>
         </BrowserRouter>
     );

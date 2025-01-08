@@ -315,7 +315,6 @@ export const ProfileView = ({ user, movies, onLogout, favourites, onRemove, onPr
                                         autoComplete="new-password"
                                     />
                                     <Form.Text className="input-info">The password must be at least 3 characters long.</Form.Text>
-
                                 </FloatingLabel>
                                 <FloatingLabel controlId="confirmPassword" label="Confirm New Password" className="mb-3">
                                     <Form.Control
@@ -343,7 +342,7 @@ export const ProfileView = ({ user, movies, onLogout, favourites, onRemove, onPr
             </Row>
 
             <Row className="g-3 justify-content-center mb-5">
-                <h6 className="mt-4 font-weight-bold center">Favourite Movies: </h6>
+                <h3>Favourite Movies: </h3>
                 {favouriteMovies.length > 0 ? (
                     favouriteMovies.map(movie => (
                         <Col key={movie.id} xs={12} sm={6} md={4} lg={3}>
@@ -368,7 +367,7 @@ export const ProfileView = ({ user, movies, onLogout, favourites, onRemove, onPr
                     ))
                 ) : (
                     <p className="center dark mb-3">You have no favourite movies yet.
-                        <span className="secondary"><i class="bi bi-heartbreak-fill"></i></span> Add some from the movie list!
+                        <span className="secondary"><i className="bi bi-heartbreak-fill"></i></span> Add some from the movie list!
                     </p>
                 )}
             </Row>
