@@ -47,7 +47,7 @@ export const ReleaseYear = ({ favourites = [], onToggleFavourite }) => {
             <h3>Movies Released in {year}</h3>
             {error && <p>{error}</p>}
 
-            <Row className="g-3 mb-5">
+            <Row className="g-3 mb-5 d-flex justify-content-center">
                 {movies.map((releaseYearMovie) => {
                     return (
 
@@ -66,17 +66,6 @@ export const ReleaseYear = ({ favourites = [], onToggleFavourite }) => {
 };
 
 ReleaseYear.propTypes = {
-    movie: PropTypes.shape({
-        id: PropTypes.string.isRequired,
-        title: PropTypes.string.isRequired,
-        image: PropTypes.shape({
-            imageUrl: PropTypes.string.isRequired,
-            imageAttribution: PropTypes.string,
-        }).isRequired,
-        director: PropTypes.shape({
-            name: PropTypes.string.isRequired,
-        }).isRequired,
-    }).isRequired,
-    isFavourite: PropTypes.bool.isRequired,
-    onToggleFavourite: PropTypes.func,
+    favourites: PropTypes.array.isRequired,  
+    onToggleFavourite: PropTypes.func.isRequired,  
 };

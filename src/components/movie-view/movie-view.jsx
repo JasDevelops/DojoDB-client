@@ -25,14 +25,16 @@ export const MovieView = ({ allMovies, favourites = [], onToggleFavourite }) => 
 
     return (
         <div className="movieView d-flex flex-column h-100">
+            {/* Single movie title */}
             <Row>
                 <Col>
                     <h1 className="mt-4">{movie.title}</h1>
                     <div className="mb-4 center dark">
-                        <p>Directed by {movie.director.name}</p>
+                        <p>Directed by <Link to={`/directors/${movie.director.name}`}>{movie.director.name}</Link></p>
                     </div>
                 </Col>
             </Row>
+            {/* Single Movie Details */}
             <Row className="align-items-center movieDetails mb-4 flex-grow-1">
                 <Col md={4} className="p-3">
                     <Figure className="w-100">
@@ -58,7 +60,7 @@ export const MovieView = ({ allMovies, favourites = [], onToggleFavourite }) => 
                             <div>
                                 <p>
                                     <span className="font-weight-bold">Genre: </span>
-                                    {movie.genre.name}</p>
+                                    <Link to={`/genres/${movie.genre.name}`}>{movie.genre.name}</Link></p>
                             </div>
                         </Col>
                         <Col xs={6} className="d-flex justify-content-end">
@@ -123,7 +125,7 @@ export const MovieView = ({ allMovies, favourites = [], onToggleFavourite }) => 
                     {similarMovies.map(similarMovie => {
                         const isFavourite = favourites.some(fav => fav.movieId === similarMovie.id);
                         return (
-                            <Col key={similarMovie.id} md={4} className="mb-4">
+                            <Col key={similarMovie.id} md={4} className="mb-5 g-3 mb-5 d-flex justify-content-center">
                                 <MovieCard
                                     movie={similarMovie}
                                     isFavourite={isFavourite}
@@ -142,31 +144,34 @@ MovieView.propTypes = {
     allMovies: PropTypes.arrayOf(
         PropTypes.shape({
             id: PropTypes.string.isRequired,
+            title: PropTypes.string.isRequired,
+            description: PropTypes.string.isRequired,
             genre: PropTypes.shape({
                 name: PropTypes.string.isRequired,
+                description: PropTypes.string.isRequired,
             }).isRequired,
-            title: PropTypes.string.isRequired,
             image: PropTypes.shape({
                 imageUrl: PropTypes.string,
                 imageAttribution: PropTypes.string,
             }),
-            description: PropTypes.string.isRequired,
+            releaseYear: PropTypes.number.isRequired,
             director: PropTypes.shape({
                 name: PropTypes.string.isRequired,
             }).isRequired,
-            releaseYear: PropTypes.number.isRequired,
             actors: PropTypes.arrayOf(
                 PropTypes.shape({
                     name: PropTypes.string.isRequired,
                     role: PropTypes.string.isRequired,
                 })
             ).isRequired,
-            genre: PropTypes.shape({
-                name: PropTypes.string.isRequired,
-                description: PropTypes.string.isRequired,
-            }).isRequired,
         })
-    ),
-    favourites: PropTypes.array.isRequired,
+    ).isRequired,
+
+    favourites: PropTypes.arrayOf(
+        PropTypes.shape({
+            movieId: PropTypes.string.isRequired,
+        })
+    ).isRequired,
+
     onToggleFavourite: PropTypes.func.isRequired,
 };

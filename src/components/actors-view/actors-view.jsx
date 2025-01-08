@@ -24,6 +24,8 @@ export const ActorsView = ({ favourites = [], onToggleFavourite }) => {
                 const data = await response.json();
 
                 if (response.ok && data.roles && data.roles.length > 0) {
+
+                    
                     const updatedMovies = data.roles.map(movie => ({
                         ...movie,
                         id: movie._id,
@@ -47,10 +49,9 @@ export const ActorsView = ({ favourites = [], onToggleFavourite }) => {
         <>
             <h3>Movies with "{name}"</h3>
             {error && <p>{error}</p>}
-            <Row className="g-3 mb-5">
+            <Row className="g-3 mb-5 d-flex justify-content-center">
                 {movies.map((actorMovie) => {
                     return (
-
                         <Col key={actorMovie.id} sm={6} md={4} lg={3}>
                             <MovieCard
                                 movie={actorMovie}
@@ -66,18 +67,10 @@ export const ActorsView = ({ favourites = [], onToggleFavourite }) => {
 };
 
 ActorsView.propTypes = {
-    movie: PropTypes.shape({
-        id: PropTypes.string.isRequired,
-        title: PropTypes.string.isRequired,
-        image: PropTypes.shape({
-            imageUrl: PropTypes.string.isRequired,
-            imageAttribution: PropTypes.string,
-        }).isRequired,
-        director: PropTypes.shape({
-            name: PropTypes.string.isRequired,
-        }).isRequired,
-    }).isRequired,
-    isFavourite: PropTypes.bool.isRequired,
-    favourites: PropTypes.array,
-    onToggleFavourite: PropTypes.func,
+    favourites: PropTypes.arrayOf(
+        PropTypes.shape({
+            movieId: PropTypes.string.isRequired, 
+        })
+    ).isRequired,
+    onToggleFavourite: PropTypes.func.isRequired,
 };

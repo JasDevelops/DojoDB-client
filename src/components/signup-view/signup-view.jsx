@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-
+import PropTypes from "prop-types";
 import { Form, Col, Button, Alert, FloatingLabel, Row } from "react-bootstrap";
 
 export const SignupView = ({ onSignedUp }) => {
@@ -140,4 +140,8 @@ export const SignupView = ({ onSignedUp }) => {
             </Col>
         </Row>
     );
+};
+
+SignupView.propTypes = {
+    onSignedUp: PropTypes.func.isRequired,
 };

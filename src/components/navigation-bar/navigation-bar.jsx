@@ -1,5 +1,5 @@
 import { useState } from "react";
-
+import PropTypes from "prop-types";
 import { Navbar, Container, Nav, Offcanvas, Form, Button } from "react-bootstrap";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import "./navigation-bar.scss";
@@ -81,3 +81,11 @@ export const NavigationBar = ({ user, onLoggedOut }) => {
         </Navbar>
     )
 }
+
+NavigationBar.propTypes = {
+    user: PropTypes.shape({
+        username: PropTypes.string.isRequired,
+        id: PropTypes.string.isRequired,
+    }).isRequired,
+    onLoggedOut: PropTypes.func.isRequired, 
+};

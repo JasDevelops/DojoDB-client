@@ -19,7 +19,14 @@ export const MovieCard = ({ movie, isFavourite, onToggleFavourite, onRemove }) =
                 <Card.Title>
                     <h5><Link to={`/movies/${movie.id}`}>{movie.title}</Link></h5>
                 </Card.Title>
-                <Card.Text className="mt-auto">Directed by {movie.director.name}</Card.Text>
+                <Card.Text className="mt-auto">
+                    Directed by{" "}
+                    {movie.director && movie.director.name ? (
+                        <Link to={`/directors/${movie.director.name}`}>{movie.director.name}</Link>
+                    ) : (
+                        <span>Unknown Director</span>
+                    )}  
+                    </Card.Text>
             </Card.Body>
 
             {/* Add/Remove Favourite button */}
@@ -53,10 +60,9 @@ MovieCard.propTypes = {
         }).isRequired,
         director: PropTypes.shape({
             name: PropTypes.string.isRequired,
-        }).isRequired,
+        }),
     }).isRequired,
     isFavourite: PropTypes.bool.isRequired,
-    onToggleFavourite: PropTypes.func,
+    onToggleFavourite: PropTypes.func.isRequired,
     onRemove: PropTypes.func,
-    favourites: PropTypes.array,
 };

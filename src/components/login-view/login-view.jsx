@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Form, Col, Button, Alert, FloatingLabel, Row } from "react-bootstrap";
+import PropTypes from "prop-types";
 
 export const LoginView = ({ onLoggedIn }) => {
     const [username, setUsername] = useState("");
@@ -85,4 +86,8 @@ export const LoginView = ({ onLoggedIn }) => {
             </Col>
         </Row>
     );
+};
+
+LoginView.propTypes = {
+    onLoggedIn: PropTypes.func.isRequired,
 };

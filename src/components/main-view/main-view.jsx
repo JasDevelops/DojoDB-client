@@ -11,8 +11,8 @@ import { ProfileView } from "../profile-view/profile-view";
 import { SearchResultsView } from "../searchresults-view/searchresults-view";
 import { ReleaseYear } from "../releaseyear-view/releaseyear-view";
 import { ActorsView } from "../actors-view/actors-view";
-/*import { DirectorView } from "../releaseyear-view/releaseyear-view";
-import { GenreView } from "../releaseyear-view/releaseyear-view";
+import { DirectorsView } from "../directors-view/directors-view";
+/*import { GenreView } from "../releaseyear-view/releaseyear-view";
  */
 
 export const MainView = () => {
@@ -220,7 +220,6 @@ export const MainView = () => {
                 {/* Actor */}
                 <Route path="/actors/:name" element={user ? (
                     <Row className="g-3 mb-5">
-
                         <ActorsView
                             allMovies={allMovies}
                             favourites={favourites}
@@ -231,18 +230,17 @@ export const MainView = () => {
                 />
 
                 {/* Director */}
-                {/* <Route path="/directors/:name" element={user ? (
-                   
-                                      <Row className="g-3 mb-5">
-<DirectorView
-                        allMovies={allMovies}
-                        favourites={favourites}
-                        onToggleFavourite={toggleFavourite}
-                    />
+                <Route path="/directors/:name" element={user ? (
+                    <Row className="g-3 mb-5">
+                        <DirectorsView
+                            allMovies={allMovies}
+                            favourites={favourites}
+                            onToggleFavourite={toggleFavourite}
+                        />
                     </Row>
                 ) : (<Navigate to="/login" replace />)}
                 />
-*/}
+
                 {/* Genre */}
                 {/* <Route path="/genres/:name" element={user ? (
                     

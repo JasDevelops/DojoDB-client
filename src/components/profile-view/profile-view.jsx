@@ -377,10 +377,22 @@ export const ProfileView = ({ user, movies, onLogout, favourites, onRemove, onPr
     );
 }
 ProfileView.propTypes = {
-    user: PropTypes.object.isRequired,
-    movies: PropTypes.array.isRequired,
+    user: PropTypes.shape({
+        username: PropTypes.string.isRequired,
+        email: PropTypes.string.isRequired,
+        birthday: PropTypes.string.isRequired,
+    }).isRequired,
+    movies: PropTypes.arrayOf(PropTypes.shape({
+        id: PropTypes.number.isRequired,
+        title: PropTypes.string.isRequired,
+        image: PropTypes.shape({
+            imageUrl: PropTypes.string.isRequired,
+        }).isRequired,
+    })).isRequired,
     onLogout: PropTypes.func.isRequired,
-    favourites: PropTypes.array.isRequired,
+    favourites: PropTypes.arrayOf(PropTypes.shape({
+        movieId: PropTypes.number.isRequired,
+    })).isRequired,
     onRemove: PropTypes.func.isRequired,
     onProfileUpdate: PropTypes.func.isRequired,
 };
