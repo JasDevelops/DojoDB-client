@@ -148,7 +148,7 @@ export const MainView = () => {
                     <SignupView /></Col>)}
                 />
                 {/* Search */}
-                <Route path="/search/:searchTerm" component={SearchResultsView} element={user ? (
+                <Route path="/search/:searchTerm"  element={user ? (
                     <SearchResultsView
                         allMovies={allMovies}
                         favourites={favourites}

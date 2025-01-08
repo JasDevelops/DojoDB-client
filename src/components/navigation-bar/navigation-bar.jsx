@@ -15,7 +15,8 @@ export const NavigationBar = ({ user, onLoggedOut }) => {
 
     const handleSearch = (event) => {
         event.preventDefault();
-        if (searchTerm.trim() === '') return; 
+        if (searchTerm.trim() === '') { return; }
+
         navigate(`/search/${encodeURIComponent(searchTerm)}`);
         setSearchTerm(""); 
         handleClose();
@@ -69,7 +70,7 @@ export const NavigationBar = ({ user, onLoggedOut }) => {
                                             value={searchTerm}
                                             onChange={(e) => setSearchTerm(e.target.value)}
                                             />
-                                        <Button variant="link" className="search-button"><i class="bi bi-search"></i></Button>
+                                        <Button  type="submit" variant="link" className="search-button"><i class="bi bi-search"></i></Button>
                                     </Form> 
                                 </>
                             )}

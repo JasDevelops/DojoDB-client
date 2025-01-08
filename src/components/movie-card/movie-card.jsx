@@ -3,8 +3,6 @@ import { Link } from "react-router-dom";
 import { Card, Button } from "react-bootstrap";
 
 export const MovieCard = ({ movie, isFavourite, onToggleFavourite, onRemove }) => {
-    console.log("Movie from search:", movie);
-
     const handleClick = () => {
         if (onRemove) {
             onRemove(movie.id);
