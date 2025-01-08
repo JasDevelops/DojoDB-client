@@ -10,8 +10,8 @@ import { SignupView } from "../signup-view/signup-view";
 import { ProfileView } from "../profile-view/profile-view";
 import { SearchResultsView } from "../searchresults-view/searchresults-view";
 import { ReleaseYear } from "../releaseyear-view/releaseyear-view";
-/* import { ActorView } from "../releaseyear-view/releaseyear-view";
-import { DirectorView } from "../releaseyear-view/releaseyear-view";
+import { ActorsView } from "../actors-view/actors-view";
+/*import { DirectorView } from "../releaseyear-view/releaseyear-view";
 import { GenreView } from "../releaseyear-view/releaseyear-view";
  */
 
@@ -207,41 +207,52 @@ export const MainView = () => {
 
                 {/* ReleaseYear */}
                 <Route path="/movies/release-year/:year" element={user ? (
-                    <ReleaseYear
-                        allMovies={allMovies}
-                        favourites={favourites}
-                        onToggleFavourite={toggleFavourite}
-                    />
+                    <Row className="g-3 mb-5">
+                        <ReleaseYear
+                            allMovies={allMovies}
+                            favourites={favourites}
+                            onToggleFavourite={toggleFavourite}
+                        />
+                    </Row>
                 ) : (<Navigate to="/login" replace />)}
                 />
 
                 {/* Actor */}
-                {/* <Route path="/actors/:name" element={user ? (
-                    <ActorView
-                        allMovies={allMovies}
-                        favourites={favourites}
-                        onToggleFavourite={toggleFavourite}
-                    />
+                <Route path="/actors/:name" element={user ? (
+                    <Row className="g-3 mb-5">
+
+                        <ActorsView
+                            allMovies={allMovies}
+                            favourites={favourites}
+                            onToggleFavourite={toggleFavourite}
+                        />
+                    </Row>
                 ) : (<Navigate to="/login" replace />)}
                 />
-*/}
+
                 {/* Director */}
                 {/* <Route path="/directors/:name" element={user ? (
-                    <DirectorView
+                   
+                                      <Row className="g-3 mb-5">
+<DirectorView
                         allMovies={allMovies}
                         favourites={favourites}
                         onToggleFavourite={toggleFavourite}
                     />
+                    </Row>
                 ) : (<Navigate to="/login" replace />)}
                 />
 */}
                 {/* Genre */}
                 {/* <Route path="/genres/:name" element={user ? (
-                    <GenreView
+                    
+                                       <Row className="g-3 mb-5">
+<GenreView
                         allMovies={allMovies}
                         favourites={favourites}
                         onToggleFavourite={toggleFavourite}
                     />
+                    </Row>
                 ) : (<Navigate to="/login" replace />)}
                 />
                 */}

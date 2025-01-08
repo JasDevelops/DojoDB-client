@@ -7,7 +7,7 @@ export const MovieCard = ({ movie, isFavourite, onToggleFavourite, onRemove }) =
         if (onRemove) {
             onRemove(movie.id);
         } else {
-            onToggleFavourite(movie.id , isFavourite);
+            onToggleFavourite(movie.id, isFavourite);
         }
     };
     return (
@@ -17,7 +17,7 @@ export const MovieCard = ({ movie, isFavourite, onToggleFavourite, onRemove }) =
             </div>
             <Card.Body className="d-flex flex-column">
                 <Card.Title>
-                    <h5><Link to={`/movies/${movie.id }`}>{movie.title}</Link></h5>
+                    <h5><Link to={`/movies/${movie.id}`}>{movie.title}</Link></h5>
                 </Card.Title>
                 <Card.Text className="mt-auto">Directed by {movie.director.name}</Card.Text>
             </Card.Body>
@@ -58,4 +58,5 @@ MovieCard.propTypes = {
     isFavourite: PropTypes.bool.isRequired,
     onToggleFavourite: PropTypes.func,
     onRemove: PropTypes.func,
+    favourites: PropTypes.array,
 };

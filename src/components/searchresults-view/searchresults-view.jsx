@@ -45,7 +45,7 @@ export const SearchResultsView = ({ favourites = [], allMovies, onToggleFavourit
                     setSearchResults(updatedResults);
                     setError("");
                 } else {
-                    
+
                     setSearchResults([]);
                     setError(`No results found for "${searchTerm}".`);
                 }
@@ -76,39 +76,39 @@ export const SearchResultsView = ({ favourites = [], allMovies, onToggleFavourit
                             </Row>
                             {searchResults.map((searchMovie) => (
                                 <Col key={searchMovie.id} xs={12} sm={6} md={4} lg={3}>
-                            <MovieCard
-                                movie={searchMovie}
-                                isFavourite={favourites.some(fav => fav.movieId === searchMovie.id)}
-                                onToggleFavourite={onToggleFavourite}
-                            />
-                        </Col>
-                    ))}
-                    </>
-                )
-            )}
+                                    <MovieCard
+                                        movie={searchMovie}
+                                        isFavourite={favourites.some(fav => fav.movieId === searchMovie.id)}
+                                        onToggleFavourite={onToggleFavourite}
+                                    />
+                                </Col>
+                            ))}
+                        </>
+                    )
+                )}
             </Row>
         </>
     );
 };
-    SearchResultsView.propTypes = {
-        allMovies: PropTypes.arrayOf(
-            PropTypes.shape({
-                id: PropTypes.string.isRequired,
-                genre: PropTypes.shape({
-                    name: PropTypes.string.isRequired,
-                }).isRequired,
-                title: PropTypes.string.isRequired,
-                image: PropTypes.shape({
-                    imageUrl: PropTypes.string,
-                    imageAttribution: PropTypes.string,
-                }),
-                description: PropTypes.string.isRequired,
-                director: PropTypes.shape({
-                    name: PropTypes.string.isRequired,
-                }).isRequired,
-                releaseYear: PropTypes.number.isRequired,
-            })
-        ),
-        favourites: PropTypes.array.isRequired,
-        onToggleFavourite: PropTypes.func.isRequired,
-    };
+SearchResultsView.propTypes = {
+    allMovies: PropTypes.arrayOf(
+        PropTypes.shape({
+            id: PropTypes.string.isRequired,
+            genre: PropTypes.shape({
+                name: PropTypes.string.isRequired,
+            }).isRequired,
+            title: PropTypes.string.isRequired,
+            image: PropTypes.shape({
+                imageUrl: PropTypes.string,
+                imageAttribution: PropTypes.string,
+            }),
+            description: PropTypes.string.isRequired,
+            director: PropTypes.shape({
+                name: PropTypes.string.isRequired,
+            }).isRequired,
+            releaseYear: PropTypes.number.isRequired,
+        })
+    ),
+    favourites: PropTypes.array.isRequired,
+    onToggleFavourite: PropTypes.func.isRequired,
+};

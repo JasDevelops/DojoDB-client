@@ -5,8 +5,8 @@ import { Row, Col } from "react-bootstrap";
 
 import { MovieCard } from "../movie-card/movie-card";
 
-export const ReleaseYear = ({ favourites = [], onToggleFavourite }) => {
-    const { year } = useParams();
+export const ActorsView = ({ favourites = [], onToggleFavourite }) => {
+    const { name } = useParams();
     const [movies, setMovies] = useState([]);
     const [error, setError] = useState("");
 
@@ -14,7 +14,7 @@ export const ReleaseYear = ({ favourites = [], onToggleFavourite }) => {
         const fetchMovies = async () => {
             try {
                 const token = localStorage.getItem("token");
-                const response = await fetch(`https://dojo-db-e5c2cf5a1b56.herokuapp.com/movies/release-year/${year}`, {
+                const response = await fetch(`https://dojo-db-e5c2cf5a1b56.herokuapp.com/actors/${name}`, {
                     method: "GET",
                     headers: {
                         "Content-Type": "application/json",
@@ -22,8 +22,9 @@ export const ReleaseYear = ({ favourites = [], onToggleFavourite }) => {
                     },
                 });
                 const data = await response.json();
-                if (response.ok && Array.isArray(data) && data.length > 0) {
-                    const updatedMovies = data.map(movie => ({
+
+                if (response.ok && data.roles && data.roles.length > 0) {
+                    const updatedMovies = data.roles.map(movie => ({
                         ...movie,
                         id: movie._id,
                     }));
@@ -35,26 +36,25 @@ export const ReleaseYear = ({ favourites = [], onToggleFavourite }) => {
                 }
             } catch (err) {
                 setMovies([]);
-                setError(`There was an error fetching movies by release year "${year}"`);
+                setError(`There was an error fetching movies by actor "${name}"`);
             }
         };
 
         fetchMovies();
-    }, [year]);
+    }, [name]);
 
     return (
         <>
-            <h3>Movies Released in {year}</h3>
+            <h3>Movies with "{name}"</h3>
             {error && <p>{error}</p>}
-
             <Row className="g-3 mb-5">
-                {movies.map((releaseYearMovie) => {
+                {movies.map((actorMovie) => {
                     return (
 
-                        <Col key={releaseYearMovie.id} sm={6} md={4} lg={3}>
+                        <Col key={actorMovie.id} sm={6} md={4} lg={3}>
                             <MovieCard
-                                movie={releaseYearMovie}
-                                isFavourite={favourites.some(fav => fav.movieId === releaseYearMovie.id)}
+                                movie={actorMovie}
+                                isFavourite={favourites.some(fav => fav.movieId === actorMovie.id)}
                                 onToggleFavourite={onToggleFavourite}
                             />
                         </Col>
@@ -65,7 +65,7 @@ export const ReleaseYear = ({ favourites = [], onToggleFavourite }) => {
     );
 };
 
-ReleaseYear.propTypes = {
+ActorsView.propTypes = {
     movie: PropTypes.shape({
         id: PropTypes.string.isRequired,
         title: PropTypes.string.isRequired,
@@ -78,5 +78,6 @@ ReleaseYear.propTypes = {
         }).isRequired,
     }).isRequired,
     isFavourite: PropTypes.bool.isRequired,
+    favourites: PropTypes.array,
     onToggleFavourite: PropTypes.func,
 };

@@ -79,7 +79,7 @@ export const MovieView = ({ allMovies, favourites = [], onToggleFavourite }) => 
                                 {movie.actors && movie.actors.length > 0 ? (
                                     movie.actors.map((actor, index) => (
                                         <p key={index}>
-                                            <span className="font-weight-bold">{actor.name}</span> as "{actor.role}"
+                                            <span className="font-weight-bold"><Link to={`/actors/${actor.name}`}>{actor.name}</Link></span> as "{actor.role}"
                                             {index < movie.actors.length - 1 && ", "}
                                         </p>
                                     ))
@@ -155,6 +155,16 @@ MovieView.propTypes = {
                 name: PropTypes.string.isRequired,
             }).isRequired,
             releaseYear: PropTypes.number.isRequired,
+            actors: PropTypes.arrayOf(
+                PropTypes.shape({
+                    name: PropTypes.string.isRequired,
+                    role: PropTypes.string.isRequired,
+                })
+            ).isRequired,
+            genre: PropTypes.shape({
+                name: PropTypes.string.isRequired,
+                description: PropTypes.string.isRequired,
+            }).isRequired,
         })
     ),
     favourites: PropTypes.array.isRequired,
