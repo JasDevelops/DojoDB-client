@@ -9,7 +9,11 @@ import { LoginView } from "../login-view/login-view";
 import { SignupView } from "../signup-view/signup-view";
 import { ProfileView } from "../profile-view/profile-view";
 import { SearchResultsView } from "../searchresults-view/searchresults-view";
-
+import { ReleaseYear } from "../releaseyear-view/releaseyear-view";
+/* import { ActorView } from "../releaseyear-view/releaseyear-view";
+import { DirectorView } from "../releaseyear-view/releaseyear-view";
+import { GenreView } from "../releaseyear-view/releaseyear-view";
+ */
 
 export const MainView = () => {
     const storedUser = JSON.parse(localStorage.getItem("user"));
@@ -148,7 +152,7 @@ export const MainView = () => {
                     <SignupView /></Col>)}
                 />
                 {/* Search */}
-                <Route path="/search/:searchTerm"  element={user ? (
+                <Route path="/search/:searchTerm" element={user ? (
                     <SearchResultsView
                         allMovies={allMovies}
                         favourites={favourites}
@@ -200,6 +204,47 @@ export const MainView = () => {
                         </Row>
                     )
                 ) : (<Navigate to="/login" replace />)} />
+
+                {/* ReleaseYear */}
+                <Route path="/movies/release-year/:year" element={user ? (
+                    <ReleaseYear
+                        allMovies={allMovies}
+                        favourites={favourites}
+                        onToggleFavourite={toggleFavourite}
+                    />
+                ) : (<Navigate to="/login" replace />)}
+                />
+
+                {/* Actor */}
+                {/* <Route path="/actors/:name" element={user ? (
+                    <ActorView
+                        allMovies={allMovies}
+                        favourites={favourites}
+                        onToggleFavourite={toggleFavourite}
+                    />
+                ) : (<Navigate to="/login" replace />)}
+                />
+*/}
+                {/* Director */}
+                {/* <Route path="/directors/:name" element={user ? (
+                    <DirectorView
+                        allMovies={allMovies}
+                        favourites={favourites}
+                        onToggleFavourite={toggleFavourite}
+                    />
+                ) : (<Navigate to="/login" replace />)}
+                />
+*/}
+                {/* Genre */}
+                {/* <Route path="/genres/:name" element={user ? (
+                    <GenreView
+                        allMovies={allMovies}
+                        favourites={favourites}
+                        onToggleFavourite={toggleFavourite}
+                    />
+                ) : (<Navigate to="/login" replace />)}
+                />
+                */}
             </Routes>
         </BrowserRouter>
     );

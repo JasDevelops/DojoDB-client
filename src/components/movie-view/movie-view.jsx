@@ -12,7 +12,6 @@ export const MovieView = ({ allMovies, favourites = [], onToggleFavourite }) => 
     if (!movie) {
         return <Col><h3>Loading...</h3></Col>;
     }
-
     const isFavourite = Array.isArray(favourites) && favourites.some(fav => fav.movieId === movie.id);
 
     const handleToggleFavourite = () => {
@@ -66,7 +65,8 @@ export const MovieView = ({ allMovies, favourites = [], onToggleFavourite }) => 
                             <div>
                                 <p>
                                     <span className="font-weight-bold">Release Year: </span>
-                                    {movie.releaseYear}</p>
+                                    <Link to={`/movies/release-year/${movie.releaseYear}`}>{movie.releaseYear}</Link>
+                                </p>
                             </div>
                         </Col>
                     </Row>

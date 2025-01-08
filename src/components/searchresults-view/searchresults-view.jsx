@@ -72,7 +72,7 @@ export const SearchResultsView = ({ favourites = [], allMovies, onToggleFavourit
                     searchResults.length > 0 && (
                         <>
                             <Row>
-                                <Col className="h5 mb-3">Search results for "{searchTerm}":</Col>
+                                <Col className="mb-3"><h3>Search results for "{searchTerm}":</h3></Col>
                             </Row>
                             {searchResults.map((searchMovie) => (
                                 <Col key={searchMovie.id} xs={12} sm={6} md={4} lg={3}>
