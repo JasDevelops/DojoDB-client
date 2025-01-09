@@ -149,9 +149,11 @@ strong {
 .breadcrumb-item+.breadcrumb-item:before {
     float: none
 }
+
 li.breadcrumb-item::marker {
     content: none
 }
+
 .dropdown-item.active,
 .dropdown-item:active {
     background-color: $secondary;
@@ -186,8 +188,9 @@ li.breadcrumb-item::marker {
         color: $green;
     }
 
-    &:active {
-        background-color: $tertiary;
+    &:active,
+    :not(.btn-check)+.btn-primary.btn:active {
+        background-color: $tertiary !important;
     }
 }
 
@@ -219,6 +222,10 @@ li.breadcrumb-item::marker {
 .btn-secondary {
     background-color: $tertiary;
     border: none;
+}
+
+.btn-outline-dark {
+    background-color: $white;
 }
 
 /* Forms */
