@@ -1,10 +1,12 @@
 import { useState, useEffect } from "react";
 import PropTypes from "prop-types";
+import { useDispatch } from "react-redux";
+import { startLoading, finishLoading } from "../../actions/progressAction";
 
-import { Row, Col, Button, Form, Card, ListGroup, FloatingLabel, Alert, ListGroupItem } from "react-bootstrap";
+import { Row, Col, Button, Form, Card, FloatingLabel, Alert, Spinner } from "react-bootstrap";
 import { useNavigate, Link } from "react-router-dom";
 
-export const ProfileView = ({ user, movies, onLogout, favourites, onRemove, onProfileUpdate }) => {
+export const ProfileView = ({ user, movies, onLogout, onProfileUpdate }) => {
     const [profile, setProfile] = useState({});
     const [editing, setEditing] = useState(false);
     const [username, setUsername] = useState(user.username || null);
@@ -16,11 +18,12 @@ export const ProfileView = ({ user, movies, onLogout, favourites, onRemove, onPr
         password: "",
     });
     const [confirmPassword, setConfirmPassword] = useState("");
-    const [currentPassword, setCurrentPassword] = useState("");
     const [favouriteMovies, setFavouriteMovies] = useState([]);
-    const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const navigate = useNavigate();
+
+    const [loading, setLoading] = useState(true);
+    const dispatch = useDispatch();
 
     const validateEmail = (email) => {
         const emailPattern = /^[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}$/;
@@ -81,6 +84,9 @@ export const ProfileView = ({ user, movies, onLogout, favourites, onRemove, onPr
             setError(null);
 
             try {
+                dispatch(startLoading());
+                setLoading(true);
+
                 const response = await fetch(`https://dojo-db-e5c2cf5a1b56.herokuapp.com/users/${username}`, {
                     method: "GET",
                     headers: {
@@ -114,11 +120,12 @@ export const ProfileView = ({ user, movies, onLogout, favourites, onRemove, onPr
                 setError(error.message);
             } finally {
                 setLoading(false);
+                dispatch(finishLoading());
             }
         };
 
         fetchProfile();
-    }, [movies, user]);
+    }, [movies, user, dispatch]);
 
     // Update the username state 
     useEffect(() => {
@@ -342,8 +349,15 @@ export const ProfileView = ({ user, movies, onLogout, favourites, onRemove, onPr
             </Row>
 
             <Row className="g-3 justify-content-center mb-5">
-                <h3>Favourite Movies: </h3>
-                {favouriteMovies.length > 0 ? (
+                <h3>Your favourite movies: </h3>
+                {/* Spinner while loading  */}
+                {loading ? (
+                    <Col xs="auto">
+                        <Spinner animation="grow" role="status">
+                            <span className="visually-hidden">Loading...</span>
+                        </Spinner>
+                    </Col>
+                ) : favouriteMovies.length > 0 ? (
                     favouriteMovies.map(movie => (
                         <Col key={movie.id} xs={12} sm={6} md={4} lg={3}>
                             <Card className="h-100">

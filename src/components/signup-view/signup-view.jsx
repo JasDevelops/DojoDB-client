@@ -78,11 +78,12 @@ export const SignupView = ({ onSignedUp }) => {
         <Row className="form">
             <Col xs={12} md={6} lg={4} className="mx-auto">
                 <h1 className="my-4">Create an account:</h1>
-                <Form onSubmit={handleSubmit}>
+                <Form id="signupForm" onSubmit={handleSubmit}>
                     <Form.Group controlId="username">
                         <FloatingLabel controlId="floatingUsername" label="Username" className="mb-3">
                             <Form.Control
                                 type="text"
+                                name="username"
                                 value={username}
                                 onChange={(e) => setUsername(e.target.value)}
                                 required
@@ -96,6 +97,7 @@ export const SignupView = ({ onSignedUp }) => {
                         <FloatingLabel controlId="floatingPassword" label="Password" className="mb-3">
                             <Form.Control
                                 type="password"
+                                name="password"
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
                                 required
@@ -110,6 +112,7 @@ export const SignupView = ({ onSignedUp }) => {
                         <FloatingLabel controlId="floatingEmail" label="Email" className="mb-3">
                             <Form.Control
                                 type="email"
+                                name="email"
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
                                 required
@@ -122,6 +125,7 @@ export const SignupView = ({ onSignedUp }) => {
                     <Form.Group controlId="birthday">
                         <FloatingLabel controlId="floatingBirthday" label="Birthday" className="mb-3">
                             <Form.Control
+                                name="birthday"
                                 type="date"
                                 value={birthday}
                                 onChange={(e) => setBirthday(e.target.value)}

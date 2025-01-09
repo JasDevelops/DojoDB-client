@@ -46,7 +46,7 @@ export const LoginView = ({ onLoggedIn }) => {
         <Row className="form">
             <Col xs={12} md={6} lg={4} className="mx-auto">
                 <h1 className="my-4">Welcome back!</h1>
-                <Form onSubmit={handleSubmit}>
+                <Form id="loginForm" onSubmit={handleSubmit}>
                     <Form.Group controlId="username">
                         <FloatingLabel
                             controlId="loginUsername"
@@ -59,6 +59,7 @@ export const LoginView = ({ onLoggedIn }) => {
                                 onChange={(e) => setUsername(e.target.value)}
                                 required
                                 placeholder="Enter your username"
+                                name="username"
                             />
                         </FloatingLabel>
                     </Form.Group>
@@ -71,6 +72,7 @@ export const LoginView = ({ onLoggedIn }) => {
                         >
                             <Form.Control
                                 type="password"
+                                name="password"
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
                                 required

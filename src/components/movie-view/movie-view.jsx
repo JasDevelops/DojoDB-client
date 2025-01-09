@@ -1,27 +1,37 @@
+import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
-import { Col, Row, Button, Figure } from "react-bootstrap";
+import { Col, Row, Button, Figure, Spinner } from "react-bootstrap";
 import PropTypes from "prop-types";
+import { useDispatch } from "react-redux";
+import { startLoading, finishLoading } from "../../actions/progressAction";
 
 import { MovieCard } from "../movie-card/movie-card";
 import "./movie-view.scss";
 
 export const MovieView = ({ allMovies, favourites = [], onToggleFavourite }) => {
     const { movieID } = useParams();
+    const [loading, setLoading] = useState(true);
+    const dispatch = useDispatch();
+
     const movie = allMovies.find(movie => movie.id === movieID);
-
-    if (!movie) {
-        return <Col><h3>Loading...</h3></Col>;
-    }
     const isFavourite = Array.isArray(favourites) && favourites.some(fav => fav.movieId === movie.id);
-
-    const handleToggleFavourite = () => {
-        onToggleFavourite(movie.id, isFavourite);
-    };
 
     // Similar movies 
     const similarMovies = allMovies
         .filter(simMovie => simMovie.id !== movie.id)
         .slice(0, 3);
+
+    useEffect(() => {
+        if (movie) {
+            setLoading(false);
+        } else {
+            setLoading(true);
+        }
+    }, [movie]);
+
+    const handleToggleFavourite = () => {
+        onToggleFavourite(movie.id, isFavourite);
+    };
 
     return (
         <div className="movieView d-flex flex-column h-100">
@@ -77,7 +87,7 @@ export const MovieView = ({ allMovies, favourites = [], onToggleFavourite }) => 
                     </div>
                     <div className="moreInfo">
                         <div className="actors mb-3">
-                            <p>
+                            <div>
                                 {movie.actors && movie.actors.length > 0 ? (
                                     movie.actors.map((actor, index) => (
                                         <p key={index}>
@@ -88,7 +98,7 @@ export const MovieView = ({ allMovies, favourites = [], onToggleFavourite }) => 
                                 ) : (
                                     <p>N/A</p>
                                 )}
-                            </p>
+                            </div>
                         </div>
                     </div>
                     {/* Add/Remove Favourite button */}
@@ -114,18 +124,25 @@ export const MovieView = ({ allMovies, favourites = [], onToggleFavourite }) => 
             {/* Back Home button */}
             <div className="d-flex justify-content-end mb-3">
                 <Link to="/" className="back-btn">
-                    <Button variant="secondary"><i class="bi bi-arrow-left-short"></i>
+                    <Button variant="secondary"><i className="bi bi-arrow-left-short"></i>
                         Back</Button>
                 </Link>
             </div>
             {/* Similar Movies */}
+            <h3>Movies like "{movie.title}"</h3>
             <Row>
-                <h3 className="my-4">Similar Movies</h3>
-                <Row>
-                    {similarMovies.map(similarMovie => {
+                {loading ? (
+                    // Spinner while loading
+                    <Col xs="auto" className="text-center mt-5">
+                        <Spinner animation="grow" role="status">
+                            <span className="visually-hidden">Loading...</span>
+                        </Spinner>
+                    </Col>
+                ) : similarMovies.length > 0 ? (
+                    similarMovies.map((similarMovie) => {
                         const isFavourite = favourites.some(fav => fav.movieId === similarMovie.id);
                         return (
-                            <Col key={similarMovie.id} md={4} className="mb-5 g-3 mb-5 d-flex justify-content-center">
+                            <Col key={similarMovie.id} md={4} className="mb-5 g-3 d-flex justify-content-center">
                                 <MovieCard
                                     movie={similarMovie}
                                     isFavourite={isFavourite}
@@ -133,12 +150,18 @@ export const MovieView = ({ allMovies, favourites = [], onToggleFavourite }) => 
                                 />
                             </Col>
                         );
-                    })}
-                </Row>
+                    })
+                ) : (
+                    <Col>
+                        <p>No similar movies found.</p>
+                    </Col>
+                )}
             </Row>
         </div>
     );
 };
+
+
 
 MovieView.propTypes = {
     allMovies: PropTypes.arrayOf(

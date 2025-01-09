@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { Row, Col } from "react-bootstrap";
+import { Row, Col, Spinner } from "react-bootstrap";
+import { useDispatch } from "react-redux";
+import { startLoading, finishLoading } from "../../actions/progressAction";
 import PropTypes from "prop-types";
 
 import { MovieCard } from "../movie-card/movie-card";
@@ -9,6 +11,10 @@ export const SearchResultsView = ({ favourites = [], allMovies, onToggleFavourit
     const { searchTerm } = useParams();
     const [searchResults, setSearchResults] = useState([]);
     const [error, setError] = useState("");
+    const [loading, setLoading] = useState(true);
+
+    const dispatch = useDispatch();
+
 
     useEffect(() => {
         const fetchSearchResults = async () => {
@@ -18,6 +24,9 @@ export const SearchResultsView = ({ favourites = [], allMovies, onToggleFavourit
                 return;
             }
             try {
+                dispatch(startLoading());
+                setLoading(true);
+
                 const token = localStorage.getItem("token");
                 const response = await fetch(`https://dojo-db-e5c2cf5a1b56.herokuapp.com/search/${encodeURIComponent(searchTerm)}`, {
                     method: "GET",
@@ -28,7 +37,7 @@ export const SearchResultsView = ({ favourites = [], allMovies, onToggleFavourit
                 });
                 if (!response.ok) {
                     if (response.status === 404) {
-                        setError(`No results found for "${searchTerm}".`);
+                        setError(`Nothing found for "${searchTerm}".`);
                         setSearchResults([]);
                         return;
                     }
@@ -45,7 +54,6 @@ export const SearchResultsView = ({ favourites = [], allMovies, onToggleFavourit
                     setSearchResults(updatedResults);
                     setError("");
                 } else {
-
                     setSearchResults([]);
                     setError(`No results found for "${searchTerm}".`);
                 }
@@ -53,36 +61,46 @@ export const SearchResultsView = ({ favourites = [], allMovies, onToggleFavourit
                 console.error("Error fetching search results:", error);
                 setSearchResults([]);
                 setError(`There was an error fetching search results for "${searchTerm}". Please try again later.`);
+            } finally {
+                setLoading(false);
+                dispatch(finishLoading());
             }
         };
         if (searchTerm) {
             setError("");
             fetchSearchResults();
         }
-    }, [searchTerm]);
+    }, [searchTerm, dispatch]);
 
     return (
         <>
-            <Row className="g-3 mb-5">
+            <Row className="g-3 mb-5 d-flex justify-content-center">
                 {error ? (
-                    <Row>
-                        <Col className="h5 center">{error}</Col>
-                    </Row>
+                    <h3>{error}</h3>
                 ) : (
                     searchResults.length > 0 && (
                         <>
-                            <Row>
-                                <Col className="mb-3"><h3>Search results for "{searchTerm}":</h3></Col>
+                            <h3>Search results for "{searchTerm}":</h3>
+                            <Row className="g-3 mb-5 d-flex justify-content-center">
+                                {loading ? (
+                                    // Spinner while loading
+                                    <Col xs="auto">
+                                        <Spinner animation="grow" role="status">
+                                            <span className="visually-hidden">Loading...</span>
+                                        </Spinner>
+                                    </Col>
+                                ) : (
+                                    searchResults.map((searchMovie) => (
+                                        <Col key={searchMovie.id} xs={12} sm={6} md={4} lg={3}>
+                                            <MovieCard
+                                                movie={searchMovie}
+                                                isFavourite={favourites.some(fav => fav.movieId === searchMovie.id)}
+                                                onToggleFavourite={onToggleFavourite}
+                                            />
+                                        </Col>
+                                    ))
+                                )}
                             </Row>
-                            {searchResults.map((searchMovie) => (
-                                <Col key={searchMovie.id} xs={12} sm={6} md={4} lg={3}>
-                                    <MovieCard
-                                        movie={searchMovie}
-                                        isFavourite={favourites.some(fav => fav.movieId === searchMovie.id)}
-                                        onToggleFavourite={onToggleFavourite}
-                                    />
-                                </Col>
-                            ))}
                         </>
                     )
                 )}

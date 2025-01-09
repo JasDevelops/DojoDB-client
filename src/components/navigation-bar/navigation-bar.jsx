@@ -18,7 +18,7 @@ export const NavigationBar = ({ user, onLoggedOut }) => {
         if (searchTerm.trim() === '') { return; }
 
         navigate(`/search/${encodeURIComponent(searchTerm)}`);
-        setSearchTerm(""); 
+        setSearchTerm("");
         handleClose();
     };
 
@@ -61,17 +61,18 @@ export const NavigationBar = ({ user, onLoggedOut }) => {
                                     <Nav.Link onClick={() => { onLoggedOut(); handleClose(); }}>
                                         <i className="bi bi-door-closed"></i> Logout
                                     </Nav.Link>
-                                    <Form className="d-flex mt-5" onSubmit={handleSearch}>
+                                    <Form id="SearchForm" className="d-flex mt-5" onSubmit={handleSearch}>
                                         <Form.Control
                                             type="search"
                                             placeholder="Search DojoDB"
+                                            name="search"
                                             className="me-2 search-input"
                                             aria-label="Search"
                                             value={searchTerm}
                                             onChange={(e) => setSearchTerm(e.target.value)}
-                                            />
-                                        <Button  type="submit" variant="link" className="search-button"><i className="bi bi-search"></i></Button>
-                                    </Form> 
+                                        />
+                                        <Button type="submit" variant="link" className="search-button"><i className="bi bi-search"></i></Button>
+                                    </Form>
                                 </>
                             )}
                         </Nav>
@@ -87,5 +88,5 @@ NavigationBar.propTypes = {
         username: PropTypes.string.isRequired,
         id: PropTypes.string.isRequired,
     }).isRequired,
-    onLoggedOut: PropTypes.func.isRequired, 
+    onLoggedOut: PropTypes.func.isRequired,
 };

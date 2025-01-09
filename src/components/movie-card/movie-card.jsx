@@ -25,8 +25,8 @@ export const MovieCard = ({ movie, isFavourite, onToggleFavourite, onRemove }) =
                         <Link to={`/directors/${movie.director.name}`}>{movie.director.name}</Link>
                     ) : (
                         <span>Unknown Director</span>
-                    )}  
-                    </Card.Text>
+                    )}
+                </Card.Text>
             </Card.Body>
 
             {/* Add/Remove Favourite button */}
