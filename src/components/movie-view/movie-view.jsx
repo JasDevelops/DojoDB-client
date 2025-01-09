@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import { Col, Row, Button, Figure, Spinner } from "react-bootstrap";
 import PropTypes from "prop-types";
-import { useDispatch, useSelector  } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { startLoading, finishLoading } from "../../actions/progressAction";
 
 import { MovieCard } from "../movie-card/movie-card";
@@ -27,7 +27,7 @@ export const MovieView = ({ allMovies, favourites = [], onToggleFavourite }) => 
         } else {
             dispatch(startLoading());
         }
-    }, [movie, dispatch ]);
+    }, [movie, dispatch]);
 
     const handleToggleFavourite = () => {
         onToggleFavourite(movie.id, isFavourite);

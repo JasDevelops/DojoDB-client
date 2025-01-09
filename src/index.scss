@@ -149,7 +149,9 @@ strong {
 .breadcrumb-item+.breadcrumb-item:before {
     float: none
 }
-
+li.breadcrumb-item::marker {
+    content: none
+}
 .dropdown-item.active,
 .dropdown-item:active {
     background-color: $secondary;

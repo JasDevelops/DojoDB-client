@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { useParams } from "react-router-dom";
 import { Row, Col, Spinner } from "react-bootstrap";
-import { useDispatch, useSelector  } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { startLoading, finishLoading } from "../../actions/progressAction";
 
 import { MovieCard } from "../movie-card/movie-card";

@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import PropTypes from "prop-types";
-import { useDispatch, useSelector  } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { startLoading, finishLoading } from "../../actions/progressAction";
 
 import { Row, Col, Button, Form, Card, FloatingLabel, Alert, Spinner } from "react-bootstrap";
@@ -63,7 +63,6 @@ export const ProfileView = ({ user, movies, onLogout, onProfileUpdate }) => {
                 setFavouriteMovies(favouriteMovies.filter(m => String(m.id) !== String(movieID)));
             })
             .catch(error => {
-                setLoading(false);
                 setError(error.message);
             });
     };
@@ -143,7 +142,6 @@ export const ProfileView = ({ user, movies, onLogout, onProfileUpdate }) => {
             setError("Passwords do not match.");
             return;
         }
-
         setError(null);
 
         const updatedData = {
@@ -168,11 +166,13 @@ export const ProfileView = ({ user, movies, onLogout, onProfileUpdate }) => {
 
         if (Object.keys(updatedData).length === 0) {
             setError("No changes detected.");
-            setLoading(false);
+            dispatch(finishLoading())
             return;
         }
 
         const usernameToUse = profile.username || newInfo.username;
+
+        dispatch(startLoading());
 
         fetch(`https://dojo-db-e5c2cf5a1b56.herokuapp.com/users/${profile.username}`, {
             method: "PUT",
@@ -195,7 +195,7 @@ export const ProfileView = ({ user, movies, onLogout, onProfileUpdate }) => {
                 onProfileUpdate(updatedUser.user);
             })
             .catch(error => setError(error.message))
-            .finally(() => setLoading(false));
+            .finally(() => dispatch(finishLoading()));
     };
 
     // Remove confirm password content
@@ -208,7 +208,7 @@ export const ProfileView = ({ user, movies, onLogout, onProfileUpdate }) => {
     // Delete account 
     const deleteAccount = () => {
         if (window.confirm("Are you sure you want to delete your account? This action cannot be undone.")) {
-            setLoading(true);
+            dispatch(startLoading())
             const token = localStorage.getItem("token");
 
             fetch(`https://dojo-db-e5c2cf5a1b56.herokuapp.com/users/${username}`, {
@@ -225,12 +225,12 @@ export const ProfileView = ({ user, movies, onLogout, onProfileUpdate }) => {
                     return response.json();
                 })
                 .then(() => {
-                    setLoading(false);
+                    dispatch(finishLoading());
                     onLogout();
                     navigate("/signup");
                 })
                 .catch(error => {
-                    setLoading(false);
+                    dispatch(finishLoading());
                     setError(error.message);
                 });
         }

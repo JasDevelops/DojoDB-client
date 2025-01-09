@@ -18,8 +18,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { startLoading, finishLoading } from "../../actions/progressAction";
 
 export const MainView = () => {
-    console.log("MainView rendered");
-
     const storedUser = JSON.parse(localStorage.getItem("user"));
     const storedToken = localStorage.getItem("token");
     const [allMovies, setAllMovies] = useState([]);
@@ -62,26 +60,21 @@ export const MainView = () => {
             );
         });
     };
-//Spinner
-useEffect(() => {
-    const loadTimeout = setTimeout(() => {
-        console.log("Simulated loading timeout triggered");
-        dispatch(finishLoading()); 
-    }, 1000); 
+    //Spinner
+    useEffect(() => {
+        const loadTimeout = setTimeout(() => {
+            dispatch(finishLoading());
+        }, 1000);
 
-    return () => clearTimeout(loadTimeout); 
-}, []); 
+        return () => clearTimeout(loadTimeout);
+    }, []);
 
     useEffect(() => {
         if (!token || !user) return;
 
         const fetchData = async () => {
             try {
-                console.log("Fetching data...");
-
-                // Start loading (progress )
                 dispatch(startLoading());
-
                 // Fetch movies
                 const moviesResponse = await fetch("https://dojo-db-e5c2cf5a1b56.herokuapp.com/movies", {
                     headers: {
@@ -141,7 +134,6 @@ useEffect(() => {
                 console.error("Error fetching data:", error);
                 setError(`There was an error fetching the data.`);
             } finally {
-                console.log("Data fetching finished, setting loading to false...");
                 dispatch(finishLoading());
             }
         };
@@ -181,8 +173,6 @@ useEffect(() => {
 
     // Login
     const handleLogin = (user, token) => {
-        console.log('Logging in user:', user);
-        console.log('Token:', token);
         setUser(user);
         setToken(token);
         localStorage.setItem("user", JSON.stringify(user));
@@ -202,216 +192,222 @@ useEffect(() => {
     return (
         <BrowserRouter>
             <NavigationBar user={user} onLoggedOut={handleLogout} />
-            {loading ? (
-                <Row className="justify-content-center">
-                    <Col xs="auto">
-                        <Spinner animation="grow" role="status">
-                            <span className="visually-hidden">Loading...</span>
-                        </Spinner>
-                    </Col>
-                </Row>
-            ) : (
-                <Routes>
-                    {/* Login */}
-                    <Route path="/login" element={user ? (<Navigate to="/" replace/>) : (<Col>
-                        <LoginView onLoggedIn={handleLogin} /></Col>)}
+            <Routes>
+                {/* Login */}
+                <Route path="/login" element={user ? (<Navigate to="/" replace />) : (<Col>
+                    <LoginView onLoggedIn={handleLogin} /></Col>)}
+                />
+                {/* Signup */}
+                <Route path="/signup" element={user ? (<Navigate to="/" replace />) : (<Col>
+                    <SignupView /></Col>)}
+                />
+                {/* Search */}
+                <Route path="/search/:searchTerm" element={user ? (
+                    <SearchResultsView
+                        allMovies={allMovies}
+                        favourites={favourites}
+                        onToggleFavourite={toggleFavourite}
                     />
-                    {/* Signup */}
-                    <Route path="/signup" element={user ? (<Navigate to="/" replace/>) : (<Col>
-                        <SignupView /></Col>)}
+                ) : (<Navigate to="/login" replace />)}
+                />
+                {/* Profile */}
+                <Route path="/profile" element={user ? (
+                    <ProfileView
+                        user={user}
+                        movies={allMovies}
+                        favourites={favourites}
+                        onLogout={handleLogout}
+                        onRemove={toggleFavourite}
+                        onProfileUpdate={handleProfileUpdate}
                     />
-                    {/* Search */}
-                    <Route path="/search/:searchTerm" element={user ? (
-                        <SearchResultsView
-                            allMovies={allMovies}
-                            favourites={favourites}
-                            onToggleFavourite={toggleFavourite}
-                        />
-                    ) : (<Navigate to="/login" replace />)}
+                ) : (<Navigate to="/login" />)}
+                />
+                {/* Movie Details */}
+                <Route path="/movies/:movieID" element={user ? (
+                    <MovieView
+                        allMovies={allMovies}
+                        user={user}
+                        favourites={favourites}
+                        onToggleFavourite={toggleFavourite}
+                        similarMovies={similarMovies}
                     />
-                    {/* Profile */}
-                    <Route path="/profile" element={user ? (
-                        <ProfileView
-                            user={user}
-                            movies={allMovies}
-                            favourites={favourites}
-                            onLogout={handleLogout}
-                            onRemove={toggleFavourite}
-                            onProfileUpdate={handleProfileUpdate}
-                        />
-                    ) : (<Navigate to="/login" />)}
-                    />
-                    {/* Movie Details */}
-                    <Route path="/movies/:movieID" element={user ? (
-                        <MovieView
-                            allMovies={allMovies}
-                            user={user}
-                            favourites={favourites}
-                            onToggleFavourite={toggleFavourite}
-                            similarMovies={similarMovies}
-                        />
-                    ) : (<Navigate to="/login" replace />)}
-                    />
-                    {/* Home */}
-                    <Route path="/" element={user ? (
-                        allMovies.length === 0 ? (
-                            <Col><h3>The list is empty!</h3></Col>
-                        ) : (
-                            // filter
-                            <Row>
-                                {/* 1st Filter Row */}
-                                <Row className="g-3 d-flex justify-content-between">
-                                    <Col sm={12} md={3} lg={2} className="d-flex justify-content-md-start mb-3">
-                                        {/* Genre Filter */}
-                                        <DropdownButton
-                                            id="genre-filter"
-                                            title="Filter by Genre"
-                                            onSelect={(value) => setGenreFilter(value)}
-                                            value={genreFilter}
-                                            variant="outline-dark"
-                                        >
-                                            <Dropdown.Item eventKey="">All Genres</Dropdown.Item>
-                                            {genres.map((genre, index) => (
-                                                <Dropdown.Item key={index} eventKey={genre}>{genre}</Dropdown.Item>
-                                            ))}
-                                        </DropdownButton>
-                                    </Col>
-                                    <Col sm={12} md={3} lg={2} className="d-flex justify-content-sm-start justify-content-md-center mb-3">
-                                        {/* Release Year Filter */}
-                                        <DropdownButton
-                                            id="release-year-filter"
-                                            title="Filter by Year"
-                                            onSelect={(value) => setReleaseYearFilter(value)}
-                                            value={releaseYearFilter}
-                                            variant="outline-dark"
-                                        >
-                                            <Dropdown.Item eventKey="">All Years</Dropdown.Item>
-                                            {releaseYears.map((year, index) => (
-                                                <Dropdown.Item key={index} eventKey={year}>{year}</Dropdown.Item>
-                                            ))}
-                                        </DropdownButton>
-                                    </Col>
-                                    <Col sm={12} md={3} lg={2} className="d-flex justify-content-sm-start justify-content-md-center mb-3">
-                                        {/* Director Filter */}
-                                        <DropdownButton
-                                            id="director-filter"
-                                            title="Filter by Director"
-                                            onSelect={(value) => setDirectorFilter(value)}
-                                            value={directorFilter}
-                                            variant="outline-dark"
-                                        >
-                                            <Dropdown.Item eventKey="">All Directors</Dropdown.Item>
-                                            {directors.map((director, index) => (
-                                                <Dropdown.Item key={index} eventKey={director}>{director}</Dropdown.Item>
-                                            ))}
-                                        </DropdownButton>
-                                    </Col>
-                                    <Col sm={12} md={3} lg={2} className="d-flex justify-content-sm-start justify-content-md-end mb-3">
-                                        {/* Actor Filter */}
-                                        <DropdownButton
-                                            id="actor-filter"
-                                            title="Filter by Actor"
-                                            onSelect={(value) => {
-                                                console.log(value);
-                                                setActorFilter(value)
-                                            }}
-                                            value={actorFilter}
-                                            variant="outline-dark"
-                                        >
-                                            <Dropdown.Item eventKey="">All Actors</Dropdown.Item>
-                                            {actors.map((actor, index) => (
-                                                <Dropdown.Item key={index} eventKey={actor}>{actor}</Dropdown.Item>
-                                            ))}
-                                        </DropdownButton>
-                                    </Col>
-                                </Row>
-                                {/* 2nd Filter Row */}
-                                <Row className="g-3 mb-3 d-flex justify-content-between">
-                                    <Col sm={12} md={6} className="d-flex justify-content-md-start">
-                                        {/* Title Filter */}
-                                        <input
-                                            type="text"
-                                            className="form-control"
-                                            placeholder="Search by title"
-                                            value={titleFilter}
-                                            onChange={(e) => setTitleFilter(e.target.value)}
-                                        />
-                                    </Col>
-                                    {/* Clear All Filters Row */}
-                                    <Col sm={12} md={6} className="d-flex justify-content-sm-start justify-content-md-end">
-                                        {/* clear Filter */}
-                                        <button
-                                            className="btn btn-secondary"
-                                            onClick={() => {
-                                                setGenreFilter("");
-                                                setReleaseYearFilter("");
-                                                setDirectorFilter("");
-                                                setActorFilter("");
-                                                setTitleFilter("");
-                                            }}
-                                        >
-                                            Clear All Filters <i className="bi bi-x"></i>
-                                        </button>
-                                    </Col>
-                                </Row>
-                                {/* breadcrumbs */}
-                                <Row className="g-3 d-flex justify-content-center">
-                                    {genreFilter || releaseYearFilter || directorFilter || actorFilter || titleFilter ? (
-                                        <Row>
-                                            <h2>Results for applied filters:</h2>
-                                            <Col className="g-3 mb-3 d-flex justify-content-center">
-                                                <nav aria-label="breadcrumb">
-                                                    <ol className="breadcrumb">
-                                                        {genreFilter && (
-                                                            <li className="breadcrumb-item">
-                                                                <span className="font-weight-bold">Genre: </span>
-                                                                <Link to={`/genres/${genreFilter}`}>{genreFilter}</Link>
-                                                                <button className="btn btn-link" onClick={() => setGenreFilter("")}><i className="bi bi-x"></i>
-                                                                </button>
-                                                            </li>
-                                                        )}
-                                                        {releaseYearFilter && (
-                                                            <li className="breadcrumb-item">
-                                                                <span className="font-weight-bold">Year: </span>
-                                                                <Link to={`/movies/release-year/${releaseYearFilter}`}>{releaseYearFilter}</Link>
-                                                                <button className="btn btn-link" onClick={() => setReleaseYearFilter("")}><i className="bi bi-x"></i></button>
-                                                            </li>
-                                                        )}
-                                                        {directorFilter && (
-                                                            <li className="breadcrumb-item">
-                                                                <span className="font-weight-bold">Director: </span>
-                                                                <Link to={`/directors/${directorFilter}`}>{directorFilter}</Link>
-                                                                <button className="btn btn-link" onClick={() => setDirectorFilter("")}><i className="bi bi-x"></i></button>
-                                                            </li>
-                                                        )}
-                                                        {actorFilter && (
-                                                            <li className="breadcrumb-item">
-                                                                <span className="font-weight-bold">Actor: </span>
-                                                                <Link to={`/actors/${actorFilter}`}>{actorFilter}</Link>
-                                                                <button className="btn btn-link" onClick={() => setActorFilter("")}><i className="bi bi-x"></i></button>
-                                                            </li>
-                                                        )}
-                                                        {titleFilter && (
-                                                            <li className="breadcrumb-item">
-                                                                <span className="font-weight-bold">{`Title: ${titleFilter}`}</span>
-                                                                <button className="btn btn-link" onClick={() => setTitleFilter("")}><i className="bi bi-x"></i></button>
-                                                            </li>
-                                                        )}
-                                                    </ol>
-                                                </nav>
-                                            </Col>
-                                        </Row>
-                                    ) : null}
-                                </Row>
-                                {/* no movies for filter */}
-                                {filterMovies(allMovies).length === 0 ? (
-                                    <Row className="g-3 mb-5 d-flex justify-content-center">
-                                        <Col><h3>No movies for the applied filters found!</h3></Col>
+                ) : (<Navigate to="/login" replace />)}
+                />
+                {/* Home */}
+                <Route path="/" element={user ? (
+                    loading ? (
+                        <Row className="justify-content-center">
+                            <Col xs="auto">
+                                <Spinner animation="grow" role="status">
+                                    <span className="visually-hidden">Loading...</span>
+                                </Spinner>
+                            </Col>
+                        </Row>
+                    ) : allMovies.length === 0 ? (
+                        <Col><h3>The list is empty!</h3></Col>
+                    ) : (
+                        // filter
+                        <Row>
+                            {/* 1st Filter Row */}
+                            <Row className="g-3 d-flex justify-content-between">
+                                <Col sm={12} md={3} lg={2} className="d-flex justify-content-md-start mb-3">
+                                    {/* Genre Filter */}
+                                    <DropdownButton
+                                        id="genre-filter"
+                                        title="Filter by Genre"
+                                        onSelect={(value) => setGenreFilter(value)}
+                                        value={genreFilter}
+                                        variant="outline-dark"
+                                    >
+                                        <Dropdown.Item eventKey="">All Genres</Dropdown.Item>
+                                        {genres.map((genre, index) => (
+                                            <Dropdown.Item key={index} eventKey={genre}>{genre}</Dropdown.Item>
+                                        ))}
+                                    </DropdownButton>
+                                </Col>
+                                <Col sm={12} md={3} lg={2} className="d-flex justify-content-sm-start justify-content-md-center mb-3">
+                                    {/* Release Year Filter */}
+                                    <DropdownButton
+                                        id="release-year-filter"
+                                        title="Filter by Year"
+                                        onSelect={(value) => setReleaseYearFilter(value)}
+                                        value={releaseYearFilter}
+                                        variant="outline-dark"
+                                    >
+                                        <Dropdown.Item eventKey="">All Years</Dropdown.Item>
+                                        {releaseYears.map((year, index) => (
+                                            <Dropdown.Item key={index} eventKey={year}>{year}</Dropdown.Item>
+                                        ))}
+                                    </DropdownButton>
+                                </Col>
+                                <Col sm={12} md={3} lg={2} className="d-flex justify-content-sm-start justify-content-md-center mb-3">
+                                    {/* Director Filter */}
+                                    <DropdownButton
+                                        id="director-filter"
+                                        title="Filter by Director"
+                                        onSelect={(value) => setDirectorFilter(value)}
+                                        value={directorFilter}
+                                        variant="outline-dark"
+                                    >
+                                        <Dropdown.Item eventKey="">All Directors</Dropdown.Item>
+                                        {directors.map((director, index) => (
+                                            <Dropdown.Item key={index} eventKey={director}>{director}</Dropdown.Item>
+                                        ))}
+                                    </DropdownButton>
+                                </Col>
+                                <Col sm={12} md={3} lg={2} className="d-flex justify-content-sm-start justify-content-md-end mb-3">
+                                    {/* Actor Filter */}
+                                    <DropdownButton
+                                        id="actor-filter"
+                                        title="Filter by Actor"
+                                        onSelect={(value) => {
+                                            setActorFilter(value)
+                                        }}
+                                        value={actorFilter}
+                                        variant="outline-dark"
+                                    >
+                                        <Dropdown.Item eventKey="">All Actors</Dropdown.Item>
+                                        {actors.map((actor, index) => (
+                                            <Dropdown.Item key={index} eventKey={actor}>{actor}</Dropdown.Item>
+                                        ))}
+                                    </DropdownButton>
+                                </Col>
+                            </Row>
+                            {/* 2nd Filter Row */}
+                            <Row className="g-3 mb-3 d-flex justify-content-between">
+                                <Col sm={12} md={6} className="d-flex justify-content-md-start">
+                                    {/* Title Filter */}
+                                    <input
+                                        type="text"
+                                        className="form-control"
+                                        placeholder="Search by title"
+                                        value={titleFilter}
+                                        onChange={(e) => setTitleFilter(e.target.value)}
+                                    />
+                                </Col>
+                                {/* Clear All Filters Row */}
+                                <Col sm={12} md={6} className="d-flex justify-content-sm-start justify-content-md-end">
+                                    {/* clear Filter */}
+                                    <button
+                                        className="btn btn-secondary"
+                                        onClick={() => {
+                                            setGenreFilter("");
+                                            setReleaseYearFilter("");
+                                            setDirectorFilter("");
+                                            setActorFilter("");
+                                            setTitleFilter("");
+                                        }}
+                                    >
+                                        Clear All Filters <i className="bi bi-x"></i>
+                                    </button>
+                                </Col>
+                            </Row>
+                            {/* breadcrumbs */}
+                            <Row className="g-3 d-flex justify-content-center">
+                                {genreFilter || releaseYearFilter || directorFilter || actorFilter || titleFilter ? (
+                                    <Row>
+                                        <h2>Results for applied filters:</h2>
+                                        <Col className="g-3 mb-3 d-flex justify-content-center">
+                                            <nav aria-label="breadcrumb">
+                                                <ol className="breadcrumb">
+                                                    {genreFilter && (
+                                                        <li className="breadcrumb-item">
+                                                            <span className="font-weight-bold">Genre: </span>
+                                                            <Link to={`/genres/${genreFilter}`}>{genreFilter}</Link>
+                                                            <button className="btn btn-link" onClick={() => setGenreFilter("")}><i className="bi bi-x"></i>
+                                                            </button>
+                                                        </li>
+                                                    )}
+                                                    {releaseYearFilter && (
+                                                        <li className="breadcrumb-item">
+                                                            <span className="font-weight-bold">Year: </span>
+                                                            <Link to={`/movies/release-year/${releaseYearFilter}`}>{releaseYearFilter}</Link>
+                                                            <button className="btn btn-link" onClick={() => setReleaseYearFilter("")}><i className="bi bi-x"></i></button>
+                                                        </li>
+                                                    )}
+                                                    {directorFilter && (
+                                                        <li className="breadcrumb-item">
+                                                            <span className="font-weight-bold">Director: </span>
+                                                            <Link to={`/directors/${directorFilter}`}>{directorFilter}</Link>
+                                                            <button className="btn btn-link" onClick={() => setDirectorFilter("")}><i className="bi bi-x"></i></button>
+                                                        </li>
+                                                    )}
+                                                    {actorFilter && (
+                                                        <li className="breadcrumb-item">
+                                                            <span className="font-weight-bold">Actor: </span>
+                                                            <Link to={`/actors/${actorFilter}`}>{actorFilter}</Link>
+                                                            <button className="btn btn-link" onClick={() => setActorFilter("")}><i className="bi bi-x"></i></button>
+                                                        </li>
+                                                    )}
+                                                    {titleFilter && (
+                                                        <li className="breadcrumb-item">
+                                                            <span className="font-weight-bold">{`Title: ${titleFilter}`}</span>
+                                                            <button className="btn btn-link" onClick={() => setTitleFilter("")}><i className="bi bi-x"></i></button>
+                                                        </li>
+                                                    )}
+                                                </ol>
+                                            </nav>
+                                        </Col>
                                     </Row>
-                                ) : (
-                                    // filtered movies
-                                    <Row className="g-3 mb-5 d-flex justify-content-center">
-                                        {filterMovies(allMovies).map((movie) => (
+                                ) : null}
+                            </Row>
+                            {/* no movies for filter */}
+                            {filterMovies(allMovies).length === 0 ? (
+                                <Row className="g-3 mb-5 d-flex justify-content-center">
+                                    <Col><h3>No movies for the applied filters found!</h3></Col>
+                                </Row>
+                            ) : (
+                                // filtered movies
+                                <Row className="g-3 mb-5 d-flex justify-content-center">
+                                    {loading ? (
+                                        // Spinner while loading
+                                        <Col xs="auto">
+                                            <Spinner animation="grow" role="status">
+                                                <span className="visually-hidden">Loading...</span>
+                                            </Spinner>
+                                        </Col>
+                                    ) : (
+                                        filterMovies(allMovies).map((movie) => (
                                             <Col key={movie.id} xs={12} sm={6} md={4} lg={3}>
                                                 <MovieCard
                                                     movie={movie}
@@ -422,63 +418,64 @@ useEffect(() => {
                                                     onToggleFavourite={(movieId, isFavourite) => toggleFavourite(movieId, isFavourite)}
                                                 />
                                             </Col>
-                                        ))}
-                                    </Row>
-                                )}
-                            </Row>
-                        )
-                    ) : (<Navigate to="/login" replace />)}
-                    />
-
-                    {/* ReleaseYear */}
-                    <Route path="/movies/release-year/:year" element={user ? (
-                        <Row className="g-3 mb-5">
-                            <ReleaseYear
-                                allMovies={allMovies}
-                                favourites={favourites}
-                                onToggleFavourite={toggleFavourite}
-                            />
+                                        ))
+                                    )}
+                                </Row>
+                            )}
                         </Row>
-                    ) : (<Navigate to="/login" replace />)}
-                    />
+                    )
+                ) : (<Navigate to="/login" replace />)}
+                />
 
-                    {/* Actor */}
-                    <Route path="/actors/:name" element={user ? (
-                        <Row className="g-3 mb-5">
-                            <ActorsView
-                                allMovies={allMovies}
-                                favourites={favourites}
-                                onToggleFavourite={toggleFavourite}
-                            />
-                        </Row>
-                    ) : (<Navigate to="/login" replace />)}
-                    />
+                {/* ReleaseYear */}
+                <Route path="/movies/release-year/:year" element={user ? (
+                    <Row className="g-3 mb-5">
+                        <ReleaseYear
+                            allMovies={allMovies}
+                            favourites={favourites}
+                            onToggleFavourite={toggleFavourite}
+                        />
+                    </Row>
+                ) : (<Navigate to="/login" replace />)}
+                />
 
-                    {/* Director */}
-                    <Route path="/directors/:name" element={user ? (
-                        <Row className="g-3 mb-5">
-                            <DirectorsView
-                                allMovies={allMovies}
-                                favourites={favourites}
-                                onToggleFavourite={toggleFavourite}
-                            />
-                        </Row>
-                    ) : (<Navigate to="/login" replace />)}
-                    />
+                {/* Actor */}
+                <Route path="/actors/:name" element={user ? (
+                    <Row className="g-3 mb-5">
+                        <ActorsView
+                            allMovies={allMovies}
+                            favourites={favourites}
+                            onToggleFavourite={toggleFavourite}
+                        />
+                    </Row>
+                ) : (<Navigate to="/login" replace />)}
+                />
 
-                    {/* Genre */}
-                    <Route path="/genres/:name" element={user ? (
-                        <Row className="g-3 mb-5">
-                            <GenreView
-                                allMovies={allMovies}
-                                favourites={favourites}
-                                onToggleFavourite={toggleFavourite}
-                            />
-                        </Row>
-                    ) : (<Navigate to="/login" replace />)}
-                    />
-                </Routes>
-            )}
+                {/* Director */}
+                <Route path="/directors/:name" element={user ? (
+                    <Row className="g-3 mb-5">
+                        <DirectorsView
+                            allMovies={allMovies}
+                            favourites={favourites}
+                            onToggleFavourite={toggleFavourite}
+                        />
+                    </Row>
+                ) : (<Navigate to="/login" replace />)}
+                />
+
+                {/* Genre */}
+                <Route path="/genres/:name" element={user ? (
+                    <Row className="g-3 mb-5">
+                        <GenreView
+                            allMovies={allMovies}
+                            favourites={favourites}
+                            onToggleFavourite={toggleFavourite}
+                        />
+                    </Row>
+                ) : (<Navigate to="/login" replace />)}
+                />
+            </Routes>
+
         </BrowserRouter>
     );
 };

@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { useParams, Link } from "react-router-dom";
 import { Row, Col, Spinner } from "react-bootstrap";
-import { useDispatch, useSelector  } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { startLoading, finishLoading } from "../../actions/progressAction";
 
 import { MovieCard } from "../movie-card/movie-card";
@@ -17,6 +17,8 @@ export const ActorsView = ({ favourites = [], onToggleFavourite }) => {
     const loading = useSelector((state) => state.loading);
 
     useEffect(() => {
+        if (actor) return;
+
         const fetchMovies = async () => {
             try {
                 dispatch(startLoading());
@@ -32,7 +34,6 @@ export const ActorsView = ({ favourites = [], onToggleFavourite }) => {
                 const data = await response.json();
 
                 if (response.ok && data.roles && data.roles.length > 0) {
-
                     const updatedMovies = data.roles.map(movie => ({
                         ...movie,
                         id: movie._id,
@@ -48,6 +49,7 @@ export const ActorsView = ({ favourites = [], onToggleFavourite }) => {
                     setError("");
                 }
             } catch (err) {
+                console.error(err);
                 setMovies([]);
                 setError(`There was an error fetching movies by actor "${name}"`);
             } finally {
@@ -56,7 +58,7 @@ export const ActorsView = ({ favourites = [], onToggleFavourite }) => {
         };
 
         fetchMovies();
-    }, [name, dispatch]);
+    }, [name, actor, dispatch]);
 
     return (
         <>

@@ -14,4 +14,3 @@ export const progressReducer = (state = initialState, action) => {
             return state;
     }
 };
-
