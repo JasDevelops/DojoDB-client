@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import { Col, Row, Button, Figure, Spinner } from "react-bootstrap";
 import PropTypes from "prop-types";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector  } from "react-redux";
 import { startLoading, finishLoading } from "../../actions/progressAction";
 
 import { MovieCard } from "../movie-card/movie-card";
@@ -10,8 +10,8 @@ import "./movie-view.scss";
 
 export const MovieView = ({ allMovies, favourites = [], onToggleFavourite }) => {
     const { movieID } = useParams();
-    const [loading, setLoading] = useState(true);
     const dispatch = useDispatch();
+    const loading = useSelector((state) => state.loading);
 
     const movie = allMovies.find(movie => movie.id === movieID);
     const isFavourite = Array.isArray(favourites) && favourites.some(fav => fav.movieId === movie.id);
@@ -23,11 +23,11 @@ export const MovieView = ({ allMovies, favourites = [], onToggleFavourite }) => 
 
     useEffect(() => {
         if (movie) {
-            setLoading(false);
+            dispatch(finishLoading());
         } else {
-            setLoading(true);
+            dispatch(startLoading());
         }
-    }, [movie]);
+    }, [movie, dispatch ]);
 
     const handleToggleFavourite = () => {
         onToggleFavourite(movie.id, isFavourite);

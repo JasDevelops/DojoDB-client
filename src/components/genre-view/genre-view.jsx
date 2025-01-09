@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { useParams } from "react-router-dom";
 import { Row, Col, Spinner } from "react-bootstrap";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector  } from "react-redux";
 import { startLoading, finishLoading } from "../../actions/progressAction";
 
 import { MovieCard } from "../movie-card/movie-card";
@@ -12,15 +12,13 @@ export const GenreView = ({ favourites = [], onToggleFavourite }) => {
     const [movies, setMovies] = useState([]);
     const [error, setError] = useState("");
     const [genre, setGenre] = useState(null);
-    const [loading, setLoading] = useState(true);
-
     const dispatch = useDispatch();
+    const loading = useSelector((state) => state.loading);
 
     useEffect(() => {
         const fetchGenreData = async () => {
             try {
                 dispatch(startLoading());
-                setLoading(true);
 
                 const token = localStorage.getItem("token");
                 const response = await fetch(`https://dojo-db-e5c2cf5a1b56.herokuapp.com/genres/${name}`, {
@@ -43,7 +41,6 @@ export const GenreView = ({ favourites = [], onToggleFavourite }) => {
                     }));
                     setMovies(updatedMovies);
                     setError("");
-                    setLoading(false);
                     dispatch(finishLoading());
 
                 } else {
@@ -54,7 +51,6 @@ export const GenreView = ({ favourites = [], onToggleFavourite }) => {
                 setMovies([]);
                 setError(`There was an error fetching movies for genre "${name}"`);
             } finally {
-                setLoading(false);
                 dispatch(finishLoading());
             }
         };

@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import PropTypes from "prop-types";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector  } from "react-redux";
 import { startLoading, finishLoading } from "../../actions/progressAction";
 
 import { Row, Col, Button, Form, Card, FloatingLabel, Alert, Spinner } from "react-bootstrap";
@@ -22,8 +22,8 @@ export const ProfileView = ({ user, movies, onLogout, onProfileUpdate }) => {
     const [error, setError] = useState(null);
     const navigate = useNavigate();
 
-    const [loading, setLoading] = useState(true);
     const dispatch = useDispatch();
+    const loading = useSelector((state) => state.loading);
 
     const validateEmail = (email) => {
         const emailPattern = /^[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}$/;
@@ -84,7 +84,6 @@ export const ProfileView = ({ user, movies, onLogout, onProfileUpdate }) => {
 
             try {
                 dispatch(startLoading());
-                setLoading(true);
 
                 const response = await fetch(`https://dojo-db-e5c2cf5a1b56.herokuapp.com/users/${username}`, {
                     method: "GET",
@@ -118,7 +117,6 @@ export const ProfileView = ({ user, movies, onLogout, onProfileUpdate }) => {
             } catch (error) {
                 setError(error.message);
             } finally {
-                setLoading(false);
                 dispatch(finishLoading());
             }
         };
@@ -146,7 +144,6 @@ export const ProfileView = ({ user, movies, onLogout, onProfileUpdate }) => {
             return;
         }
 
-        setLoading(true);
         setError(null);
 
         const updatedData = {

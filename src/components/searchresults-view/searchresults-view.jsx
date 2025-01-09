@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { Row, Col, Spinner } from "react-bootstrap";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector  } from "react-redux";
 import { startLoading, finishLoading } from "../../actions/progressAction";
 import PropTypes from "prop-types";
 
@@ -11,9 +11,9 @@ export const SearchResultsView = ({ favourites = [], allMovies, onToggleFavourit
     const { searchTerm } = useParams();
     const [searchResults, setSearchResults] = useState([]);
     const [error, setError] = useState("");
-    const [loading, setLoading] = useState(true);
 
     const dispatch = useDispatch();
+    const loading = useSelector((state) => state.loading);
 
 
     useEffect(() => {
@@ -25,7 +25,6 @@ export const SearchResultsView = ({ favourites = [], allMovies, onToggleFavourit
             }
             try {
                 dispatch(startLoading());
-                setLoading(true);
 
                 const token = localStorage.getItem("token");
                 const response = await fetch(`https://dojo-db-e5c2cf5a1b56.herokuapp.com/search/${encodeURIComponent(searchTerm)}`, {
@@ -62,7 +61,6 @@ export const SearchResultsView = ({ favourites = [], allMovies, onToggleFavourit
                 setSearchResults([]);
                 setError(`There was an error fetching search results for "${searchTerm}". Please try again later.`);
             } finally {
-                setLoading(false);
                 dispatch(finishLoading());
             }
         };

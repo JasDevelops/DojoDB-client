@@ -14,10 +14,12 @@ import { ActorsView } from "../actors-view/actors-view";
 import { DirectorsView } from "../directors-view/directors-view";
 import { GenreView } from "../genre-view/genre-view";
 
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { startLoading, finishLoading } from "../../actions/progressAction";
 
 export const MainView = () => {
+    console.log("MainView rendered");
+
     const storedUser = JSON.parse(localStorage.getItem("user"));
     const storedToken = localStorage.getItem("token");
     const [allMovies, setAllMovies] = useState([]);
@@ -36,7 +38,6 @@ export const MainView = () => {
     const [releaseYears, setReleaseYears] = useState([]);
     const [directors, setDirectors] = useState([]);
     const [actors, setActors] = useState([]);
-    const [loading, setLoading] = useState(true);
 
     const dispatch = useDispatch();
 
@@ -61,15 +62,25 @@ export const MainView = () => {
             );
         });
     };
+//Spinner
+useEffect(() => {
+    const loadTimeout = setTimeout(() => {
+        console.log("Simulated loading timeout triggered");
+        dispatch(finishLoading()); 
+    }, 1000); 
+
+    return () => clearTimeout(loadTimeout); 
+}, []); 
 
     useEffect(() => {
         if (!token || !user) return;
 
         const fetchData = async () => {
             try {
+                console.log("Fetching data...");
+
                 // Start loading (progress )
                 dispatch(startLoading());
-                setLoading(true);
 
                 // Fetch movies
                 const moviesResponse = await fetch("https://dojo-db-e5c2cf5a1b56.herokuapp.com/movies", {
@@ -130,13 +141,12 @@ export const MainView = () => {
                 console.error("Error fetching data:", error);
                 setError(`There was an error fetching the data.`);
             } finally {
-                setLoading(false);
+                console.log("Data fetching finished, setting loading to false...");
                 dispatch(finishLoading());
             }
         };
         fetchData();
     }, [token, user, dispatch]);
-
     // Toggle Favourite
     const toggleFavourite = async (movieID, isFavourite) => {
         const endpoint = `https://dojo-db-e5c2cf5a1b56.herokuapp.com/users/${user.username}/favourites/${movieID}`;
@@ -171,6 +181,8 @@ export const MainView = () => {
 
     // Login
     const handleLogin = (user, token) => {
+        console.log('Logging in user:', user);
+        console.log('Token:', token);
         setUser(user);
         setToken(token);
         localStorage.setItem("user", JSON.stringify(user));
@@ -185,6 +197,7 @@ export const MainView = () => {
         localStorage.removeItem("user");
         localStorage.removeItem("token");
     };
+    const loading = useSelector((state) => state.loading);
 
     return (
         <BrowserRouter>
@@ -200,11 +213,11 @@ export const MainView = () => {
             ) : (
                 <Routes>
                     {/* Login */}
-                    <Route path="/login" element={user ? (<Navigate to="/" />) : (<Col>
+                    <Route path="/login" element={user ? (<Navigate to="/" replace/>) : (<Col>
                         <LoginView onLoggedIn={handleLogin} /></Col>)}
                     />
                     {/* Signup */}
-                    <Route path="/signup" element={user ? (<Navigate to="/" />) : (<Col>
+                    <Route path="/signup" element={user ? (<Navigate to="/" replace/>) : (<Col>
                         <SignupView /></Col>)}
                     />
                     {/* Search */}
@@ -414,7 +427,6 @@ export const MainView = () => {
                                 )}
                             </Row>
                         )
-
                     ) : (<Navigate to="/login" replace />)}
                     />
 

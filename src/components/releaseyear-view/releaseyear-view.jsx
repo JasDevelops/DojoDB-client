@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { useParams } from "react-router-dom";
 import { Row, Col, Spinner } from "react-bootstrap";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector  } from "react-redux";
 import { startLoading, finishLoading } from "../../actions/progressAction";
 
 import { MovieCard } from "../movie-card/movie-card";
@@ -11,15 +11,13 @@ export const ReleaseYear = ({ favourites = [], onToggleFavourite }) => {
     const { year } = useParams();
     const [movies, setMovies] = useState([]);
     const [error, setError] = useState("");
-    const [loading, setLoading] = useState(true);
-
     const dispatch = useDispatch();
+    const loading = useSelector((state) => state.loading);
 
     useEffect(() => {
         const fetchMovies = async () => {
             try {
                 dispatch(startLoading());
-                setLoading(true);
 
                 const token = localStorage.getItem("token");
                 const response = await fetch(`https://dojo-db-e5c2cf5a1b56.herokuapp.com/movies/release-year/${year}`, {
@@ -45,7 +43,6 @@ export const ReleaseYear = ({ favourites = [], onToggleFavourite }) => {
                 setMovies([]);
                 setError(`There was an error fetching movies by release year "${year}"`);
             } finally {
-                setLoading(false);
                 dispatch(finishLoading());
             }
         };
