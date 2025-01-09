@@ -114,8 +114,6 @@ export const MainView = () => {
                 setAllMovies(updatedMovies);
                 setSimilarMovies(getUniqueSimilarMovies(moviesFromApi.slice(0, 3)));
                 setError("");
-                setLoading(false);
-                dispatch(finishLoading());
 
                 //Filter
                 const genres = [...new Set(moviesFromApi.map(movie => movie.genre.name))].sort();
@@ -127,9 +125,6 @@ export const MainView = () => {
                 setReleaseYears(releaseYears);
                 setDirectors(directors);
                 setActors(actors);
-
-                setLoading(false);
-                dispatch(finishLoading());
 
             } catch (error) {
                 console.error("Error fetching data:", error);
