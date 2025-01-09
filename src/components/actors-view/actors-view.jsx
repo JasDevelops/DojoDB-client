@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import PropTypes from "prop-types";
-import { useParams } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import { Row, Col, Spinner } from "react-bootstrap";
 import { useDispatch } from "react-redux";
 import { startLoading, finishLoading } from "../../actions/progressAction";
@@ -11,6 +11,8 @@ export const ActorsView = ({ favourites = [], onToggleFavourite }) => {
     const { name } = useParams();
     const [movies, setMovies] = useState([]);
     const [error, setError] = useState("");
+    const [actor, setActor] = useState(null);
+
     const [loading, setLoading] = useState(true);
 
     const dispatch = useDispatch();
@@ -38,6 +40,10 @@ export const ActorsView = ({ favourites = [], onToggleFavourite }) => {
                         id: movie._id,
                     }));
                     setMovies(updatedMovies);
+                    setActor({
+                        name: data.name,
+                        role: data.roles.map(movie => movie.role).join(", ")
+                    });
                     setError("");
                 } else {
                     setMovies([]);
@@ -57,6 +63,20 @@ export const ActorsView = ({ favourites = [], onToggleFavourite }) => {
 
     return (
         <>
+            {actor ? (
+                <div className="dark mb-4 center">
+                    <h3 className="mb-5">"{actor.name}"</h3>
+                    {movies.map((actorMovie) => (
+                        <div key={actorMovie.id} className="mb-3">
+                            <p>In&nbsp;<Link className="font-weight-bold inlineLink" to={`/movies/${actorMovie.id}`}>"{actorMovie.title}"</Link>
+                                &nbsp;as&nbsp;"{actorMovie.role}" </p>
+                        </div>
+
+                    ))}
+                </div>
+            ) : (
+                <p>Actor information is unavailable.</p>
+            )}
             <h3>Movies with "{name}"</h3>
             {error && <p>{error}</p>}
             <Row className="g-3 mb-5 d-flex justify-content-center">

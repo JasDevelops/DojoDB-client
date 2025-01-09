@@ -72,7 +72,6 @@ p a,
 li a {
     color: $secondary;
     text-decoration: none;
-
     transition: $transition;
 
     &:hover,
@@ -85,7 +84,8 @@ li a {
     }
 }
 
-li a {
+li a,
+.inlineLink {
     font-weight: $bolder;
     color: $black70;
 }
@@ -259,7 +259,8 @@ strong {
     background-color: $black;
     color: $gray;
 
-    .card-title a {
+    .card-title a,
+    strong a {
         color: $tertiary;
         text-decoration: none;
         display: inline-block;

@@ -64,54 +64,41 @@ export const DirectorsView = ({ favourites = [], onToggleFavourite }) => {
 
     return (
         <>
-            {loading ? (
-                // Spinner while loading
-                <Row className="justify-content-center">
+            {director ? (
+                <div className="dark mb-4 center">
+                    <h3 className="mb-5">"{director.name}"</h3>
+                    <p className="mb-4">{director.bio}</p>
+                    <p><strong>Born:</strong> {director.birthYear}</p>
+                    {director.deathYear && (
+                        <p><strong>Died:</strong> {director.deathYear}</p>
+                    )}
+                </div>
+            ) : (
+                <p>Director information is unavailable.</p>
+            )}
+            <h3>Movies directed by "{name}"</h3>
+            {error && <p>{error}</p>}
+            <Row className="g-3 mb-5 d-flex justify-content-center">
+                {loading ? (
+                    // Spinner while loading
                     <Col xs="auto">
                         <Spinner animation="grow" role="status">
                             <span className="visually-hidden">Loading...</span>
                         </Spinner>
                     </Col>
-                </Row>
-            ) : (
-                <>
-                    {director ? (
-                        <div className="director-info dark mb-4 center">
-                            <h3 className="mb-5">"{director.name}"</h3>
-                            <p className="mb-4">{director.bio}</p>
-                            <p><strong>Born:</strong> {director.birthYear}</p>
-                            {director.deathYear && (
-                                <p><strong>Died:</strong> {director.deathYear}</p>
-                            )}
-                        </div>
-                    ) : (
-                        <p>Director information is unavailable.</p>
-                    )}
-                    <h3>Movies directed by "{name}"</h3>
-                    {error && <p>{error}</p>}
-                    <Row className="g-3 mb-5 d-flex justify-content-center">
-                        {loading ? (
-                            // Spinner while loading
-                            <Col xs="auto">
-                                <Spinner animation="grow" role="status">
-                                    <span className="visually-hidden">Loading...</span>
-                                </Spinner>
-                            </Col>
-                        ) : (
-                            movies.map((directorMovie) => (
+                ) : (
+                    movies.map((directorMovie) => (
 
-                                <Col key={directorMovie.id} sm={6} md={4} lg={3}>
-                                    <MovieCard
-                                        movie={directorMovie}
-                                        isFavourite={favourites.some(fav => fav.movieId === directorMovie.id)}
-                                        onToggleFavourite={onToggleFavourite}
-                                    />
-                                </Col>
-                            ))
-                        )}
-                    </Row>
-                </>
-            )}
+                        <Col key={directorMovie.id} sm={6} md={4} lg={3}>
+                            <MovieCard
+                                movie={directorMovie}
+                                isFavourite={favourites.some(fav => fav.movieId === directorMovie.id)}
+                                onToggleFavourite={onToggleFavourite}
+                            />
+                        </Col>
+                    ))
+                )}
+            </Row>
         </>
     );
 };
