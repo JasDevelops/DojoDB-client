@@ -80,7 +80,6 @@ export const ProfileView = ({ user, movies, onLogout, onProfileUpdate }) => {
             }
 
             const username = storedUser.username;
-            setLoading(true);
             setError(null);
 
             try {
