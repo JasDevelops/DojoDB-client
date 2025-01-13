@@ -1,82 +1,82 @@
-@import "../../index.scss";
+@import '../../index.scss';
 
 .logo {
-    font-family: $logoFont;
-    letter-spacing: -2px;
-    text-shadow: $textShadow;
-    padding: $smallSpace;
-    color: $black;
+	font-family: $logoFont;
+	letter-spacing: -2px;
+	text-shadow: $textShadow;
+	padding: $smallSpace;
+	color: $black;
 }
 
 .logo span {
-    color: $secondary;
+	color: $secondary;
 }
 
 .navbar-brand.logo {
-    font-size: $extraLarge;
+	font-size: $extraLarge;
 }
 
 .offcanvas-header .logo {
-    font-size: $bigSpace;
+	font-size: $bigSpace;
 }
 
 button.navbar-toggler {
-    border: none;
+	border: none;
 
-    &:hover,
-    &:focus {
-        box-shadow: none;
-        opacity: $opacityDimmer;
-    }
+	&:hover,
+	&:focus {
+		box-shadow: none;
+		opacity: $opacityDimmer;
+	}
 
-    &:active {
-        box-shadow: none;
-        opacity: $opacityDim;
-    }
+	&:active {
+		box-shadow: none;
+		opacity: $opacityDim;
+	}
 }
 
 .offcanvas-body .nav-link {
-    color: $white;
+	color: $white;
 
-    &:hover,
-    &:focus {
-        color: $secondary
-    }
+	&:hover,
+	&:focus {
+		color: $secondary;
+	}
 
-    &:focus {
-        color: $tertiary
-    }
+	&:focus {
+		color: $tertiary;
+	}
 
-    &.active {
-        font-weight: $bolder
-    }
+	&.active {
+		font-weight: $bolder;
+	}
 }
 
 .nav-link i {
-    padding-right: $bigSpace
+	padding-right: $bigSpace;
 }
 
 button.btn-link {
-    box-shadow: none;
-    color: $secondary;
+	box-shadow: none;
+	color: $secondary;
 
-    &:hover,
-    &:focus {
-        color: $tertiary;
-        background: none;
-        box-shadow: none;
-    }
+	&:hover,
+	&:focus {
+		color: $tertiary;
+		background: none;
+		box-shadow: none;
+	}
 
-    &:active {
-        opacity: $opacityDim;
-        color: $tertiary;
-    }
+	&:active {
+		opacity: $opacityDim;
+		color: $tertiary;
+	}
 }
 
 .form-control .search-input {
-    border-radius: $borderRadius;
+	border-radius: $borderRadius;
 }
 
-:not(button.btn-link.btn-check)+button.btn-link.btn:active {
-    color: $tertiary;
+:not(button.btn-link.btn-check) + button.btn-link.btn:active {
+	color: $tertiary;
 }
